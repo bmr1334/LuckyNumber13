@@ -1,6 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace TheImpossiblerGame
 {
@@ -11,11 +15,20 @@ namespace TheImpossiblerGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        //variables for textures and creating a mapeditor object
+        Texture2D player;
+        Texture2D box;
+        Texture2D triangle;
+        Texture2D flip;
+        MapEditor mapEditor;
+        //List<Rectangle> boxes;
+        //Rectangle platform;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            ChangeWindowsSize(); //changes the window size when game initially runs
         }
 
         /// <summary>
@@ -27,6 +40,7 @@ namespace TheImpossiblerGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            mapEditor = new MapEditor(); //creates a map editor object
 
             base.Initialize();
         }
@@ -41,6 +55,11 @@ namespace TheImpossiblerGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            //loads in content
+            box = this.Content.Load<Texture2D>("SquareLab1");
+            triangle = this.Content.Load<Texture2D>("TriangleLab1");
+            flip = this.Content.Load<Texture2D>("TriangleLab1Flip");
+            player = this.Content.Load<Texture2D>("Player");
         }
 
         /// <summary>
@@ -64,6 +83,15 @@ namespace TheImpossiblerGame
 
             // TODO: Add your update logic here
 
+            //sets the textures in the mapeditor class to the ones loaded in this class
+            mapEditor.player = player;
+            mapEditor.BoxTexture = box;
+            mapEditor.flip = flip;
+            mapEditor.TriangleTexture = triangle;
+            mapEditor.LoadTextFile(); //calls method to find the file
+            mapEditor.ReadTextFile(); //calls method to read the file
+
+
             base.Update(gameTime);
         }
 
@@ -76,8 +104,21 @@ namespace TheImpossiblerGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            mapEditor.Draw(spriteBatch); //draws the objects in the text file
+            spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
+
+        public void ChangeWindowsSize() //method to change the window size
+        {
+            graphics.PreferredBackBufferWidth = 900;
+            graphics.PreferredBackBufferHeight = 600;
+            graphics.ApplyChanges();
+        }
+
+
     }
 }
