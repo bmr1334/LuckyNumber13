@@ -22,6 +22,8 @@ namespace TheImpossiblerGame
         Player p1;
         Texture2D flip;
         MapEditor mapEditor;
+        Box Box;
+        Triangle Triangle;
         //List<Rectangle> boxes;
         //Rectangle platform;
 
@@ -29,7 +31,7 @@ namespace TheImpossiblerGame
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            ChangeWindowsSize(); //changes the window size when game initially runs
+            
         }
 
         /// <summary>
@@ -42,8 +44,11 @@ namespace TheImpossiblerGame
         {
             // TODO: Add your initialization logic here
             mapEditor = new MapEditor(); //creates a map editor object
-            //p1 = new Player()
+            Box = new Box();
+            Triangle = new Triangle();
+            p1 = new Player(new Rectangle(0, 0, 30, 45), mapEditor.player);
             base.Initialize();
+            ChangeWindowsSize(); //changes the window size when game initially runs
         }
 
         /// <summary>
@@ -91,6 +96,8 @@ namespace TheImpossiblerGame
             mapEditor.TriangleTexture = triangle;
             mapEditor.LoadTextFile(); //calls method to find the file
             mapEditor.ReadTextFile(); //calls method to read the file
+            mapEditor.GeneratePlatforms();
+            
 
             foreach (Rectangle r in mapEditor.Squares)
             {
@@ -121,7 +128,9 @@ namespace TheImpossiblerGame
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            mapEditor.Draw(spriteBatch); //draws the objects in the text file
+             mapEditor.Draw(spriteBatch); //draws the objects in the text file
+           // Box.Draw(spriteBatch);
+            //Triangle.Draw(spriteBatch);
             spriteBatch.End();
 
 
@@ -130,10 +139,14 @@ namespace TheImpossiblerGame
 
         public void ChangeWindowsSize() //method to change the window size
         {
-            graphics.PreferredBackBufferWidth = 900;
-            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            mapEditor.ScreenWidth = GraphicsDevice.DisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            mapEditor.ScreenHeight = GraphicsDevice.DisplayMode.Height;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
         }
+
 
 
     }
