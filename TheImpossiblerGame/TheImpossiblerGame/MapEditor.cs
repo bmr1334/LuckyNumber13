@@ -12,13 +12,19 @@ namespace TheImpossiblerGame
     class MapEditor
     {
         //textures for the different objects
-        Texture2D Boxtexture;
-        Texture2D Triangletexture;
-        Texture2D Flip;
-        Texture2D Player;
+        protected Texture2D Boxtexture;
+        protected Texture2D Triangletexture;
+        protected Texture2D Flip;
+        protected Texture2D Player;
+
+        //Rectangles for collision
+        protected Rectangle Platforms;
+        protected List<Rectangle> allPlatforms;
+        public List<Rectangle> Squares;
+        public List<Rectangle> Triangles;
 
         StreamReader reader; //used to open the file for reading
-        List<string> DataPoints; //used to store the text in the textfile into a list 
+        protected List<string> DataPoints; //used to store the text in the textfile into a list 
 
         //used to get the filename and store the text in a string to add it to the list
         string ReadFile;
@@ -26,12 +32,12 @@ namespace TheImpossiblerGame
         string TextPath;
 
         //used to keep track of the height and width of the screen objects are being mapped to
-        int heightCounter;
-        int widthCounter;
+        protected int heightCounter;
+        protected int widthCounter;
 
         //sets the screen into specific tiles
-        int TileWidth;
-        int TileHeight;
+        protected int TileWidth;
+        protected int TileHeight;
 
         //keeps track of the screen dimensions
         const int SCREEN_HEIGHT = 600;
@@ -121,7 +127,7 @@ namespace TheImpossiblerGame
         // }
         // }
 
-        public void Draw(SpriteBatch spriteBatch) //method to draw platforms/objects
+        public virtual void Draw(SpriteBatch spriteBatch) //method to draw platforms/objects
         {
             //sets the initial values of width and height counters
             widthCounter = 0;
@@ -141,46 +147,56 @@ namespace TheImpossiblerGame
                         widthCounter++;
                     }
                 }
-                if (DataPoints[i] == "0") //not needed but included anyway
-                {
+                //if (DataPoints[i] == "0") //not needed but included anyway
+                //{
 
-                }
-                else if (DataPoints[i] == "1") //if a 1 is found in the textfile/list of strings then load a square
-                {
-                    if (i == 0) //used to draw the top left block
-                    {
-                        spriteBatch.Draw(Boxtexture, new Rectangle(0, 0, TileWidth, TileHeight), Color.White);
-                    }
-                    else if (i < 20) //used to draw the rest of the blocks at the top
-                    {
-                        spriteBatch.Draw(Boxtexture, new Rectangle(widthCounter * TileWidth, 0, TileWidth, TileHeight), Color.White);
-                    }
-                    else if (i > DataPoints.Count - 21) //used to draw the blocks at the very bottom of the screen
-                    {
+                //}
+                //else if (DataPoints[i] == "1") //if a 1 is found in the textfile/list of strings then load a square
+                //{
+                    //if (i == 0) //used to draw the top left block
+                    //{
+                        //spriteBatch.Draw(Boxtexture, new Rectangle(0, 0, TileWidth, TileHeight), Color.White);
+                    //}
+                    //else if (i < 20) //used to draw the rest of the blocks at the top
+                    //{
+                        //spriteBatch.Draw(Boxtexture, new Rectangle(widthCounter * TileWidth, 0, TileWidth, TileHeight), Color.White);
+                    //}
+                    //else if (i > DataPoints.Count - 21) //used to draw the blocks at the very bottom of the screen
+                    //{
 
-                        spriteBatch.Draw(Boxtexture, new Rectangle(widthCounter * TileWidth, 560, TileWidth, TileHeight), Color.White);
+                        //spriteBatch.Draw(Boxtexture, new Rectangle(widthCounter * TileWidth, 560, TileWidth, TileHeight), Color.White);
 
-                    }
-                    else //used to draw the blocks throughout the map
-                    {
-                        spriteBatch.Draw(Boxtexture, new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
-                    }
-                }
-                else if (DataPoints[i] == "2") //if a 2 is found then load a triangle
-                {
-                    spriteBatch.Draw(Triangletexture, new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
-                }
-                else if (DataPoints[i] == "3") //if a 3 is found then load a upside down triangle
-                {
-                    spriteBatch.Draw(Flip, new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
-                }
-                else if (DataPoints[i] == "4") //if a 3 is found then load a upside down triangle
-                {
-                    spriteBatch.Draw(Player, new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
-                }
+                    //}
+                    //else //used to draw the blocks throughout the map
+                    //{
+                        //spriteBatch.Draw(Boxtexture, new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
+                    //}
+                //}
+                //else if (DataPoints[i] == "2") //if a 2 is found then load a triangle
+                //{
+                //    spriteBatch.Draw(Triangletexture, new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
+                //}
+                //else if (DataPoints[i] == "3") //if a 3 is found then load a upside down triangle
+                //{
+                //    spriteBatch.Draw(Flip, new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
+                //}
+                //else if (DataPoints[i] == "4") //if a 3 is found then load a upside down triangle
+               // {
+               //     spriteBatch.Draw(Player, new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
+                //}
             }
         }
 
+        public bool Collision(Player p, Rectangle r)
+        {
+                if (r.Intersects(p.getRectangle()))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+        }
+        }
     }
-}
-

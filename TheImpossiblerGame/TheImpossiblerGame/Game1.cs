@@ -19,6 +19,7 @@ namespace TheImpossiblerGame
         Texture2D player;
         Texture2D box;
         Texture2D triangle;
+        Player p1;
         Texture2D flip;
         MapEditor mapEditor;
         //List<Rectangle> boxes;
@@ -41,7 +42,7 @@ namespace TheImpossiblerGame
         {
             // TODO: Add your initialization logic here
             mapEditor = new MapEditor(); //creates a map editor object
-
+            //p1 = new Player()
             base.Initialize();
         }
 
@@ -91,6 +92,21 @@ namespace TheImpossiblerGame
             mapEditor.LoadTextFile(); //calls method to find the file
             mapEditor.ReadTextFile(); //calls method to read the file
 
+            foreach (Rectangle r in mapEditor.Squares)
+            {
+                if (mapEditor.Collision(p1, r) == true)
+                {
+
+                }
+            }
+
+            foreach (Rectangle r in mapEditor.Triangles)
+            {
+                if (mapEditor.Collision(p1, r) == true)
+                {
+
+                }
+            }
 
             base.Update(gameTime);
         }
