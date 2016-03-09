@@ -33,6 +33,7 @@ namespace TheImpossiblerGame
         enum GameState { titleMenu, mainMenu, pauseMenu, game, gameOver, credits };
         GameState gamestate;
         KeyboardState kstate, prevKstate;
+        MouseState mstate, prevMstate;
         
         //List<Rectangle> boxes;
         //Rectangle platform;
@@ -52,13 +53,14 @@ namespace TheImpossiblerGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            mapEditor = new MapEditor(); //creates a map editor object
             Box = new Box();
             Triangle = new Triangle();
-            p1 = new Player(new Rectangle(0, 0, 30, 45), mapEditor.player);
+            mapEditor = new MapEditor(); //creates a map editor objec
+            ChangeWindowsSize(); //changes the window size when game initially runs
+            mapEditor.SetDimensions();
+            p1 = new Player(new Rectangle(0, 930, mapEditor.tileWidth, mapEditor.tileHeight));
             this.IsMouseVisible = true;
             base.Initialize();
-            ChangeWindowsSize(); //changes the window size when game initially runs
         }
 
         /// <summary>
@@ -147,6 +149,11 @@ namespace TheImpossiblerGame
                 case GameState.mainMenu:
                     //kstate = Keyboard.GetState();
                     //if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)) gamestate = GameState.mainMenu;
+                    mstate = Mouse.GetState();
+                    if (mstate.LeftButton == ButtonState.Pressed)
+                    {
+                        gamestate = GameState.game;
+                    }
                     break;
                 case GameState.credits:
                     kstate = Keyboard.GetState();
@@ -222,6 +229,8 @@ namespace TheImpossiblerGame
 
                     break;
                 case GameState.game:
+                    mapEditor.Draw(spriteBatch); //draws the objects in the text file
+                    p1.Draw(spriteBatch, player);
 
                     break;
                 case GameState.gameOver:
@@ -242,9 +251,9 @@ namespace TheImpossiblerGame
         public void ChangeWindowsSize() //method to change the window size
         {
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            mapEditor.ScreenWidth = GraphicsDevice.DisplayMode.Width;
+            mapEditor.ScreenWidth = graphics.PreferredBackBufferWidth;
             graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            mapEditor.ScreenHeight = GraphicsDevice.DisplayMode.Height;
+            mapEditor.ScreenHeight = graphics.PreferredBackBufferHeight;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
         }
