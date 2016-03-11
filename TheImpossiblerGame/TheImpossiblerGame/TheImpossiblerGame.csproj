@@ -123,6 +123,9 @@
     <Content Include="Content\Menus\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Menus\MenuText.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Menus\OptionsText.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -27,7 +27,11 @@ namespace TheImpossiblerGame
         Texture2D logo, spaceBar, options, play, resume, exit, pause, //menus
             spikeDark, spikeLight, sqCity1, sqCity2, sqLab1, sqLab2, //objects
             sqSub1, sqSub2, sqSwitchOff, sqSwitchOn, sqWarn, triCity1,
-            triCity2, triLab1, triLab2, triSub1, triSub2, triSwitch;
+            triCity2, triLab1, triLab2, triSub1, triSub2, triSwitch,
+            menuText;
+
+        //rectangle variables
+        Rectangle playRect, resumeRect, exitRect, menuRect;
 
         //enum to switch game states
         enum GameState { titleMenu, mainMenu, pauseMenu, game, gameOver, credits };
@@ -80,6 +84,7 @@ namespace TheImpossiblerGame
             player = this.Content.Load<Texture2D>("Player");
 
             //general menu loads
+            menuText = Content.Load<Texture2D>("Menus\\MenuText");
             logo = Content.Load<Texture2D>("Menus\\Logo");
             exit = Content.Load<Texture2D>("Menus\\ExitText");
             options = Content.Load<Texture2D>("Menus\\OptionsText");
@@ -147,12 +152,20 @@ namespace TheImpossiblerGame
                     if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)) gamestate = GameState.mainMenu;
                     break;
                 case GameState.mainMenu:
-                    //kstate = Keyboard.GetState();
-                    //if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)) gamestate = GameState.mainMenu;
+                    
+                    //if play game is clicked
                     mstate = Mouse.GetState();
-                    if (mstate.LeftButton == ButtonState.Pressed)
+                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > playRect.X && mstate.X < playRect.X + 500 && //width
+                        mstate.Y > playRect.Y && mstate.Y < playRect.Y + 100) //height
                     {
                         gamestate = GameState.game;
+                    }
+
+                    //if exit game is clicked
+                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100) //height
+                    {
+                        Exit();
                     }
                     break;
                 case GameState.credits:
@@ -160,6 +173,8 @@ namespace TheImpossiblerGame
                     break;
                 case GameState.game:
                     kstate = Keyboard.GetState();
+
+                    //pause if escape is pressed
                     if (kstate.IsKeyDown(Keys.Escape) && prevKstate.IsKeyUp(Keys.Escape)) gamestate = GameState.pauseMenu;
                     break;
                 case GameState.gameOver:
@@ -167,6 +182,33 @@ namespace TheImpossiblerGame
                     break;
                 case GameState.pauseMenu:
                     kstate = Keyboard.GetState();
+
+                    //unpause if escape is pressed
+                    if (kstate.IsKeyDown(Keys.Escape) && prevKstate.IsKeyUp(Keys.Escape)) gamestate = GameState.game;
+
+                    //if resume game is clicked
+                    mstate = Mouse.GetState();
+                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > resumeRect.X && mstate.X < resumeRect.X + 500 && //width
+                        mstate.Y > resumeRect.Y && mstate.Y < resumeRect.Y + 100) //height
+                    {
+                        gamestate = GameState.game;
+                    }
+
+                    //if return to menu is clicked
+                    mstate = Mouse.GetState();
+                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
+                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100) //height
+                    {
+                        gamestate = GameState.mainMenu;
+                        System.Threading.Thread.Sleep(200);
+                    }
+
+                    //if exit game is clicked
+                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100) //height
+                    {
+                        Exit();
+                    }
                     break;
             }
 
@@ -201,7 +243,7 @@ namespace TheImpossiblerGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
             mapEditor.Draw(spriteBatch); //draws the objects in the text file
             // Box.Draw(spriteBatch);
             //Triangle.Draw(spriteBatch);
@@ -213,15 +255,22 @@ namespace TheImpossiblerGame
                     //Color trans = new Color(255, 255, 255, 0);
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
+
                     spriteBatch.Draw(spaceBar, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                         GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, 500, 100), Color.White);
+
                     break;
                 case GameState.mainMenu:
+                    //draws logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
-                    spriteBatch.Draw(play, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+
+                    //draws play game text
+                    spriteBatch.Draw(play, playRect = new Rectangle (GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                         GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, 500, 100), Color.White);
-                    spriteBatch.Draw(exit, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+
+                    //draws exit game text
+                    spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                         GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 4, 500, 100), Color.White);
 
                     break;
@@ -237,10 +286,22 @@ namespace TheImpossiblerGame
 
                     break;
                 case GameState.pauseMenu:
+
+                    //draws pause logo
                     spriteBatch.Draw(pause, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 7,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 700, 300), Color.White);
-                    spriteBatch.Draw(resume, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+
+                    //draws resume game text
+                    spriteBatch.Draw(resume, resumeRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                        GraphicsDevice.DisplayMode.Height / 2, 500, 100), Color.White);
+
+                    //draws exit game text
+                    spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 5, 500, 100), Color.White);
+
+                    //draws return to menu text
+                    spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, 500, 100), Color.White);
                     break;
             }
 
