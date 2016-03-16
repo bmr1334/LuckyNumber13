@@ -138,7 +138,7 @@ namespace TheImpossiblerGame
             string[] files = Directory.GetFiles(".");
             foreach (string s in files) //foreach loop to search for the specified file
             {
-                if (s.Contains("Testing.txt"))
+                if (s.Contains("Test.txt"))
                 {
                     TextPath = s; //set the textpath to the file found
                 }
@@ -292,20 +292,6 @@ namespace TheImpossiblerGame
             //        spriteBatch.Draw(Player, Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight), Color.White);
             //    }
             //}
-        }
-
-
-
-        public bool Collision(Player p, Rectangle r)
-        {
-            if (r.Intersects(p.getRectangle()))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

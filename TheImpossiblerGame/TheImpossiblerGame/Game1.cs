@@ -22,7 +22,7 @@ namespace TheImpossiblerGame
         Player p1;
         Box Box;
         Triangle Triangle;
-
+        int g;
         //texture variables
         Texture2D logo, spaceBar, options, play, resume, exit, pause, //menus
             spikeDark, spikeLight, sqCity1, sqCity2, sqLab1, sqLab2, //objects
@@ -59,10 +59,11 @@ namespace TheImpossiblerGame
             // TODO: Add your initialization logic here
             Box = new Box();
             Triangle = new Triangle();
+            g = 1;
             mapEditor = new MapEditor(); //creates a map editor objec
             ChangeWindowsSize(); //changes the window size when game initially runs
             mapEditor.SetDimensions();
-            p1 = new Player(new Rectangle(0, 930, mapEditor.tileWidth, mapEditor.tileHeight));
+            p1 = new Player(0, 600, mapEditor.tileWidth, mapEditor.tileHeight);
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -173,6 +174,9 @@ namespace TheImpossiblerGame
                     break;
                 case GameState.game:
                     kstate = Keyboard.GetState();
+                    if (kstate.IsKeyDown(Keys.Space) && !prevKstate.IsKeyDown(Keys.Space)) flipGrav();
+                    Fall(g);
+                    p1.Move(kstate, mapEditor);
 
                     //pause if escape is pressed
                     if (kstate.IsKeyDown(Keys.Escape) && prevKstate.IsKeyUp(Keys.Escape)) gamestate = GameState.pauseMenu;
@@ -210,22 +214,6 @@ namespace TheImpossiblerGame
                         Exit();
                     }
                     break;
-            }
-
-            foreach (Rectangle r in mapEditor.Squares)
-            {
-                if (mapEditor.Collision(p1, r) == true)
-                {
-
-                }
-            }
-
-            foreach (Rectangle r in mapEditor.Triangles)
-            {
-                if (mapEditor.Collision(p1, r) == true)
-                {
-
-                }
             }
 
             base.Update(gameTime);
@@ -317,6 +305,51 @@ namespace TheImpossiblerGame
             mapEditor.ScreenHeight = graphics.PreferredBackBufferHeight;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
+        }
+
+        public void Fall(int grav)
+        {
+            if (grav == 1)
+            {
+
+                for (int i = 0; i < mapEditor.squares.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + 5, p1.w, p1.h), mapEditor.squares[i]) == true)
+                    {
+                        p1.SetY(mapEditor.squares[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                p1.SetY(p1.y + 5);
+            }
+
+            if (grav == -1)
+            {
+
+                for (int i = 0; i < mapEditor.squares.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - 5, p1.w, p1.h), mapEditor.squares[i]) == true)
+                    {
+                        p1.SetY(mapEditor.squares[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                p1.SetY(p1.y - 5);
+            }
+        }
+
+        
+
+        public void flipGrav()
+        {
+            if (g == 1)
+            {
+                g = -1;
+            }
+            else if (g == -1)
+            {
+                g = 1;
+            }
         }
     }
 }
