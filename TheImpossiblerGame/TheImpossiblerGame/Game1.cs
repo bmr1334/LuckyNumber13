@@ -23,6 +23,7 @@ namespace TheImpossiblerGame
         Box Box;
         Triangle Triangle;
         int g;
+        int counter = 0;
 
         //score counter variables
         SpriteFont font;
@@ -119,6 +120,11 @@ namespace TheImpossiblerGame
             triSub1 = Content.Load<Texture2D>("Game Textures\\TriangleSubway1");
             triSub2 = Content.Load<Texture2D>("Game Textures\\TriangleSubway2");
             triSwitch = Content.Load<Texture2D>("Game Textures\\TriangleSwitch");
+
+            mapEditor.player = player;
+            mapEditor.BoxTexture = box;
+            mapEditor.flip = flip;
+            mapEditor.TriangleTexture = triangle;
         }
 
         /// <summary>
@@ -142,14 +148,6 @@ namespace TheImpossiblerGame
 
             // TODO: Add your update logic here
 
-            //sets the textures in the mapeditor class to the ones loaded in this class
-            mapEditor.player = player;
-            mapEditor.BoxTexture = box;
-            mapEditor.flip = flip;
-            mapEditor.TriangleTexture = triangle;
-            mapEditor.LoadTextFile(); //calls method to find the file
-            mapEditor.ReadTextFile(); //calls method to read the file
-            mapEditor.GeneratePlatforms();
 
             //switches between states
             switch (gamestate)
@@ -179,10 +177,23 @@ namespace TheImpossiblerGame
                     kstate = Keyboard.GetState();
                     break;
                 case GameState.game:
+                    if (mapEditor.CanLoadInitial == true) //used to load the initial platforms when the game is started
+                    {
+                        mapEditor.LoadTextFile(); //calls method to find the file
+                        mapEditor.ReadTextFile(); //calls method to read the file
+                        mapEditor.GeneratePlatformsOnScreen();
+                    }
+                    if (mapEditor.CanLoadNext == true) //used to load all other platforms off screen to have scrolling
+                    {
+                        mapEditor.LoadTextFile(); //calls method to find the file
+                        mapEditor.ReadTextFile(); //calls method to read the file
+                        mapEditor.GeneratePlatformsOffScreen();
+                    }
                     kstate = Keyboard.GetState();
                     if (kstate.IsKeyDown(Keys.Space) && !prevKstate.IsKeyDown(Keys.Space)) flipGrav();
                     Fall(g);
                     p1.Move(kstate, mapEditor);
+                    Scrolling(); //calls scrolling method to have infinite scrolling
 
                     //score increases here
                     score += gameTime.ElapsedGameTime.TotalSeconds * 2;
@@ -324,7 +335,7 @@ namespace TheImpossiblerGame
         {
             if (grav == 1)
             {
-
+                p1.SetY(p1.y + 5);
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y + 5, p1.w, p1.h), mapEditor.squares[i]) == true)
@@ -333,12 +344,21 @@ namespace TheImpossiblerGame
                         break;
                     }
                 }
-                p1.SetY(p1.y + 5);
+                for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - 5, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Nextsquares[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                //p1.SetY(p1.y + 5);
             }
 
             if (grav == -1)
             {
 
+                p1.SetY(p1.y - 5);
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y - 5, p1.w, p1.h), mapEditor.squares[i]) == true)
@@ -347,11 +367,19 @@ namespace TheImpossiblerGame
                         break;
                     }
                 }
-                p1.SetY(p1.y - 5);
+                for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - 5, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Nextsquares[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                //p1.SetY(p1.y - 5);
             }
         }
 
-        
+
 
         public void flipGrav()
         {
@@ -362,6 +390,62 @@ namespace TheImpossiblerGame
             else if (g == -1)
             {
                 g = 1;
+            }
+        }
+
+        public void Scrolling()
+        {
+            if (mapEditor.CanLoadNext == true) //this resets the canloadnext variable to prevent infinite loading of a single file
+            {
+                mapEditor.CanLoadNext = false;
+            }
+            //if (mapEditor.ScrollingBlockX <= -mapEditor.ScreenWidth + 8 && counter == 1)
+            //{
+            //    mapEditor.Number = 0;
+            //    mapEditor.CanLoadInitial = true;
+            //    mapEditor.squares.Clear();
+            //    mapEditor.Nextsquares.Clear();
+            //    counter = 0;
+            //}
+            if (mapEditor.ScrollingBlockX <= -mapEditor.ScreenWidth + 8) //if our scrolling indicator has reached a screen's width then erase the platforms that are off screen to the left
+            {
+                //counter++;
+                mapEditor.ScrollingBlockX = 0; //resets value
+                mapEditor.CanLoadNext = true; //prepare to load in the next file
+                mapEditor.squares.Clear(); //clear the list of platforms that are off screen to the left
+                for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
+                {
+                    mapEditor.squares.Add(mapEditor.Nextsquares[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                mapEditor.Nextsquares.Clear(); //clears the list that the platforms were moved from to create space for the next text file to add to this list
+
+            }
+            else //CODE BELOW ACTUALLY SCROLLS THE PLATFORMS
+            {
+                mapEditor.ScrollingBlockX -= 5; //scrolls by a factor of 5
+                for (int i = 0; i < mapEditor.squares.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.squares[i];
+                    same.X -= 5;
+                    mapEditor.squares[i] = same;
+                }
+                for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.Nextsquares[i];
+                    same.X -= 5;
+                    mapEditor.Nextsquares[i] = same;
+                }
             }
         }
     }
