@@ -23,6 +23,11 @@ namespace TheImpossiblerGame
         Box Box;
         Triangle Triangle;
         int g;
+
+        //score counter variables
+        SpriteFont font;
+        double score = 0;
+        
         //texture variables
         Texture2D logo, spaceBar, options, play, resume, exit, pause, //menus
             spikeDark, spikeLight, sqCity1, sqCity2, sqLab1, sqLab2, //objects
@@ -93,6 +98,7 @@ namespace TheImpossiblerGame
             play = Content.Load<Texture2D>("Menus\\PlayText");
             resume = Content.Load<Texture2D>("Menus\\ResumeText");
             spaceBar = Content.Load<Texture2D>("Menus\\SpacebarText");
+            font = Content.Load<SpriteFont>("Menus\\font");
 
             //general game object loads
             spikeDark = Content.Load<Texture2D>("Game Textures\\SpikeDark");
@@ -177,6 +183,9 @@ namespace TheImpossiblerGame
                     if (kstate.IsKeyDown(Keys.Space) && !prevKstate.IsKeyDown(Keys.Space)) flipGrav();
                     Fall(g);
                     p1.Move(kstate, mapEditor);
+
+                    //score increases here
+                    score += gameTime.ElapsedGameTime.TotalSeconds * 2;
 
                     //pause if escape is pressed
                     if (kstate.IsKeyDown(Keys.Escape) && prevKstate.IsKeyUp(Keys.Escape)) gamestate = GameState.pauseMenu;
@@ -268,6 +277,10 @@ namespace TheImpossiblerGame
                 case GameState.game:
                     mapEditor.Draw(spriteBatch); //draws the objects in the text file
                     p1.Draw(spriteBatch, player);
+
+                    //draws score
+                    //spriteBatch.DrawString(font, "Score: " + score, new Vector2(20, 20), Color.Black);
+                    spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(5, -10), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
 
                     break;
                 case GameState.gameOver:
