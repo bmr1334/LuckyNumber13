@@ -6,6 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+//Brandon Rodriguez - worked with Parker to load in textures, create a finite state machine and add in a score counter
+//Parker Wilson - 
+//Nicholas Cato - 
+//Brandon Guglielmo - 
+
 namespace TheImpossiblerGame
 {
     /// <summary>
@@ -16,7 +21,7 @@ namespace TheImpossiblerGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        //variables for textures and creating a mapeditor object
+        //variables for textures and creating a MapEditor object
         Texture2D player, box, triangle, flip;
         MapEditor mapEditor;
         Player p1;
@@ -25,25 +30,25 @@ namespace TheImpossiblerGame
         int g;
         int counter = 0;
 
-        //score counter variables
+        //score counter variables - Brandon Rodriguez, Parker Wilson
         SpriteFont font;
         double score = 0;
         
-        //texture variables
+        //texture variables - Brandon Rodriguez, Parker Wilson
         Texture2D logo, spaceBar, options, play, resume, exit, pause, //menus
             spikeDark, spikeLight, sqCity1, sqCity2, sqLab1, sqLab2, //objects
-            sqSub1, sqSub2, sqSwitchOff, sqSwitchOn, sqWarn, triCity1,
-            triCity2, triLab1, triLab2, triSub1, triSub2, triSwitch,
-            menuText;
+            sqSub1, sqSub2, sqSwitchOff, sqSwitchOn, sqWarn, triCity1, //objects
+            triCity2, triLab1, triLab2, triSub1, triSub2, triSwitch, //objects
+            menuText; //menu texture for return to main menu
 
         //rectangle variables
         Rectangle playRect, resumeRect, exitRect, menuRect;
 
-        //enum to switch game states
+        //enum to switch game states  - Brandon Rodriguez, Parker Wilson
         enum GameState { titleMenu, mainMenu, pauseMenu, game, gameOver, credits };
         GameState gamestate;
-        KeyboardState kstate, prevKstate;
-        MouseState mstate, prevMstate;
+        KeyboardState kstate, prevKstate; //used in finite state machine
+        MouseState mstate, prevMstate; //used in finite state machine
         
         //List<Rectangle> boxes;
         //Rectangle platform;
@@ -66,7 +71,7 @@ namespace TheImpossiblerGame
             Box = new Box();
             Triangle = new Triangle();
             g = 1;
-            mapEditor = new MapEditor(); //creates a map editor objec
+            mapEditor = new MapEditor(); //creates a map editor object
             ChangeWindowsSize(); //changes the window size when game initially runs
             mapEditor.SetDimensions();
             p1 = new Player(0, 600, mapEditor.tileWidth, mapEditor.tileHeight);
@@ -90,7 +95,7 @@ namespace TheImpossiblerGame
             flip = this.Content.Load<Texture2D>("TriangleLab1Flip");
             player = this.Content.Load<Texture2D>("Player");
 
-            //general menu loads
+            //general menu loads - Brandon Rodriguez, Parker Wilson
             menuText = Content.Load<Texture2D>("Menus\\MenuText");
             logo = Content.Load<Texture2D>("Menus\\Logo");
             exit = Content.Load<Texture2D>("Menus\\ExitText");
@@ -101,7 +106,7 @@ namespace TheImpossiblerGame
             spaceBar = Content.Load<Texture2D>("Menus\\SpacebarText");
             font = Content.Load<SpriteFont>("Menus\\font");
 
-            //general game object loads
+            //general game object loads - Brandon Rodriguez, Parker Wilson
             spikeDark = Content.Load<Texture2D>("Game Textures\\SpikeDark");
             spikeLight = Content.Load<Texture2D>("Game Textures\\SpikeLight");
             sqCity1 = Content.Load<Texture2D>("Game Textures\\SquareCity1");
@@ -146,10 +151,7 @@ namespace TheImpossiblerGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.None))
                 Exit();
 
-            // TODO: Add your update logic here
-
-
-            //switches between states
+            //switches between states - Brandon Rodriguez, Parker Wilson, Nicholas Cato
             switch (gamestate)
             {
                 case GameState.titleMenu:
@@ -173,7 +175,7 @@ namespace TheImpossiblerGame
                         Exit();
                     }
                     break;
-                case GameState.credits:
+                case GameState.credits: //functional but draws nothing as of yet
                     kstate = Keyboard.GetState();
                     break;
                 case GameState.game:
@@ -238,7 +240,7 @@ namespace TheImpossiblerGame
 
             base.Update(gameTime);
 
-            //gets previos keyboard state
+            //gets previous keyboard state, MUST be after base.Update! - Brandon Rodriguez, Parker Wilson
             prevKstate = kstate;
         }
 
@@ -251,33 +253,35 @@ namespace TheImpossiblerGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied); //need overrides for transparency to work properly
             mapEditor.Draw(spriteBatch); //draws the objects in the text file
             // Box.Draw(spriteBatch);
             //Triangle.Draw(spriteBatch);
 
-            //game state switches
+            //game state switches - Brandon Rodriguez, Parker Wilson, Nicholas Cato
             switch (gamestate)
             {
                 case GameState.titleMenu:
-                    //Color trans = new Color(255, 255, 255, 0);
+
+                    //draws main logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
 
+                    //draws "Press spacebar" text
                     spriteBatch.Draw(spaceBar, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                         GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, 500, 100), Color.White);
 
                     break;
                 case GameState.mainMenu:
-                    //draws logo
+                    //draws main logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
 
-                    //draws play game text
+                    //draws "Play game" text
                     spriteBatch.Draw(play, playRect = new Rectangle (GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                         GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, 500, 100), Color.White);
 
-                    //draws exit game text
+                    //draws "Exit game" text
                     spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                         GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 4, 500, 100), Color.White);
 
@@ -290,7 +294,6 @@ namespace TheImpossiblerGame
                     p1.Draw(spriteBatch, player);
 
                     //draws score
-                    //spriteBatch.DrawString(font, "Score: " + score, new Vector2(20, 20), Color.Black);
                     spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(5, -10), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
 
                     break;
@@ -303,15 +306,15 @@ namespace TheImpossiblerGame
                     spriteBatch.Draw(pause, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 7,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 700, 300), Color.White);
 
-                    //draws resume game text
+                    //draws "Resume game" text
                     spriteBatch.Draw(resume, resumeRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                        GraphicsDevice.DisplayMode.Height / 2, 500, 100), Color.White);
 
-                    //draws exit game text
+                    //draws "Exit game" text
                     spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 5, 500, 100), Color.White);
 
-                    //draws return to menu text
+                    //draws "Return to menu" text
                     spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, 500, 100), Color.White);
                     break;
@@ -321,7 +324,7 @@ namespace TheImpossiblerGame
             base.Draw(gameTime);
         }
 
-        public void ChangeWindowsSize() //method to change the window size
+        public void ChangeWindowsSize() //method to change the window size - Brandon Rodriguez, Parker Wilson
         {
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             mapEditor.ScreenWidth = graphics.PreferredBackBufferWidth;
