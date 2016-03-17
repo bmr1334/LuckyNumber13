@@ -9,7 +9,7 @@ using System.Text;
 //Brandon Rodriguez - worked with Parker to load in textures, create a finite state machine and add in a score counter
 //Parker Wilson - 
 //Nicholas Cato - 
-//Brandon Guglielmo - 
+//Brandon Guglielmo - made the player class, fall method, gravity flipping method, and worked with collision
 
 namespace TheImpossiblerGame
 {
@@ -334,7 +334,7 @@ namespace TheImpossiblerGame
             graphics.ApplyChanges();
         }
 
-        public void Fall(int grav)
+        public void Fall(int grav) // method to iniatiate the player falling based on the gravity
         {
             if (grav == 1)
             {
@@ -384,7 +384,7 @@ namespace TheImpossiblerGame
 
 
 
-        public void flipGrav()
+        public void flipGrav() // Changes the gravity, 1 being normal, -1 being reversed.
         {
             if (g == 1)
             {
