@@ -201,7 +201,6 @@ namespace TheImpossiblerGame
             canLoadnext = true;
             canLoadinitial = true;
             number++; //increases number to load in next file
-            Directory.SetCurrentDirectory("/TheImpossiblerGame/TheImpossiblerGame/Content/Levels"); //resets the directory to the correct directory where levels are located
             string[] files = Directory.GetFiles(".");
             foreach (string s in files) //foreach loop to search for the specified file
             {
