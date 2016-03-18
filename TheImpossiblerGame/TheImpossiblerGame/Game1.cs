@@ -8,7 +8,7 @@ using System.Text;
 
 //Brandon Rodriguez - worked with Parker to load in textures, create a finite state machine and add in a score counter
 //Parker Wilson - 
-//Nicholas Cato - 
+//Nicholas Cato - made the MapEditor class and its methods, made the Box class and Triangle class, Coded Scrolling, Made the external tool: Map Maker
 //Brandon Guglielmo - made the player class, fall method, gravity flipping method, and worked with collision
 
 namespace TheImpossiblerGame
@@ -27,13 +27,14 @@ namespace TheImpossiblerGame
         Player p1;
         Box Box;
         Triangle Triangle;
+
+        //variable for gravity
         int g;
-        int counter = 0;
 
         //score counter variables - Brandon Rodriguez, Parker Wilson
         SpriteFont font;
         double score = 0;
-        
+
         //texture variables - Brandon Rodriguez, Parker Wilson
         Texture2D logo, spaceBar, options, play, resume, exit, pause, //menus
             spikeDark, spikeLight, sqCity1, sqCity2, sqLab1, sqLab2, //objects
@@ -49,9 +50,7 @@ namespace TheImpossiblerGame
         GameState gamestate;
         KeyboardState kstate, prevKstate; //used in finite state machine
         MouseState mstate, prevMstate; //used in finite state machine
-        
-        //List<Rectangle> boxes;
-        //Rectangle platform;
+
 
         public Game1()
         {
@@ -68,6 +67,7 @@ namespace TheImpossiblerGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            //Creat objects for all the classes and instantiate gravity, also changes the size of the window
             Box = new Box();
             Triangle = new Triangle();
             g = 1;
@@ -126,6 +126,7 @@ namespace TheImpossiblerGame
             triSub2 = Content.Load<Texture2D>("Game Textures\\TriangleSubway2");
             triSwitch = Content.Load<Texture2D>("Game Textures\\TriangleSwitch");
 
+            //sets the textures to their respective values
             mapEditor.player = player;
             mapEditor.BoxTexture = box;
             mapEditor.flip = flip;
@@ -159,7 +160,7 @@ namespace TheImpossiblerGame
                     if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)) gamestate = GameState.mainMenu;
                     break;
                 case GameState.mainMenu:
-                    
+
                     //if play game is clicked
                     mstate = Mouse.GetState();
                     if (mstate.LeftButton == ButtonState.Pressed && mstate.X > playRect.X && mstate.X < playRect.X + 500 && //width
@@ -278,7 +279,7 @@ namespace TheImpossiblerGame
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
 
                     //draws "Play game" text
-                    spriteBatch.Draw(play, playRect = new Rectangle (GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+                    spriteBatch.Draw(play, playRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                         GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, 500, 100), Color.White);
 
                     //draws "Exit game" text
@@ -336,9 +337,11 @@ namespace TheImpossiblerGame
 
         public void Fall(int grav) // method to iniatiate the player falling based on the gravity
         {
-            if (grav == 1)
+            if (grav == 1) //if gravity is pushing down
             {
-                p1.SetY(p1.y + 5);
+                p1.SetY(p1.y + 5); //makes player always fall down
+
+                //for loops calculate collision for the platforms on and off screen
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y + 5, p1.w, p1.h), mapEditor.squares[i]) == true)
@@ -358,10 +361,12 @@ namespace TheImpossiblerGame
                 //p1.SetY(p1.y + 5);
             }
 
-            if (grav == -1)
+            if (grav == -1) //if gravity is reversed
             {
 
-                p1.SetY(p1.y - 5);
+                p1.SetY(p1.y - 5); //makes player fall up
+
+                //for loops calculate collision for the platforms on and off screen
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y - 5, p1.w, p1.h), mapEditor.squares[i]) == true)
