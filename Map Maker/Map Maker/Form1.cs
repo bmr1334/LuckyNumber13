@@ -25,6 +25,8 @@ namespace Map_Maker
         int width;
         int counter;
         int setlength;
+
+        //attributes to prevent unnecessary saving and loading of a file
         bool canSave = true;
         bool canLoad = true;
         bool validText = true;
@@ -35,12 +37,12 @@ namespace Map_Maker
             File.Visible = false; //disbale visibility of create file button until user clicks new or random
             CreateFile.IsAccessible = false; //used to differentiate between user clicking on load or new
             Save.IsAccessible = true; //true by default
-            Overwrite.Checked = true;
+            Overwrite.Checked = true; //true by default
         }
 
         private void Load_Click(object sender, EventArgs e)
         {
-            canLoad = true;
+            canLoad = true; //if load is clicked then set canLoad to true
             openFileDialog1.ShowDialog(); //opens file explorer to let user choose a file
 
             Output.Size = new System.Drawing.Size(521, 243);
@@ -115,7 +117,7 @@ namespace Map_Maker
                 canLoad = false;
                 Load.IsAccessible = false;
             }
-            else
+            else //if cancel is chosen after load is chosen
             {
                 Load.IsAccessible = false;
                 canLoad = false;
@@ -131,8 +133,9 @@ namespace Map_Maker
             File.Visible = true;
             dataGridView1.Visible = false;
             
-            FileInput.Clear();
+            FileInput.Clear(); //clears previous filename for a new filename to be entered
 
+            //sets dimensions of display
             Output.Size = new System.Drawing.Size(521, 105);
             Output.Location = new System.Drawing.Point(12, 240);
             FileContents.Location = new System.Drawing.Point(11, 225);
@@ -167,6 +170,7 @@ namespace Map_Maker
             Random.IsAccessible = true;
             FileInput.Clear();
 
+            //changes display
             Output.Size = new System.Drawing.Size(521, 105);
             Output.Location = new System.Drawing.Point(12, 240);
             FileContents.Location = new System.Drawing.Point(11, 225);
@@ -252,29 +256,11 @@ namespace Map_Maker
                     }
 
 
-                    if (fileName.EndsWith(".txt"))
+                    if (fileName.EndsWith(".txt")) //if a loaded text file is being saved
                     {
-                        writer = new StreamWriter(fileName);
-                        for (int i = 0; i < length; i++)
-                        {
-                            for (int j = 0; j < width; j++)
-                            {
-                                if (j == width - 1)
-                                {
-                                    writer.WriteLine(map[i, j]);
-                                }
-                                else
-                                {
-                                    writer.Write(map[i, j]);
-                                }
-                            }
-                        }
-                        writer.Close();
-                    }
-                    else
-                    {
-                        writer = new StreamWriter(fileName + ".txt");
+                        writer = new StreamWriter(fileName); //open the file for writing
 
+                        //for loop to write the the text within the dimensions of the file
                         for (int i = 0; i < length; i++)
                         {
                             for (int j = 0; j < width; j++)
@@ -289,11 +275,32 @@ namespace Map_Maker
                                 }
                             }
                         }
-                        writer.Close();
+                        writer.Close(); //close the file when done
+                    }
+                    else //if a new text file was created
+                    {
+                        writer = new StreamWriter(fileName + ".txt"); //open the file for writing
+
+                        //for loop to save the file with the dimensions given
+                        for (int i = 0; i < length; i++)
+                        {
+                            for (int j = 0; j < width; j++)
+                            {
+                                if (j == width - 1)
+                                {
+                                    writer.WriteLine(map[i, j]);
+                                }
+                                else
+                                {
+                                    writer.Write(map[i, j]);
+                                }
+                            }
+                        }
+                        writer.Close(); //close file when done
                     }
                 }
             }
-            else
+            else //if no file is available then notify the user
             {
                 MessageBox.Show("ERROR: There is not a file to save.");
             }
@@ -329,11 +336,12 @@ namespace Map_Maker
 
         private void CreateFile_Click(object sender, EventArgs e)
         {
+            //stores the length/height and width of the text file made by the user
             length = (int)Length.Value;
             width = (int)Width.Value;
 
             
-            Load.IsAccessible = false;
+            Load.IsAccessible = false; //if create is clicked then set load to false
             Output.Clear(); //clears display to only show what was loaded
             FileContents.Text = "File Contents"; //used to reset the file content text
 
@@ -370,11 +378,10 @@ namespace Map_Maker
                 }
                 else //if nothing is wrong with the file name then create it
                 {
-                    
-                    files = new FileInfo(FileInput.Text + ".txt");
-                    if (Overwrite.Checked == false && files.Exists == true)
+                    files = new FileInfo(FileInput.Text + ".txt"); //gets the file name
+                    if (Overwrite.Checked == false && files.Exists == true) //if user doesnt want to overwrite existing file
                     {
-                        while (files.Exists == true)
+                        while (files.Exists == true) //loop to create a copy of that file
                         {
                             int extension = populate.Next(1, 41);
                             FileInput.Text = FileInput.Text + "(" + extension.ToString() + ")";
@@ -490,6 +497,7 @@ namespace Map_Maker
                 }
                 else //if nothing is wrong with the file name then create it
                 {
+                    //code to make a copy of the filename entered if it already exists by adding a number to the file name
                     files = new FileInfo(FileInput.Text + ".txt");
                     if (Overwrite.Checked == false && files.Exists == true)
                     {
@@ -512,11 +520,11 @@ namespace Map_Maker
                         {
                             if (i == 0)
                             {
-                                map[i, j] = "1";
+                                map[i, j] = "1"; //fills the top with 1s
                             }
                             else if (i == length - 1)
                             {
-                                map[i, j] = "1";
+                                map[i, j] = "1"; //fills the bottom with 1s
                             }
                             else
                             {
@@ -625,6 +633,7 @@ namespace Map_Maker
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            //this is disabled
             System.Drawing.Graphics draw = this.CreateGraphics();
             System.Drawing.Rectangle square = new System.Drawing.Rectangle(10, 10, 10, 10);
             draw.DrawRectangle(System.Drawing.Pens.Red, square);
