@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 //Brandon Rodriguez - worked with Parker to load in textures, create a finite state machine and add in a score counter
-//Parker Wilson - 
+//Parker Wilson - drew up concept art, loaded in textures with Brandon, started to work out game logic, created finite state machine
 //Nicholas Cato - made the MapEditor class and its methods, made the Box class and Triangle class, Coded Scrolling, Made the external tool: Map Maker
 //Brandon Guglielmo - made the player class, fall method, gravity flipping method, and worked with collision
 
