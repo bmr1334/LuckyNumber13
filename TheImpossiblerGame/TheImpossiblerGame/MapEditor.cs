@@ -13,7 +13,12 @@ namespace TheImpossiblerGame
     {
         //textures for the different objects
         protected Texture2D Boxtexture;
+        protected Texture2D SwitchTriangletexture;
+        protected Texture2D SwitchTriangleAlttexture;
+        protected Texture2D SwitchBlocktexture;
+        protected Texture2D WarningBlocktexture;
         protected Texture2D Triangletexture;
+        protected Texture2D Spiketexture;
         protected Texture2D Flip;
         protected Texture2D Player;
 
@@ -24,10 +29,27 @@ namespace TheImpossiblerGame
         public List<Rectangle> Squares;
         public List<Rectangle> NextSquares;
         public List<Rectangle> Triangles;
+        public List<Rectangle> NextTriangles;
+        public List<Rectangle> UpsideDownTriangles;
+        public List<Rectangle> NextUpsideDownTriangles;
+        public List<Rectangle> Spikes;
+        public List<Rectangle> NextSpikes;
+        public List<Rectangle> WarningBlock;
+        public List<Rectangle> NextWarningBlock;
+        public List<Rectangle> SwitchBlock;
+        public List<Rectangle> NextSwitchBlock;
+        public List<Rectangle> SwitchBlockAlt;
+        public List<Rectangle> NextSwitchBlockAlt;
+        public List<Rectangle> SwitchTriangle;
+        public List<Rectangle> NextSwitchTriangle;
+        public List<Rectangle> SwitchTriangleAlt;
+        public List<Rectangle> NextSwitchTriangleAlt;
 
         StreamReader reader; //used to open the file for reading
         protected List<string> DataPoints; //used to store the text in the textfile into a list 
         int number = 0; //used to load another text fuke
+        int scrollingCounter = 0;
+        bool Switch = false;
 
         //bool to handle loading files so they won't load forever
         bool canLoadinitial;
@@ -60,6 +82,21 @@ namespace TheImpossiblerGame
             Squares = new List<Rectangle>();
             NextSquares = new List<Rectangle>();
             Triangles = new List<Rectangle>();
+            NextTriangles = new List<Rectangle>();
+            UpsideDownTriangles = new List<Rectangle>();
+            NextUpsideDownTriangles = new List<Rectangle>();
+            Spikes = new List<Rectangle>();
+            NextSpikes = new List<Rectangle>();
+            WarningBlock = new List<Rectangle>();
+            NextWarningBlock = new List<Rectangle>();
+            SwitchBlock = new List<Rectangle>();
+            NextSwitchBlock = new List<Rectangle>();
+            SwitchBlockAlt = new List<Rectangle>();
+            NextSwitchBlockAlt = new List<Rectangle>();
+            SwitchTriangle = new List<Rectangle>();
+            NextSwitchTriangle = new List<Rectangle>();
+            SwitchTriangleAlt = new List<Rectangle>();
+            NextSwitchTriangleAlt = new List<Rectangle>();
             canLoadinitial = true;
             canLoadnext = true;
             ScrollingBlock = new Rectangle(0, 0, 45, 40);
@@ -131,6 +168,51 @@ namespace TheImpossiblerGame
             }
         }
 
+        public Texture2D SpikeTexture //property for player texture
+        {
+            get { return Spiketexture; }
+            set
+            {
+                Spiketexture = value;
+            }
+        }
+
+        public Texture2D WarningBlockTexture //property for player texture
+        {
+            get { return WarningBlocktexture; }
+            set
+            {
+                WarningBlocktexture = value;
+            }
+        }
+
+        public Texture2D SwitchBlockTexture //property for player texture
+        {
+            get { return SwitchBlocktexture; }
+            set
+            {
+                SwitchBlocktexture = value;
+            }
+        }
+
+        public Texture2D SwitchTriangleTexture //property for player texture
+        {
+            get { return SwitchTriangletexture; }
+            set
+            {
+                SwitchTriangletexture = value;
+            }
+        }
+
+        public Texture2D SwitchTriangleAltTexture //property for player texture
+        {
+            get { return SwitchTriangleAlttexture; }
+            set
+            {
+                SwitchTriangleAlttexture = value;
+            }
+        }
+
         public List<Rectangle> squares //property for list of platforms/squares
         {
             get { return Squares; }
@@ -149,6 +231,149 @@ namespace TheImpossiblerGame
             }
         }
 
+        public List<Rectangle> triangles
+        {
+            get { return Triangles; }
+            set
+            {
+                Triangles = value;
+            }
+        }
+
+        public List<Rectangle> Nexttriangles
+        {
+            get { return NextTriangles; }
+            set
+            {
+                NextTriangles = value;
+            }
+        }
+
+        public List<Rectangle> spikes
+        {
+            get { return Spikes; }
+            set
+            {
+                Spikes = value;
+            }
+        }
+
+        public List<Rectangle> Nextspikes
+        {
+            get { return NextSpikes; }
+            set
+            {
+                NextSpikes = value;
+            }
+        }
+
+        public List<Rectangle> UpsideDowntriangles
+        {
+            get { return UpsideDownTriangles; }
+            set
+            {
+                UpsideDownTriangles = value;
+            }
+        }
+
+        public List<Rectangle> NextUpsideDowntriangles
+        {
+            get { return NextUpsideDownTriangles; }
+            set
+            {
+                NextUpsideDownTriangles = value;
+            }
+        }
+
+        public List<Rectangle> Warningblock
+        {
+            get { return WarningBlock; }
+            set
+            {
+                WarningBlock = value;
+            }
+        }
+
+        public List<Rectangle> NextWarningblock
+        {
+            get { return NextWarningBlock; }
+            set
+            {
+                NextWarningBlock = value;
+            }
+        }
+
+        public List<Rectangle> Switchblock
+        {
+            get { return SwitchBlock; }
+            set
+            {
+                SwitchBlock = value;
+            }
+        }
+
+        public List<Rectangle> NextSwitchblock
+        {
+            get { return NextSwitchBlock; }
+            set
+            {
+                NextSwitchBlock = value;
+            }
+        }
+
+        public List<Rectangle> SwitchBlockalt
+        {
+            get { return SwitchBlockAlt; }
+            set
+            {
+                SwitchBlockAlt = value;
+            }
+        }
+
+        public List<Rectangle> NextSwitchBlockalt
+        {
+            get { return NextSwitchBlockAlt; }
+            set
+            {
+                NextSwitchBlockAlt = value;
+            }
+        }
+
+        public List<Rectangle> Switchtriangle
+        {
+            get { return SwitchTriangle; }
+            set
+            {
+                SwitchTriangle = value;
+            }
+        }
+
+        public List<Rectangle> NextSwitchtriangle
+        {
+            get { return NextSwitchTriangle; }
+            set
+            {
+                NextSwitchTriangle = value;
+            }
+        }
+
+        public List<Rectangle> SwitchTrianglealt
+        {
+            get { return SwitchTriangleAlt; }
+            set
+            {
+                SwitchTriangleAlt = value;
+            }
+        }
+
+        public List<Rectangle> NextSwitchTrianglealt
+        {
+            get { return NextSwitchTriangleAlt; }
+            set
+            {
+                NextSwitchTriangleAlt = value;
+            }
+        }
         public int ScrollingBlockX //property for scrolling indicator block
         {
             get { return ScrollingBlock.X; }
@@ -165,6 +390,20 @@ namespace TheImpossiblerGame
             {
                 number = value;
             }
+        }
+
+        public bool SWITCH
+        {
+            get { return Switch; }
+            set
+            {
+                Switch = value;
+            }
+        }
+
+        public int ScrollingCounter
+        {
+            get { return scrollingCounter; }
         }
 
 
@@ -231,6 +470,20 @@ namespace TheImpossiblerGame
             canLoadnext = false;
         }
 
+        public int ResetFiles()
+        {
+            if (scrollingCounter > 2)
+            {
+                scrollingCounter = 0;
+            }
+            if (number > 5)
+            {
+                number = 0;
+                scrollingCounter++;
+            }
+            return scrollingCounter;
+        }
+
         public void GeneratePlatformsOnScreen() //handles platform generation for the first text file
         {
             for (int i = 0; i < DataPoints.Count; i++) //loop to go through each tile on the screen
@@ -279,6 +532,48 @@ namespace TheImpossiblerGame
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
                     allPlatforms.Add(Platforms);
                     Triangles.Add(Platforms);
+                }
+                else if (DataPoints[i] == "3") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    UpsideDowntriangles.Add(Platforms);
+                }
+                else if (DataPoints[i] == "4") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    Spikes.Add(Platforms);
+                }
+                else if (DataPoints[i] == "5") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    WarningBlock.Add(Platforms);
+                }
+                else if (DataPoints[i] == "6") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    SwitchBlock.Add(Platforms);
+                }
+                else if (DataPoints[i] == "7") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    SwitchBlockAlt.Add(Platforms);
+                }
+                else if (DataPoints[i] == "8") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    SwitchTriangle.Add(Platforms);
+                }
+                else if (DataPoints[i] == "9") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    SwitchTriangleAlt.Add(Platforms);
                 }
             }
             DataPoints.Clear(); //clears the information read in the file to open space to write new information for another file
@@ -334,10 +629,53 @@ namespace TheImpossiblerGame
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
                     allPlatforms.Add(Platforms);
-                    Triangles.Add(Platforms);
+                    NextTriangles.Add(Platforms);
+                }
+                else if (DataPoints[i] == "3") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    NextUpsideDownTriangles.Add(Platforms);
+                }
+                else if (DataPoints[i] == "4") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    NextSpikes.Add(Platforms);
+                }
+                else if (DataPoints[i] == "5") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    NextWarningBlock.Add(Platforms);
+                }
+                else if (DataPoints[i] == "6") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    NextSwitchBlock.Add(Platforms);
+                }
+                else if (DataPoints[i] == "7") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    NextSwitchBlockAlt.Add(Platforms);
+                }
+                else if (DataPoints[i] == "8") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    NextSwitchTriangle.Add(Platforms);
+                }
+                else if (DataPoints[i] == "9") //if a 2 is found then load a triangle
+                {
+                    Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+                    allPlatforms.Add(Platforms);
+                    NextSwitchTriangleAlt.Add(Platforms);
                 }
             }
             DataPoints.Clear(); //clear the data stored from the file after the platforms are generated to open space for a new file to be read
+            canLoadnext = true; //set this value to true so we can load 2 files at once at the beginning
         }
 
 
@@ -357,6 +695,73 @@ namespace TheImpossiblerGame
             {
                 spriteBatch.Draw(Triangletexture, Triangles[i], Color.White);
             }
+            for (int i = 0; i < NextTriangles.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(Triangletexture, NextTriangles[i], Color.White);
+            }
+            for (int i = 0; i < Spikes.Count; i++) //draws triangles
+            {
+                spriteBatch.Draw(Spiketexture, Spikes[i], Color.White);
+            }
+            for (int i = 0; i < Nextspikes.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(Spiketexture, NextSpikes[i], Color.White);
+            }
+            for (int i = 0; i < UpsideDownTriangles.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(Flip, UpsideDownTriangles[i], Color.White);
+            }
+            for (int i = 0; i < NextUpsideDownTriangles.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(Flip, NextUpsideDownTriangles[i], Color.White);
+            }
+            for (int i = 0; i < WarningBlock.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(WarningBlocktexture, WarningBlock[i], Color.White);
+            }
+            for (int i = 0; i < NextWarningBlock.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(WarningBlocktexture, NextWarningBlock[i], Color.White);
+            }
+            for (int i = 0; i < SwitchBlock.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(SwitchBlocktexture, SwitchBlock[i], Color.White);
+            }
+            for (int i = 0; i < NextSwitchBlock.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(SwitchBlocktexture, NextSwitchBlock[i], Color.White);
+            }
+            for (int i = 0; i < SwitchBlockAlt.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(SwitchBlocktexture, SwitchBlockAlt[i], Color.White);
+            }
+            for (int i = 0; i < NextSwitchBlockAlt.Count; i++) //draws triangles off screen
+            {
+                spriteBatch.Draw(SwitchBlocktexture, NextSwitchBlockAlt[i], Color.White);
+            }
+            if (Switch == true)
+            {
+                for (int i = 0; i < SwitchTriangle.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(Triangletexture, SwitchTriangle[i], Color.White);
+                }
+                for (int i = 0; i < NextSwitchTriangle.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(Triangletexture, NextSwitchTriangle[i], Color.White);
+                }
+            }
+            else if (Switch == false)
+            {
+                for (int i = 0; i < SwitchTriangleAlt.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(Flip, SwitchTriangleAlt[i], Color.White);
+                }
+                for (int i = 0; i < NextSwitchTriangleAlt.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(Flip, NextSwitchTriangleAlt[i], Color.White);
+                }
+            }
         }
     }
 }
+

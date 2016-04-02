@@ -31,6 +31,9 @@ namespace TheImpossiblerGame
         //variable for gravity
         int g;
 
+        //variable for speed of movement/scrolling
+        int speed = 8;
+
         //score counter variables - Brandon Rodriguez, Parker Wilson
         SpriteFont font;
         double score = 0;
@@ -131,6 +134,11 @@ namespace TheImpossiblerGame
             mapEditor.BoxTexture = box;
             mapEditor.flip = flip;
             mapEditor.TriangleTexture = triangle;
+            mapEditor.SpikeTexture = spikeLight;
+            mapEditor.WarningBlockTexture = sqWarn;
+            mapEditor.SwitchBlockTexture = sqSwitchOn;
+            mapEditor.SwitchTriangleTexture = triSwitch;
+            mapEditor.SwitchTriangleAltTexture = triSwitch;
         }
 
         /// <summary>
@@ -180,6 +188,7 @@ namespace TheImpossiblerGame
                     kstate = Keyboard.GetState();
                     break;
                 case GameState.game:
+                    mapEditor.ResetFiles();
                     if (mapEditor.CanLoadInitial == true) //used to load the initial platforms when the game is started
                     {
                         mapEditor.LoadTextFile(); //calls method to find the file
@@ -339,12 +348,12 @@ namespace TheImpossiblerGame
         {
             if (grav == 1) //if gravity is pushing down
             {
-                p1.SetY(p1.y + 5); //makes player always fall down
+                p1.SetY(p1.y + speed); //makes player always fall down
 
                 //for loops calculate collision for the platforms on and off screen
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
-                    if (p1.Collision(new Rectangle(p1.x, p1.y + 5, p1.w, p1.h), mapEditor.squares[i]) == true)
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.squares[i]) == true)
                     {
                         p1.SetY(mapEditor.squares[i].Y - mapEditor.tileHeight);
                         break;
@@ -352,24 +361,60 @@ namespace TheImpossiblerGame
                 }
                 for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
                 {
-                    if (p1.Collision(new Rectangle(p1.x, p1.y - 5, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
                     {
                         p1.SetY(mapEditor.Nextsquares[i].Y - mapEditor.tileHeight);
                         break;
                     }
                 }
+                for (int i = 0; i < mapEditor.Switchblock.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Switchblock[i]) == true)
+                    {
+                        mapEditor.SWITCH = true;
+                        p1.SetY(mapEditor.Switchblock[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextSwitchblock.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextSwitchblock[i]) == true)
+                    {
+                        mapEditor.SWITCH = true;
+                        p1.SetY(mapEditor.NextSwitchblock[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.SwitchBlockalt.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.SwitchBlockalt[i]) == true)
+                    {
+                        mapEditor.SWITCH = false;
+                        p1.SetY(mapEditor.SwitchBlockalt[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextSwitchBlockalt.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextSwitchBlockalt[i]) == true)
+                    {
+                        mapEditor.SWITCH = false;
+                        p1.SetY(mapEditor.NextSwitchBlockalt[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+
                 //p1.SetY(p1.y + 5);
             }
 
             if (grav == -1) //if gravity is reversed
             {
-
-                p1.SetY(p1.y - 5); //makes player fall up
+                p1.SetY(p1.y - speed); //makes player fall up
 
                 //for loops calculate collision for the platforms on and off screen
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
-                    if (p1.Collision(new Rectangle(p1.x, p1.y - 5, p1.w, p1.h), mapEditor.squares[i]) == true)
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.squares[i]) == true)
                     {
                         p1.SetY(mapEditor.squares[i].Y + mapEditor.tileHeight);
                         break;
@@ -377,12 +422,49 @@ namespace TheImpossiblerGame
                 }
                 for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
                 {
-                    if (p1.Collision(new Rectangle(p1.x, p1.y - 5, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
                     {
                         p1.SetY(mapEditor.Nextsquares[i].Y + mapEditor.tileHeight);
                         break;
                     }
                 }
+                for (int i = 0; i < mapEditor.Switchblock.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Switchblock[i]) == true)
+                    {
+                        mapEditor.SWITCH = true;
+                        p1.SetY(mapEditor.Switchblock[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextSwitchblock.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextSwitchblock[i]) == true)
+                    {
+                        mapEditor.SWITCH = true;
+                        p1.SetY(mapEditor.NextSwitchblock[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.SwitchBlockalt.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.SwitchBlockalt[i]) == true)
+                    {
+                        mapEditor.SWITCH = false;
+                        p1.SetY(mapEditor.SwitchBlockalt[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextSwitchBlockalt.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextSwitchBlockalt[i]) == true)
+                    {
+                        mapEditor.SWITCH = false;
+                        p1.SetY(mapEditor.NextSwitchBlockalt[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+
                 //p1.SetY(p1.y - 5);
             }
         }
@@ -421,16 +503,64 @@ namespace TheImpossiblerGame
                 mapEditor.ScrollingBlockX = 0; //resets value
                 mapEditor.CanLoadNext = true; //prepare to load in the next file
                 mapEditor.squares.Clear(); //clear the list of platforms that are off screen to the left
+                mapEditor.triangles.Clear();
+                mapEditor.UpsideDowntriangles.Clear();
+                mapEditor.spikes.Clear();
+                mapEditor.Switchblock.Clear();
+                mapEditor.SwitchBlockalt.Clear();
+                mapEditor.Switchtriangle.Clear();
+                mapEditor.SwitchTrianglealt.Clear();
+                mapEditor.Warningblock.Clear();
                 for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
                 {
                     mapEditor.squares.Add(mapEditor.Nextsquares[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
                 }
+                for (int i = 0; i < mapEditor.Nexttriangles.Count; i++)
+                {
+                    mapEditor.triangles.Add(mapEditor.Nexttriangles[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.NextUpsideDowntriangles.Count; i++)
+                {
+                    mapEditor.UpsideDowntriangles.Add(mapEditor.NextUpsideDowntriangles[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.Nextspikes.Count; i++)
+                {
+                    mapEditor.spikes.Add(mapEditor.Nextspikes[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.NextSwitchblock.Count; i++)
+                {
+                    mapEditor.Switchblock.Add(mapEditor.NextSwitchblock[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.NextSwitchBlockalt.Count; i++)
+                {
+                    mapEditor.SwitchBlockalt.Add(mapEditor.NextSwitchBlockalt[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.NextSwitchtriangle.Count; i++)
+                {
+                    mapEditor.Switchtriangle.Add(mapEditor.NextSwitchtriangle[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.NextSwitchTrianglealt.Count; i++)
+                {
+                    mapEditor.SwitchTrianglealt.Add(mapEditor.NextSwitchTrianglealt[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.NextWarningblock.Count; i++)
+                {
+                    mapEditor.Warningblock.Add(mapEditor.NextWarningblock[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
                 mapEditor.Nextsquares.Clear(); //clears the list that the platforms were moved from to create space for the next text file to add to this list
+                mapEditor.Nexttriangles.Clear();
+                mapEditor.NextUpsideDowntriangles.Clear();
+                mapEditor.Nextspikes.Clear();
+                mapEditor.NextSwitchblock.Clear();
+                mapEditor.NextSwitchtriangle.Clear();
+                mapEditor.NextSwitchTrianglealt.Clear();
+                mapEditor.NextWarningblock.Clear();
+                mapEditor.NextSwitchBlockalt.Clear();
 
             }
             else //CODE BELOW ACTUALLY SCROLLS THE PLATFORMS
             {
-                mapEditor.ScrollingBlockX -= 5; //scrolls by a factor of 5
+                mapEditor.ScrollingBlockX -= speed; //scrolls by a factor of the speed
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
                     //IMPORTANT: Code below creates a new rectangle that is the same value
@@ -439,7 +569,7 @@ namespace TheImpossiblerGame
                     // You have to make a new rectangle that has the same values, change the 
                     // value of the rectangle made, and put that rectangle in the list at the correspoing spot
                     Rectangle same = mapEditor.squares[i];
-                    same.X -= 5;
+                    same.X -= speed;
                     mapEditor.squares[i] = same;
                 }
                 for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
@@ -451,8 +581,192 @@ namespace TheImpossiblerGame
                     // value of the rectangle made, and put that rectangle in the list at the correspoing spot
 
                     Rectangle same = mapEditor.Nextsquares[i];
-                    same.X -= 5;
+                    same.X -= speed;
                     mapEditor.Nextsquares[i] = same;
+                }
+                for (int i = 0; i < mapEditor.triangles.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.triangles[i];
+                    same.X -= speed;
+                    mapEditor.triangles[i] = same;
+                }
+                for (int i = 0; i < mapEditor.Nexttriangles.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.Nexttriangles[i];
+                    same.X -= speed;
+                    mapEditor.Nexttriangles[i] = same;
+                }
+                for (int i = 0; i < mapEditor.spikes.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.spikes[i];
+                    same.X -= speed;
+                    mapEditor.spikes[i] = same;
+                }
+                for (int i = 0; i < mapEditor.Nextspikes.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.Nextspikes[i];
+                    same.X -= speed;
+                    mapEditor.Nextspikes[i] = same;
+                }
+                for (int i = 0; i < mapEditor.UpsideDowntriangles.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.UpsideDowntriangles[i];
+                    same.X -= speed;
+                    mapEditor.UpsideDowntriangles[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextUpsideDowntriangles.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.NextUpsideDowntriangles[i];
+                    same.X -= speed;
+                    mapEditor.NextUpsideDowntriangles[i] = same;
+                }
+                for (int i = 0; i < mapEditor.Warningblock.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.Warningblock[i];
+                    same.X -= speed;
+                    mapEditor.Warningblock[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextWarningblock.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.NextWarningblock[i];
+                    same.X -= speed;
+                    mapEditor.NextWarningblock[i] = same;
+                }
+                for (int i = 0; i < mapEditor.Switchblock.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.Switchblock[i];
+                    same.X -= speed;
+                    mapEditor.Switchblock[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextSwitchblock.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.NextSwitchblock[i];
+                    same.X -= speed;
+                    mapEditor.NextSwitchblock[i] = same;
+                }
+                for (int i = 0; i < mapEditor.SwitchBlockalt.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.SwitchBlockalt[i];
+                    same.X -= speed;
+                    mapEditor.SwitchBlockalt[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextSwitchBlockalt.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.NextSwitchBlockalt[i];
+                    same.X -= speed;
+                    mapEditor.NextSwitchBlockalt[i] = same;
+                }
+                for (int i = 0; i < mapEditor.Switchtriangle.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.Switchtriangle[i];
+                    same.X -= speed;
+                    mapEditor.Switchtriangle[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextSwitchtriangle.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.NextSwitchtriangle[i];
+                    same.X -= speed;
+                    mapEditor.NextSwitchtriangle[i] = same;
+                }
+                for (int i = 0; i < mapEditor.SwitchTrianglealt.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+                    Rectangle same = mapEditor.SwitchTrianglealt[i];
+                    same.X -= speed;
+                    mapEditor.SwitchTrianglealt[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextSwitchTrianglealt.Count; i++)
+                {
+                    //IMPORTANT: Code below creates a new rectangle that is the same value
+                    // as the rectangle in the list so that we can alter the x or y values.
+                    // You cannot say mapEditor.squares[i].X -= 5;, because this is invalid.
+                    // You have to make a new rectangle that has the same values, change the 
+                    // value of the rectangle made, and put that rectangle in the list at the correspoing spot
+
+                    Rectangle same = mapEditor.NextSwitchTrianglealt[i];
+                    same.X -= speed;
+                    mapEditor.NextSwitchTrianglealt[i] = same;
                 }
             }
         }
