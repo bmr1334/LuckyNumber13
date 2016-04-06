@@ -623,7 +623,7 @@ namespace TheImpossiblerGame
 
         public int ResetFiles()
         {
-            if (backgroundCounter > 3)
+            if (backgroundCounter > 3) //has to be one less than the number of backgrounds
             {
                 backgroundCounter = 0;
             }
@@ -637,7 +637,6 @@ namespace TheImpossiblerGame
             }
             if (number > 5) //has to be one less than the number of levels
             {
-                backgroundCounter = 0;
                 number = 0;
                 scrollingCounter++;
                 textureCounter++;

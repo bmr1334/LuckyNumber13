@@ -48,6 +48,8 @@ namespace TheImpossiblerGame
             labBg1, labBg2, labBg3, labBg4,  //backgrounds
             menuText; //menu texture for return to main menu
 
+        List<Texture2D> backgrounds;
+
         //rectangle variables
         Rectangle playRect, resumeRect, exitRect, menuRect, bg, bg2, bg3;
 
@@ -81,10 +83,11 @@ namespace TheImpossiblerGame
             ChangeWindowsSize(); //changes the window size when game initially runs
             mapEditor.SetDimensions();
             p1 = new Player(200, 800, mapEditor.tileWidth, mapEditor.tileHeight);
+            backgrounds = new List<Texture2D>();
             this.IsMouseVisible = true;
-            bg = new Rectangle(0, 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
-            bg2 = new Rectangle(bg.X + mapEditor.ScreenWidth, 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
-            bg3 = new Rectangle(bg.X + (mapEditor.ScreenWidth * 2), 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
+            //bg = new Rectangle(0, 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
+            //bg2 = new Rectangle(bg.X + mapEditor.ScreenWidth, 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
+            //bg3 = new Rectangle(bg.X + (mapEditor.ScreenWidth * 2), 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
             //bg = new Rectangle(0, 0, 1920, 1080);
             //bg2 = new Rectangle(bg.X + 1920, 0, 1920, 1080);
             //bg3 = new Rectangle(bg.X + (1920 * 2), 0, 1920, 1080);
@@ -165,6 +168,12 @@ namespace TheImpossiblerGame
             mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
             mapEditor.BackgroundTexture = labBg1;
             mapEditor.NextBackgroundTexture = labBg2;
+
+            //add backgrounds to list for switching between them
+            backgrounds.Add(labBg1);
+            backgrounds.Add(labBg2);
+            backgrounds.Add(labBg3);
+            backgrounds.Add(labBg4);
         }
 
         /// <summary>
@@ -222,6 +231,7 @@ namespace TheImpossiblerGame
                     }
                     if (mapEditor.CanLoadNextBackground == true)
                     {
+                        ChangeBackgroundTexture();
                         mapEditor.GenerateBackgroundsOffScreen();
                     }
                     if (mapEditor.CanLoadInitial == true) //used to load the initial platforms when the game is started
@@ -512,7 +522,13 @@ namespace TheImpossiblerGame
 
         public void ChangeBackgroundTexture()
         {
-
+            for (int i = 0; i < backgrounds.Count; i++)
+            {
+                if (i == mapEditor.BackgroundCounter)
+                {
+                    mapEditor.NextBackgroundTexture = backgrounds[i];
+                }
+            }
         }
 
         public void Fall(int grav) // method to iniatiate the player falling based on the gravity
@@ -664,7 +680,7 @@ namespace TheImpossiblerGame
             {
                 mapEditor.CanLoadNextBackground = false;
             }
-            if (mapEditor.ScrollingBackgroundX <= -mapEditor.ScreenWidth)
+            if (mapEditor.ScrollingBackgroundX <= -mapEditor.ScreenWidth + 8)
             {
                 if (mapEditor.BackgroundTexture != mapEditor.NextBackgroundTexture)
                 {
