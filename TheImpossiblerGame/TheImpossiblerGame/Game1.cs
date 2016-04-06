@@ -43,10 +43,11 @@ namespace TheImpossiblerGame
             spikeDark, spikeLight, sqCity1, sqCity2, sqLab1, sqLab2, //objects
             sqSub1, sqSub2, sqSwitchOff, sqSwitchOn, sqWarn, triCity1, //objects
             triCity2, triLab1, triLab2, triSub1, triSub2, triSwitch, //objects
+            labBg1, labBg2, labBg3, labBg4,  //backgrounds
             menuText; //menu texture for return to main menu
 
         //rectangle variables
-        Rectangle playRect, resumeRect, exitRect, menuRect;
+        Rectangle playRect, resumeRect, exitRect, menuRect, bg, bg2, bg3;
 
         //enum to switch game states  - Brandon Rodriguez, Parker Wilson
         enum GameState { titleMenu, mainMenu, pauseMenu, game, gameOver, credits };
@@ -77,8 +78,11 @@ namespace TheImpossiblerGame
             mapEditor = new MapEditor(); //creates a map editor object
             ChangeWindowsSize(); //changes the window size when game initially runs
             mapEditor.SetDimensions();
-            p1 = new Player(0, 600, mapEditor.tileWidth, mapEditor.tileHeight);
+            p1 = new Player(200, 800, mapEditor.tileWidth, mapEditor.tileHeight);
             this.IsMouseVisible = true;
+            bg = new Rectangle(0, 0, 1920, 1080);
+            bg2 = new Rectangle(bg.X + 1920, 0, 1920, 1080);
+            bg3 = new Rectangle(bg.X + (1920 * 2), 0, 1920, 1080);
             base.Initialize();
         }
 
@@ -129,6 +133,12 @@ namespace TheImpossiblerGame
             triSub2 = Content.Load<Texture2D>("Game Textures\\TriangleSubway2");
             triSwitch = Content.Load<Texture2D>("Game Textures\\TriangleSwitch");
 
+            //Background loads
+            labBg1 = Content.Load<Texture2D>("Game Textures\\labBg1");
+            labBg2 = Content.Load<Texture2D>("Game Textures\\labBg2");
+            labBg3 = Content.Load<Texture2D>("Game Textures\\labBg3");
+            labBg4 = Content.Load<Texture2D>("Game Textures\\labBg4");
+
             //sets the textures to their respective values
             mapEditor.player = player;
             mapEditor.BoxTexture = box;
@@ -174,6 +184,7 @@ namespace TheImpossiblerGame
                     if (mstate.LeftButton == ButtonState.Pressed && mstate.X > playRect.X && mstate.X < playRect.X + 500 && //width
                         mstate.Y > playRect.Y && mstate.Y < playRect.Y + 100) //height
                     {
+                        score = 0;
                         gamestate = GameState.game;
                     }
 
@@ -204,7 +215,7 @@ namespace TheImpossiblerGame
                     kstate = Keyboard.GetState();
                     if (kstate.IsKeyDown(Keys.Space) && !prevKstate.IsKeyDown(Keys.Space)) flipGrav();
                     Fall(g);
-                    p1.Move(kstate, mapEditor);
+                    //p1.Move(kstate, mapEditor);
                     Scrolling(); //calls scrolling method to have infinite scrolling
 
                     //score increases here
@@ -212,9 +223,30 @@ namespace TheImpossiblerGame
 
                     //pause if escape is pressed
                     if (kstate.IsKeyDown(Keys.Escape) && prevKstate.IsKeyUp(Keys.Escape)) gamestate = GameState.pauseMenu;
+
+                    //game over if player x position decreses, ie collides with something
+                    if (p1.x < 200) gamestate = GameState.gameOver;
+
                     break;
                 case GameState.gameOver:
                     kstate = Keyboard.GetState();
+
+                    //if return to menu is clicked
+                    mstate = Mouse.GetState();
+                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
+                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100) //height
+                    {
+                        gamestate = GameState.mainMenu;
+                        System.Threading.Thread.Sleep(200);
+                    }
+
+                    //if exit game is clicked
+                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100) //height
+                    {
+                        Exit();
+                    }
+
                     break;
                 case GameState.pauseMenu:
                     kstate = Keyboard.GetState();
@@ -264,6 +296,13 @@ namespace TheImpossiblerGame
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied); //need overrides for transparency to work properly
+
+            //Backgrounds drawn here
+            spriteBatch.Draw(labBg1, bg, Color.White);
+            //spriteBatch.Draw(labBg1, bg, bg, Color.White, 0, new Vector2(0.0f, 0.0f), SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(labBg2, bg2, Color.White);
+            spriteBatch.Draw(labBg3, bg3, Color.White);
+
             mapEditor.Draw(spriteBatch); //draws the objects in the text file
             // Box.Draw(spriteBatch);
             //Triangle.Draw(spriteBatch);
@@ -497,7 +536,7 @@ namespace TheImpossiblerGame
             //    mapEditor.Nextsquares.Clear();
             //    counter = 0;
             //}
-            if (mapEditor.ScrollingBlockX <= -mapEditor.ScreenWidth + 8) //if our scrolling indicator has reached a screen's width then erase the platforms that are off screen to the left
+            if (mapEditor.ScrollingBlockX <= -mapEditor.ScreenWidth) //if our scrolling indicator has reached a screen's width then erase the platforms that are off screen to the left
             {
                 //counter++;
                 mapEditor.ScrollingBlockX = 0; //resets value
@@ -560,6 +599,11 @@ namespace TheImpossiblerGame
             }
             else //CODE BELOW ACTUALLY SCROLLS THE PLATFORMS
             {
+                //Background rectangle scrolling
+                bg.X -= speed - 3;
+                bg2.X -= speed - 3;
+                bg3.X -= speed - 3;
+
                 mapEditor.ScrollingBlockX -= speed; //scrolls by a factor of the speed
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
