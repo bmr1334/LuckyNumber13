@@ -12,6 +12,8 @@ namespace TheImpossiblerGame
     class MapEditor
     {
         //textures for the different objects
+        protected Texture2D Backgroundtexture;
+        protected Texture2D NextBackgroundtexture;
         protected Texture2D Boxtexture;
         protected Texture2D SwitchTriangletexture;
         protected Texture2D SwitchTriangleAlttexture;
@@ -20,7 +22,20 @@ namespace TheImpossiblerGame
         protected Texture2D Triangletexture;
         protected Texture2D Spiketexture;
         protected Texture2D Flip;
+        protected Texture2D NextBoxtexture;
+        protected Texture2D NextSwitchTriangletexture;
+        protected Texture2D NextSwitchTriangleAlttexture;
+        protected Texture2D NextSwitchBlocktexture;
+        protected Texture2D NextTriangletexture;
+        protected Texture2D NextSpiketexture;
+        protected Texture2D NextFlip;
         protected Texture2D Player;
+
+        //Rectangles for backgrounds
+        public List<Rectangle> BackgroundList;
+        public List<Rectangle> NextBackgroundList;
+        protected Rectangle Background;
+        public Rectangle ScrollingBackground;
 
         //Rectangles for collision
         protected Rectangle Platforms;
@@ -47,13 +62,18 @@ namespace TheImpossiblerGame
 
         StreamReader reader; //used to open the file for reading
         protected List<string> DataPoints; //used to store the text in the textfile into a list 
-        int number = 0; //used to load another text fuke
+        int number = 0; //used to load another text file
         int scrollingCounter = 0;
+        int textureCounter = 0;
+        int backgroundCounter = 0;
         bool Switch = false;
 
         //bool to handle loading files so they won't load forever
         bool canLoadinitial;
         bool canLoadnext;
+
+        bool canLoadinitialBackground;
+        bool canLoadnextBackground;
 
         //used to get the filename and store the text in a string to add it to the list
         string ReadFile;
@@ -78,6 +98,8 @@ namespace TheImpossiblerGame
         public MapEditor()
         {
             //creates the rectangle lists to populate and established initial values
+            BackgroundList = new List<Rectangle>();
+            NextBackgroundList = new List<Rectangle>();
             allPlatforms = new List<Rectangle>();
             Squares = new List<Rectangle>();
             NextSquares = new List<Rectangle>();
@@ -99,7 +121,10 @@ namespace TheImpossiblerGame
             NextSwitchTriangleAlt = new List<Rectangle>();
             canLoadinitial = true;
             canLoadnext = true;
+            canLoadinitialBackground = true;
+            canLoadnextBackground = true;
             ScrollingBlock = new Rectangle(0, 0, 45, 40);
+            ScrollingBackground = new Rectangle(0, 0, 45, 40);
         }
 
 
@@ -150,12 +175,30 @@ namespace TheImpossiblerGame
             }
         }
 
+        public Texture2D NextBoxTexture //property for box texture
+        {
+            get { return NextBoxtexture; }
+            set
+            {
+                NextBoxtexture = value;
+            }
+        }
+
         public Texture2D TriangleTexture //property for triangle texture
         {
             get { return Triangletexture; }
             set
             {
                 Triangletexture = value;
+            }
+        }
+
+        public Texture2D NextTriangleTexture //property for triangle texture
+        {
+            get { return NextTriangletexture; }
+            set
+            {
+                NextTriangletexture = value;
             }
         }
 
@@ -168,12 +211,30 @@ namespace TheImpossiblerGame
             }
         }
 
+        public Texture2D Nextflip //property for flipped triangles (upside down)
+        {
+            get { return NextFlip; }
+            set
+            {
+                NextFlip = value;
+            }
+        }
+
         public Texture2D SpikeTexture //property for player texture
         {
             get { return Spiketexture; }
             set
             {
                 Spiketexture = value;
+            }
+        }
+
+        public Texture2D NextSpikeTexture //property for player texture
+        {
+            get { return NextSpiketexture; }
+            set
+            {
+                NextSpiketexture = value;
             }
         }
 
@@ -204,12 +265,66 @@ namespace TheImpossiblerGame
             }
         }
 
+        public Texture2D NextSwitchTriangleTexture //property for player texture
+        {
+            get { return NextSwitchTriangletexture; }
+            set
+            {
+                NextSwitchTriangletexture = value;
+            }
+        }
+
         public Texture2D SwitchTriangleAltTexture //property for player texture
         {
             get { return SwitchTriangleAlttexture; }
             set
             {
                 SwitchTriangleAlttexture = value;
+            }
+        }
+
+        public Texture2D NextSwitchTriangleAltTexture //property for player texture
+        {
+            get { return NextSwitchTriangleAlttexture; }
+            set
+            {
+                NextSwitchTriangleAlttexture = value;
+            }
+        }
+
+        public Texture2D BackgroundTexture //property for player texture
+        {
+            get { return Backgroundtexture; }
+            set
+            {
+                Backgroundtexture = value;
+            }
+        }
+
+        public Texture2D NextBackgroundTexture //property for player texture
+        {
+            get { return NextBackgroundtexture; }
+            set
+            {
+                NextBackgroundtexture = value;
+            }
+        }
+
+        public List<Rectangle> Backgroundlist //property for list of platforms/squares
+        {
+            get { return BackgroundList; }
+            set
+            {
+                BackgroundList = value;
+            }
+        }
+
+        public List<Rectangle> NextBackgroundlist //property for list of platforms/squares
+        {
+            get { return NextBackgroundList; }
+            set
+            {
+                NextBackgroundList = value;
             }
         }
 
@@ -383,6 +498,15 @@ namespace TheImpossiblerGame
             }
         }
 
+        public int ScrollingBackgroundX //property for scrolling indicator block
+        {
+            get { return ScrollingBackground.X; }
+            set
+            {
+                ScrollingBackground.X = value;
+            }
+        }
+
         public int Number //property for textfile extension incrementer
         {
             get { return number; }
@@ -406,6 +530,15 @@ namespace TheImpossiblerGame
             get { return scrollingCounter; }
         }
 
+        public int TextureCounter
+        {
+            get { return textureCounter; }
+        }
+
+        public int BackgroundCounter
+        {
+            get { return backgroundCounter; }
+        }
 
 
         public void SetDimensions() //method to set the tiles according to the screen dimensions
@@ -432,6 +565,24 @@ namespace TheImpossiblerGame
             }
         }
 
+        public bool CanLoadInitialBackground //property to change value of loading the initial file
+        {
+            get { return canLoadinitialBackground; }
+            set
+            {
+                canLoadinitialBackground = value;
+            }
+        }
+
+        public bool CanLoadNextBackground //property to change the value for loading the next file offscreen
+        {
+            get { return canLoadnextBackground; }
+            set
+            {
+                canLoadnextBackground = value;
+            }
+        }
+
         public void LoadTextFile() //method to find the text file
         {
             //TextPath = null; IMPORTANT: without this, the textpath will always contain the name of the last file read, which will infinitely loop the last file
@@ -443,7 +594,7 @@ namespace TheImpossiblerGame
             string[] files = Directory.GetFiles(".");
             foreach (string s in files) //foreach loop to search for the specified file
             {
-                if (s.Contains("Test" + number.ToString() + ".txt"))
+                if (s.Contains("Level" + number.ToString() + ".txt"))
                 {
                     TextPath = s; //set the textpath to the file found
                 }
@@ -472,14 +623,24 @@ namespace TheImpossiblerGame
 
         public int ResetFiles()
         {
+            if (backgroundCounter > 3)
+            {
+                backgroundCounter = 0;
+            }
+            if (textureCounter > 5)
+            {
+                textureCounter = 0;
+            }
             if (scrollingCounter > 2)
             {
                 scrollingCounter = 0;
             }
-            if (number > 5)
+            if (number > 5) //has to be one less than the number of levels
             {
+                backgroundCounter = 0;
                 number = 0;
                 scrollingCounter++;
+                textureCounter++;
             }
             return scrollingCounter;
         }
@@ -678,18 +839,42 @@ namespace TheImpossiblerGame
             canLoadnext = true; //set this value to true so we can load 2 files at once at the beginning
         }
 
+        public void GenerateBackgroundsOnScreen()
+        {
+            Background = new Rectangle(0, 0, screenWidth, screenHeight);
+            BackgroundList.Add(Background);
+            canLoadinitialBackground = false;
+            canLoadnextBackground = true;
+        }
+
+        public void GenerateBackgroundsOffScreen()
+        {
+            backgroundCounter++;
+            Background = new Rectangle(screenWidth, 0, screenWidth, screenHeight);
+            NextBackgroundList.Add(Background);
+            canLoadnextBackground = true;
+        }
+
 
 
 
         public virtual void Draw(SpriteBatch spriteBatch) //method to draw platforms/objects
         {
+            for (int i = 0; i < BackgroundList.Count; i++)
+            {
+                spriteBatch.Draw(Backgroundtexture, BackgroundList[i], Color.White);
+            }
+            for (int i = 0; i < NextBackgroundList.Count; i++)
+            {
+                spriteBatch.Draw(NextBackgroundtexture, NextBackgroundList[i], Color.White);
+            }
             for (int i = 0; i < Squares.Count; i++) //draws platforms currently visible
             {
                 spriteBatch.Draw(Boxtexture, Squares[i], Color.White);
             }
             for (int i = 0; i < NextSquares.Count; i++) //draws platforms off screen
             {
-                spriteBatch.Draw(Boxtexture, NextSquares[i], Color.White);
+                spriteBatch.Draw(NextBoxtexture, NextSquares[i], Color.White);
             }
             for (int i = 0; i < Triangles.Count; i++) //draws triangles
             {
@@ -697,7 +882,7 @@ namespace TheImpossiblerGame
             }
             for (int i = 0; i < NextTriangles.Count; i++) //draws triangles off screen
             {
-                spriteBatch.Draw(Triangletexture, NextTriangles[i], Color.White);
+                spriteBatch.Draw(NextTriangletexture, NextTriangles[i], Color.White);
             }
             for (int i = 0; i < Spikes.Count; i++) //draws triangles
             {
@@ -705,7 +890,7 @@ namespace TheImpossiblerGame
             }
             for (int i = 0; i < Nextspikes.Count; i++) //draws triangles off screen
             {
-                spriteBatch.Draw(Spiketexture, NextSpikes[i], Color.White);
+                spriteBatch.Draw(NextSpiketexture, NextSpikes[i], Color.White);
             }
             for (int i = 0; i < UpsideDownTriangles.Count; i++) //draws triangles off screen
             {
@@ -713,52 +898,135 @@ namespace TheImpossiblerGame
             }
             for (int i = 0; i < NextUpsideDownTriangles.Count; i++) //draws triangles off screen
             {
-                spriteBatch.Draw(Flip, NextUpsideDownTriangles[i], Color.White);
+                spriteBatch.Draw(NextFlip, NextUpsideDownTriangles[i], Color.White);
             }
-            for (int i = 0; i < WarningBlock.Count; i++) //draws triangles off screen
+            if (textureCounter > 1 && textureCounter <= 3)
             {
-                spriteBatch.Draw(WarningBlocktexture, WarningBlock[i], Color.White);
-            }
-            for (int i = 0; i < NextWarningBlock.Count; i++) //draws triangles off screen
-            {
-                spriteBatch.Draw(WarningBlocktexture, NextWarningBlock[i], Color.White);
-            }
-            for (int i = 0; i < SwitchBlock.Count; i++) //draws triangles off screen
-            {
-                spriteBatch.Draw(SwitchBlocktexture, SwitchBlock[i], Color.White);
-            }
-            for (int i = 0; i < NextSwitchBlock.Count; i++) //draws triangles off screen
-            {
-                spriteBatch.Draw(SwitchBlocktexture, NextSwitchBlock[i], Color.White);
-            }
-            for (int i = 0; i < SwitchBlockAlt.Count; i++) //draws triangles off screen
-            {
-                spriteBatch.Draw(SwitchBlocktexture, SwitchBlockAlt[i], Color.White);
-            }
-            for (int i = 0; i < NextSwitchBlockAlt.Count; i++) //draws triangles off screen
-            {
-                spriteBatch.Draw(SwitchBlocktexture, NextSwitchBlockAlt[i], Color.White);
-            }
-            if (Switch == true)
-            {
-                for (int i = 0; i < SwitchTriangle.Count; i++) //draws triangles off screen
+                for (int i = 0; i < WarningBlock.Count; i++) //draws triangles off screen
                 {
-                    spriteBatch.Draw(Triangletexture, SwitchTriangle[i], Color.White);
+                    spriteBatch.Draw(WarningBlocktexture, WarningBlock[i], Color.LightGray);
                 }
-                for (int i = 0; i < NextSwitchTriangle.Count; i++) //draws triangles off screen
+                for (int i = 0; i < NextWarningBlock.Count; i++) //draws triangles off screen
                 {
-                    spriteBatch.Draw(Triangletexture, NextSwitchTriangle[i], Color.White);
+                    spriteBatch.Draw(WarningBlocktexture, NextWarningBlock[i], Color.LightGray);
+                }
+                for (int i = 0; i < SwitchBlock.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(SwitchBlocktexture, SwitchBlock[i], Color.LightGray);
+                }
+                for (int i = 0; i < NextSwitchBlock.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(SwitchBlocktexture, NextSwitchBlock[i], Color.LightGray);
+                }
+                for (int i = 0; i < SwitchBlockAlt.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(SwitchBlocktexture, SwitchBlockAlt[i], Color.LightGray);
+                }
+                for (int i = 0; i < NextSwitchBlockAlt.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(SwitchBlocktexture, NextSwitchBlockAlt[i], Color.LightGray);
                 }
             }
-            else if (Switch == false)
+            else
             {
-                for (int i = 0; i < SwitchTriangleAlt.Count; i++) //draws triangles off screen
+                for (int i = 0; i < WarningBlock.Count; i++) //draws triangles off screen
                 {
-                    spriteBatch.Draw(Flip, SwitchTriangleAlt[i], Color.White);
+                    spriteBatch.Draw(WarningBlocktexture, WarningBlock[i], Color.White);
                 }
-                for (int i = 0; i < NextSwitchTriangleAlt.Count; i++) //draws triangles off screen
+                for (int i = 0; i < NextWarningBlock.Count; i++) //draws triangles off screen
                 {
-                    spriteBatch.Draw(Flip, NextSwitchTriangleAlt[i], Color.White);
+                    spriteBatch.Draw(WarningBlocktexture, NextWarningBlock[i], Color.White);
+                }
+                for (int i = 0; i < SwitchBlock.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(SwitchBlocktexture, SwitchBlock[i], Color.White);
+                }
+                for (int i = 0; i < NextSwitchBlock.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(SwitchBlocktexture, NextSwitchBlock[i], Color.White);
+                }
+                for (int i = 0; i < SwitchBlockAlt.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(SwitchBlocktexture, SwitchBlockAlt[i], Color.White);
+                }
+                for (int i = 0; i < NextSwitchBlockAlt.Count; i++) //draws triangles off screen
+                {
+                    spriteBatch.Draw(SwitchBlocktexture, NextSwitchBlockAlt[i], Color.White);
+                }
+            }
+            if (textureCounter <= 1)
+            {
+                if (Switch == true)
+                {
+                    for (int i = 0; i < SwitchTriangle.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(SwitchTriangletexture, SwitchTriangle[i], Color.White);
+                    }
+                    for (int i = 0; i < NextSwitchTriangle.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(NextSwitchTriangletexture, NextSwitchTriangle[i], Color.White);
+                    }
+                }
+                else if (Switch == false)
+                {
+                    for (int i = 0; i < SwitchTriangleAlt.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(SwitchTriangleAlttexture, SwitchTriangleAlt[i], Color.White);
+                    }
+                    for (int i = 0; i < NextSwitchTriangleAlt.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(NextSwitchTriangleAlttexture, NextSwitchTriangleAlt[i], Color.White);
+                    }
+                }
+            }
+            else if (textureCounter <= 3)
+            {
+                if (Switch == true)
+                {
+                    for (int i = 0; i < SwitchTriangle.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(SwitchTriangletexture, SwitchTriangle[i], Color.DarkGray);
+                    }
+                    for (int i = 0; i < NextSwitchTriangle.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(NextSwitchTriangletexture, NextSwitchTriangle[i], Color.DarkGray);
+                    }
+                }
+                else if (Switch == false)
+                {
+                    for (int i = 0; i < SwitchTriangleAlt.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(SwitchTriangleAlttexture, SwitchTriangleAlt[i], Color.DarkGray);
+                    }
+                    for (int i = 0; i < NextSwitchTriangleAlt.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(NextSwitchTriangleAlttexture, NextSwitchTriangleAlt[i], Color.DarkGray);
+                    }
+                }
+            }
+            else if (textureCounter <= 5)
+            {
+                if (Switch == true)
+                {
+                    for (int i = 0; i < SwitchTriangle.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(SwitchTriangletexture, SwitchTriangle[i], Color.White);
+                    }
+                    for (int i = 0; i < NextSwitchTriangle.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(NextSwitchTriangletexture, NextSwitchTriangle[i], Color.White);
+                    }
+                }
+                else if (Switch == false)
+                {
+                    for (int i = 0; i < SwitchTriangleAlt.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(SwitchTriangleAlttexture, SwitchTriangleAlt[i], Color.White);
+                    }
+                    for (int i = 0; i < NextSwitchTriangleAlt.Count; i++) //draws triangles off screen
+                    {
+                        spriteBatch.Draw(NextSwitchTriangleAlttexture, NextSwitchTriangleAlt[i], Color.White);
+                    }
                 }
             }
         }
