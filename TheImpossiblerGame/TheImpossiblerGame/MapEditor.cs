@@ -32,6 +32,8 @@ namespace TheImpossiblerGame
         protected Texture2D Player;
 
         //Rectangles for backgrounds
+        public List<Rectangle> ParallaxList;
+        public List<Rectangle> NextParallaxList;
         public List<Rectangle> BackgroundList;
         public List<Rectangle> NextBackgroundList;
         protected Rectangle Background;
@@ -124,7 +126,7 @@ namespace TheImpossiblerGame
             canLoadinitialBackground = true;
             canLoadnextBackground = true;
             ScrollingBlock = new Rectangle(0, 0, 45, 40);
-            ScrollingBackground = new Rectangle(0, 0, 45, 40);
+            ScrollingBackground = new Rectangle(0, 0, 45, 40); //(-10)
         }
 
 
@@ -621,9 +623,48 @@ namespace TheImpossiblerGame
             canLoadnext = false;
         }
 
+        public void ResetGame()
+        {
+            ReadFile = null;
+            TextFile = null;
+            TextPath = null;
+            widthCounter = 0;
+            heightCounter = 0;
+            ScrollingBlock.X = 0;
+            ScrollingBackground.X = 0;
+            number = 0;
+            scrollingCounter = 0;
+            textureCounter = 0;
+            backgroundCounter = 0;
+            Switch = false;
+            canLoadinitial = true;
+            canLoadinitialBackground = true;
+            DataPoints.Clear();
+            BackgroundList.Clear();
+            Squares.Clear(); //clear the list of platforms that are off screen to the left
+            Triangles.Clear();
+            UpsideDownTriangles.Clear();
+            Spikes.Clear();
+            SwitchBlock.Clear();
+            SwitchBlockAlt.Clear();
+            SwitchTriangle.Clear();
+            SwitchTriangleAlt.Clear();
+            WarningBlock.Clear();
+            NextBackgroundList.Clear();
+            NextSquares.Clear(); //clears the list that the platforms were moved from to create space for the next text file to add to this list
+            NextTriangles.Clear();
+            NextUpsideDownTriangles.Clear();
+            NextSpikes.Clear();
+            NextSwitchBlock.Clear();
+            NextSwitchTriangle.Clear();
+            NextSwitchTriangleAlt.Clear();
+            NextWarningBlock.Clear();
+            NextSwitchBlockAlt.Clear();
+        }
+
         public int ResetFiles()
         {
-            if (backgroundCounter > 3) //has to be one less than the number of backgrounds
+            if (backgroundCounter > 7) //has to be one less than the number of backgrounds
             {
                 backgroundCounter = 0;
             }
@@ -671,68 +712,68 @@ namespace TheImpossiblerGame
                     if (i == 0) //used to draw the top left block
                     {
                         Platforms = new Rectangle(0, 0, TileWidth, TileHeight);
-                        allPlatforms.Add(Platforms);
+                        //allPlatforms.Add(Platforms);
                         Squares.Add(Platforms);
                     }
                     else if (i < 20) //used to draw the rest of the blocks at the top
                     {
                         Platforms = new Rectangle(widthCounter * TileWidth, 0, TileWidth, TileHeight);
-                        allPlatforms.Add(Platforms);
+                        //allPlatforms.Add(Platforms);
                         Squares.Add(Platforms);
                     }
                     else //used to draw the blocks throughout the map
                     {
                         Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                        allPlatforms.Add(Platforms);
+                        //allPlatforms.Add(Platforms);
                         Squares.Add(Platforms);
                     }
                 }
                 else if (DataPoints[i] == "2") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     Triangles.Add(Platforms);
                 }
                 else if (DataPoints[i] == "3") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     UpsideDowntriangles.Add(Platforms);
                 }
                 else if (DataPoints[i] == "4") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     Spikes.Add(Platforms);
                 }
                 else if (DataPoints[i] == "5") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     WarningBlock.Add(Platforms);
                 }
                 else if (DataPoints[i] == "6") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     SwitchBlock.Add(Platforms);
                 }
                 else if (DataPoints[i] == "7") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     SwitchBlockAlt.Add(Platforms);
                 }
                 else if (DataPoints[i] == "8") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     SwitchTriangle.Add(Platforms);
                 }
                 else if (DataPoints[i] == "9") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     SwitchTriangleAlt.Add(Platforms);
                 }
             }
@@ -769,68 +810,68 @@ namespace TheImpossiblerGame
                     if (i == 0) //used to draw the top left block
                     {
                         Platforms = new Rectangle(0 + screenWidth, 0, TileWidth, TileHeight);
-                        allPlatforms.Add(Platforms);
+                        //allPlatforms.Add(Platforms);
                         NextSquares.Add(Platforms);
                     }
                     else if (i < 20) //used to draw the rest of the blocks at the top
                     {
                         Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, 0, TileWidth, TileHeight);
-                        allPlatforms.Add(Platforms);
+                        //allPlatforms.Add(Platforms);
                         NextSquares.Add(Platforms);
                     }
                     else //used to draw the blocks throughout the map
                     {
                         Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                        allPlatforms.Add(Platforms);
+                        //allPlatforms.Add(Platforms);
                         NextSquares.Add(Platforms);
                     }
                 }
                 else if (DataPoints[i] == "2") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     NextTriangles.Add(Platforms);
                 }
                 else if (DataPoints[i] == "3") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     NextUpsideDownTriangles.Add(Platforms);
                 }
                 else if (DataPoints[i] == "4") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     NextSpikes.Add(Platforms);
                 }
                 else if (DataPoints[i] == "5") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     NextWarningBlock.Add(Platforms);
                 }
                 else if (DataPoints[i] == "6") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     NextSwitchBlock.Add(Platforms);
                 }
                 else if (DataPoints[i] == "7") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     NextSwitchBlockAlt.Add(Platforms);
                 }
                 else if (DataPoints[i] == "8") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     NextSwitchTriangle.Add(Platforms);
                 }
                 else if (DataPoints[i] == "9") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
-                    allPlatforms.Add(Platforms);
+                    //allPlatforms.Add(Platforms);
                     NextSwitchTriangleAlt.Add(Platforms);
                 }
             }

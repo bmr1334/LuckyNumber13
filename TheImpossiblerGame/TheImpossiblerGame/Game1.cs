@@ -46,6 +46,7 @@ namespace TheImpossiblerGame
             triLab2, triLab2Flip, triSub1, triSub1Flip, triSub2, triSub2Flip, //objects
             triSwitch, triSwitchFlip, //objects
             labBg1, labBg2, labBg3, labBg4,  //backgrounds
+            subBg1, subBg2, subBg3, subBg4, subCol, //backgrounds
             menuText; //menu texture for return to main menu
 
         List<Texture2D> backgrounds;
@@ -153,6 +154,12 @@ namespace TheImpossiblerGame
             labBg2 = Content.Load<Texture2D>("Game Textures\\labBg2");
             labBg3 = Content.Load<Texture2D>("Game Textures\\labBg3");
             labBg4 = Content.Load<Texture2D>("Game Textures\\labBg4");
+            subBg1 = Content.Load<Texture2D>("Game Textures\\subBg1");
+            subBg2 = Content.Load<Texture2D>("Game Textures\\subBg2");
+            subBg3 = Content.Load<Texture2D>("Game Textures\\subBg3");
+            subBg4 = Content.Load<Texture2D>("Game Textures\\subBg4");
+            subCol = Content.Load<Texture2D>("Game Textures\\subCol");
+
 
             //sets the textures to their respective values
             mapEditor.player = player;
@@ -174,6 +181,10 @@ namespace TheImpossiblerGame
             backgrounds.Add(labBg2);
             backgrounds.Add(labBg3);
             backgrounds.Add(labBg4);
+            backgrounds.Add(subBg1);
+            backgrounds.Add(subBg2);
+            backgrounds.Add(subBg3);
+            backgrounds.Add(subBg4);
         }
 
         /// <summary>
@@ -233,6 +244,7 @@ namespace TheImpossiblerGame
                     {
                         ChangeBackgroundTexture();
                         mapEditor.GenerateBackgroundsOffScreen();
+                        ChangeBackgroundTexture();
                     }
                     if (mapEditor.CanLoadInitial == true) //used to load the initial platforms when the game is started
                     {
@@ -246,114 +258,117 @@ namespace TheImpossiblerGame
                         mapEditor.ReadTextFile(); //calls method to read the file
                         mapEditor.GeneratePlatformsOffScreen();
                     }
-                    if (mapEditor.TextureCounter == 0)
+                    if (mapEditor.CanLoadNext == true)
                     {
-                        //mapEditor.BoxTexture = sqLab1;
-                        mapEditor.NextBoxTexture = sqLab1;
-                        //mapEditor.flip = triLab1Flip;
-                        mapEditor.Nextflip = triLab1Flip;
-                        //mapEditor.TriangleTexture = triLab1;
-                        mapEditor.NextTriangleTexture = triLab1;
-                        //mapEditor.SpikeTexture = spikeLight;
-                        mapEditor.NextSpikeTexture = spikeLight;
-                        mapEditor.WarningBlockTexture = sqWarn;
-                        mapEditor.SwitchBlockTexture = sqSwitchOn;
-                        mapEditor.SwitchTriangleTexture = triSwitch;
-                        mapEditor.NextSwitchTriangleTexture = triSwitch;
-                        mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
-                        mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
-                    }
-                    if (mapEditor.TextureCounter == 1)
-                    {
-                        // mapEditor.BoxTexture = sqLab2;
-                        mapEditor.NextBoxTexture = sqLab2;
-                        // mapEditor.flip = triLab2Flip;
-                        mapEditor.Nextflip = triLab2Flip;
-                        // mapEditor.TriangleTexture = triLab2;
-                        mapEditor.NextTriangleTexture = triLab2;
-                        // mapEditor.SpikeTexture = spikeLight;
-                        mapEditor.NextSpikeTexture = spikeLight;
-                        mapEditor.WarningBlockTexture = sqWarn;
-                        mapEditor.SwitchBlockTexture = sqSwitchOn;
-                        mapEditor.SwitchTriangleTexture = triSwitch;
-                        mapEditor.NextSwitchTriangleTexture = triSwitch;
-                        mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
-                        mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
-                    }
-                    if (mapEditor.TextureCounter == 2)
-                    {
-                        //mapEditor.BoxTexture = sqSub1;
-                        mapEditor.NextBoxTexture = sqSub1;
-                        //mapEditor.flip = triSub1Flip;
-                        mapEditor.Nextflip = triSub1Flip;
-                        //mapEditor.TriangleTexture = triSub1;
-                        mapEditor.NextTriangleTexture = triSub1;
-                        //mapEditor.SpikeTexture = spikeDark;
-                        mapEditor.NextSpikeTexture = spikeDark;
-                        mapEditor.WarningBlockTexture = sqWarn;
-                        mapEditor.SwitchBlockTexture = sqSwitchOn;
-                        mapEditor.SwitchTriangleTexture = triSwitch;
-                        mapEditor.NextSwitchTriangleTexture = triSwitch;
-                        mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
-                        mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
-                    }
-                    if (mapEditor.TextureCounter == 3)
-                    {
-                        //mapEditor.BoxTexture = sqSub2;
-                        mapEditor.NextBoxTexture = sqSub2;
-                        //mapEditor.flip = triSub2Flip;
-                        mapEditor.Nextflip = triSub2Flip;
-                        //mapEditor.TriangleTexture = triSub2;
-                        mapEditor.NextTriangleTexture = triSub2;
-                        //mapEditor.SpikeTexture = spikeDark;
-                        mapEditor.NextSpikeTexture = spikeDark;
-                        mapEditor.WarningBlockTexture = sqWarn;
-                        mapEditor.SwitchBlockTexture = sqSwitchOn;
-                        mapEditor.SwitchTriangleTexture = triSwitch;
-                        mapEditor.NextSwitchTriangleTexture = triSwitch;
-                        mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
-                        mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
-                    }
-                    if (mapEditor.TextureCounter == 4)
-                    {
-                        //mapEditor.BoxTexture = sqCity1;
-                        mapEditor.NextBoxTexture = sqCity1;
-                        //mapEditor.flip = triCity1Flip;
-                        mapEditor.Nextflip = triCity1Flip;
-                        //mapEditor.TriangleTexture = triCity1;
-                        mapEditor.NextTriangleTexture = triCity1;
-                        //mapEditor.SpikeTexture = spikeLight;
-                        mapEditor.NextSpikeTexture = spikeLight;
-                        mapEditor.WarningBlockTexture = sqWarn;
-                        mapEditor.SwitchBlockTexture = sqSwitchOn;
-                        mapEditor.SwitchTriangleTexture = triSwitch;
-                        mapEditor.NextSwitchTriangleTexture = triSwitch;
-                        mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
-                        mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
-                    }
-                    if (mapEditor.TextureCounter == 5)
-                    {
-                        //mapEditor.BoxTexture = sqCity2;
-                        mapEditor.NextBoxTexture = sqCity2;
-                        // mapEditor.flip = triCity2Flip;
-                        mapEditor.Nextflip = triCity2Flip;
-                        //mapEditor.TriangleTexture = triCity2;
-                        mapEditor.NextTriangleTexture = triCity2;
-                        //mapEditor.SpikeTexture = spikeLight;
-                        mapEditor.NextSpikeTexture = spikeLight;
-                        mapEditor.WarningBlockTexture = sqWarn;
-                        mapEditor.SwitchBlockTexture = sqSwitchOn;
-                        mapEditor.SwitchTriangleTexture = triSwitch;
-                        mapEditor.NextSwitchTriangleTexture = triSwitch;
-                        mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
-                        mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
+                        if (mapEditor.TextureCounter == 0)
+                        {
+                            //mapEditor.BoxTexture = sqLab1;
+                            mapEditor.NextBoxTexture = sqLab1;
+                            //mapEditor.flip = triLab1Flip;
+                            mapEditor.Nextflip = triLab1Flip;
+                            //mapEditor.TriangleTexture = triLab1;
+                            mapEditor.NextTriangleTexture = triLab1;
+                            //mapEditor.SpikeTexture = spikeLight;
+                            mapEditor.NextSpikeTexture = spikeLight;
+                            mapEditor.WarningBlockTexture = sqWarn;
+                            mapEditor.SwitchBlockTexture = sqSwitchOn;
+                            mapEditor.SwitchTriangleTexture = triSwitch;
+                            mapEditor.NextSwitchTriangleTexture = triSwitch;
+                            mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
+                            mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
+                        }
+                        if (mapEditor.TextureCounter == 1)
+                        {
+                            // mapEditor.BoxTexture = sqLab2;
+                            mapEditor.NextBoxTexture = sqLab2;
+                            // mapEditor.flip = triLab2Flip;
+                            mapEditor.Nextflip = triLab2Flip;
+                            // mapEditor.TriangleTexture = triLab2;
+                            mapEditor.NextTriangleTexture = triLab2;
+                            // mapEditor.SpikeTexture = spikeLight;
+                            mapEditor.NextSpikeTexture = spikeLight;
+                            mapEditor.WarningBlockTexture = sqWarn;
+                            mapEditor.SwitchBlockTexture = sqSwitchOn;
+                            mapEditor.SwitchTriangleTexture = triSwitch;
+                            mapEditor.NextSwitchTriangleTexture = triSwitch;
+                            mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
+                            mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
+                        }
+                        if (mapEditor.TextureCounter == 2)
+                        {
+                            //mapEditor.BoxTexture = sqSub1;
+                            mapEditor.NextBoxTexture = sqSub1;
+                            //mapEditor.flip = triSub1Flip;
+                            mapEditor.Nextflip = triSub1Flip;
+                            //mapEditor.TriangleTexture = triSub1;
+                            mapEditor.NextTriangleTexture = triSub1;
+                            //mapEditor.SpikeTexture = spikeDark;
+                            mapEditor.NextSpikeTexture = spikeDark;
+                            mapEditor.WarningBlockTexture = sqWarn;
+                            mapEditor.SwitchBlockTexture = sqSwitchOn;
+                            mapEditor.SwitchTriangleTexture = triSwitch;
+                            mapEditor.NextSwitchTriangleTexture = triSwitch;
+                            mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
+                            mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
+                        }
+                        if (mapEditor.TextureCounter == 3)
+                        {
+                            //mapEditor.BoxTexture = sqSub2;
+                            mapEditor.NextBoxTexture = sqSub2;
+                            //mapEditor.flip = triSub2Flip;
+                            mapEditor.Nextflip = triSub2Flip;
+                            //mapEditor.TriangleTexture = triSub2;
+                            mapEditor.NextTriangleTexture = triSub2;
+                            //mapEditor.SpikeTexture = spikeDark;
+                            mapEditor.NextSpikeTexture = spikeDark;
+                            mapEditor.WarningBlockTexture = sqWarn;
+                            mapEditor.SwitchBlockTexture = sqSwitchOn;
+                            mapEditor.SwitchTriangleTexture = triSwitch;
+                            mapEditor.NextSwitchTriangleTexture = triSwitch;
+                            mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
+                            mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
+                        }
+                        if (mapEditor.TextureCounter == 4)
+                        {
+                            //mapEditor.BoxTexture = sqCity1;
+                            mapEditor.NextBoxTexture = sqCity1;
+                            //mapEditor.flip = triCity1Flip;
+                            mapEditor.Nextflip = triCity1Flip;
+                            //mapEditor.TriangleTexture = triCity1;
+                            mapEditor.NextTriangleTexture = triCity1;
+                            //mapEditor.SpikeTexture = spikeLight;
+                            mapEditor.NextSpikeTexture = spikeLight;
+                            mapEditor.WarningBlockTexture = sqWarn;
+                            mapEditor.SwitchBlockTexture = sqSwitchOn;
+                            mapEditor.SwitchTriangleTexture = triSwitch;
+                            mapEditor.NextSwitchTriangleTexture = triSwitch;
+                            mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
+                            mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
+                        }
+                        if (mapEditor.TextureCounter == 5)
+                        {
+                            //mapEditor.BoxTexture = sqCity2;
+                            mapEditor.NextBoxTexture = sqCity2;
+                            // mapEditor.flip = triCity2Flip;
+                            mapEditor.Nextflip = triCity2Flip;
+                            //mapEditor.TriangleTexture = triCity2;
+                            mapEditor.NextTriangleTexture = triCity2;
+                            //mapEditor.SpikeTexture = spikeLight;
+                            mapEditor.NextSpikeTexture = spikeLight;
+                            mapEditor.WarningBlockTexture = sqWarn;
+                            mapEditor.SwitchBlockTexture = sqSwitchOn;
+                            mapEditor.SwitchTriangleTexture = triSwitch;
+                            mapEditor.NextSwitchTriangleTexture = triSwitch;
+                            mapEditor.SwitchTriangleAltTexture = triSwitchFlip;
+                            mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
+                        }
                     }
                     kstate = Keyboard.GetState();
                     if (kstate.IsKeyDown(Keys.Space) && !prevKstate.IsKeyDown(Keys.Space)) flipGrav();
                     Fall(g);
                     //p1.Move(kstate, mapEditor);
                     Scrolling(); //calls scrolling method to have infinite scrolling
-                    ChangeBackgroundTexture();
+                    
 
                     //score increases here
                     score += gameTime.ElapsedGameTime.TotalSeconds * 2;
@@ -373,6 +388,12 @@ namespace TheImpossiblerGame
                     if (mstate.LeftButton == ButtonState.Pressed && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
                         mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100) //height
                     {
+                        g = 1;
+                        p1.SetX(200);
+                        p1.SetY(800);
+                        ResetTileTexture();
+                        ResetBackgroundTexture();
+                        mapEditor.ResetGame();
                         gamestate = GameState.mainMenu;
                         System.Threading.Thread.Sleep(200);
                     }
@@ -404,6 +425,12 @@ namespace TheImpossiblerGame
                     if (mstate.LeftButton == ButtonState.Pressed && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
                         mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100) //height
                     {
+                        g = 1;
+                        p1.SetX(200);
+                        p1.SetY(800);
+                        ResetTileTexture();
+                        ResetBackgroundTexture();
+                        mapEditor.ResetGame();
                         gamestate = GameState.mainMenu;
                         System.Threading.Thread.Sleep(200);
                     }
@@ -439,11 +466,6 @@ namespace TheImpossiblerGame
             //spriteBatch.Draw(labBg1, bg, bg, Color.White, 0, new Vector2(0.0f, 0.0f), SpriteEffects.FlipHorizontally, 0);
             //spriteBatch.Draw(labBg2, bg2, Color.White);
             //spriteBatch.Draw(labBg3, bg3, Color.White);
-
-            mapEditor.Draw(spriteBatch); //draws the objects in the text file
-            // Box.Draw(spriteBatch);
-            //Triangle.Draw(spriteBatch);
-
             //game state switches - Brandon Rodriguez, Parker Wilson, Nicholas Cato
             switch (gamestate)
             {
@@ -476,9 +498,17 @@ namespace TheImpossiblerGame
 
                     break;
                 case GameState.game:
-                    mapEditor.Draw(spriteBatch); //draws the objects in the text file
-                    p1.Draw(spriteBatch, player);
 
+                    mapEditor.Draw(spriteBatch); //draws the objects in the text file
+                    if(g == 1)
+                    {
+                        p1.Draw(spriteBatch, player, SpriteEffects.None);
+                    }
+                    else if(g == -1)
+                    {
+                        p1.Draw(spriteBatch, player, SpriteEffects.FlipVertically);
+                    }
+                    
                     //draws score
                     spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(5, -10), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
 
@@ -487,7 +517,7 @@ namespace TheImpossiblerGame
 
                     break;
                 case GameState.pauseMenu:
-
+                    mapEditor.Draw(spriteBatch); //draws the objects in the text file
                     //draws pause logo
                     spriteBatch.Draw(pause, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 7,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 700, 300), Color.White);
@@ -503,6 +533,15 @@ namespace TheImpossiblerGame
                     //draws "Return to menu" text
                     spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, 500, 100), Color.White);
+
+                    if (g == 1)
+                    {
+                        p1.Draw(spriteBatch, player, SpriteEffects.None);
+                    }
+                    else if (g == -1)
+                    {
+                        p1.Draw(spriteBatch, player, SpriteEffects.FlipVertically);
+                    }
                     break;
             }
 
@@ -518,6 +557,19 @@ namespace TheImpossiblerGame
             mapEditor.ScreenHeight = graphics.PreferredBackBufferHeight;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
+        }
+
+        public void ResetTileTexture()
+        {
+            mapEditor.BoxTexture = box;
+            mapEditor.flip = flip;
+            mapEditor.TriangleTexture = triangle;
+            mapEditor.SpikeTexture = spikeLight;
+        }
+
+        public void ResetBackgroundTexture()
+        {
+            mapEditor.BackgroundTexture = labBg1;
         }
 
         public void ChangeBackgroundTexture()
@@ -679,14 +731,17 @@ namespace TheImpossiblerGame
             if (mapEditor.CanLoadNextBackground == true)
             {
                 mapEditor.CanLoadNextBackground = false;
+                //Rectangle same = mapEditor.NextBackgroundlist[0];
+                //same.X -= 8;
+                //mapEditor.NextBackgroundlist[0] = same;
             }
-            if (mapEditor.ScrollingBackgroundX <= -mapEditor.ScreenWidth + 8)
+            if (mapEditor.ScrollingBackgroundX <= -mapEditor.ScreenWidth + speed + speed / 2 - 3)
             {
                 if (mapEditor.BackgroundTexture != mapEditor.NextBackgroundTexture)
                 {
                     mapEditor.BackgroundTexture = mapEditor.NextBackgroundTexture;
                 }
-                mapEditor.ScrollingBackgroundX = 0;
+                mapEditor.ScrollingBackgroundX = -10 + speed + speed / 2 + 3;
                 mapEditor.CanLoadNextBackground = true;
                 mapEditor.Backgroundlist.Clear();
                 for (int i = 0; i < mapEditor.NextBackgroundlist.Count; i++)
@@ -695,7 +750,7 @@ namespace TheImpossiblerGame
                 }
                 mapEditor.NextBackgroundlist.Clear();
             }
-            if (mapEditor.ScrollingBlockX <= -mapEditor.ScreenWidth) //(+ 8)if our scrolling indicator has reached a screen's width then erase the platforms that are off screen to the left
+            if (mapEditor.ScrollingBlockX <= -mapEditor.ScreenWidth + speed - 3) //(+ 8)if our scrolling indicator has reached a screen's width then erase the platforms that are off screen to the left
             {
                 if (mapEditor.BoxTexture != mapEditor.NextBoxTexture && mapEditor.TriangleTexture != mapEditor.NextTriangleTexture && mapEditor.flip != mapEditor.Nextflip)
                 {

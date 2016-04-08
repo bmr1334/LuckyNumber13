@@ -23,9 +23,9 @@ namespace TheImpossiblerGame
             r = new Rectangle(px, py, pw, ph);
         }
 
-        public void Draw(SpriteBatch sb, Texture2D tex) // Draws the player
+        public void Draw(SpriteBatch sb, Texture2D tex, SpriteEffects effect) // Draws the player
         {
-            sb.Draw(tex, r, Color.White);
+            sb.Draw(tex, r, null, Color.White, 0, new Vector2(0.0f, 0.0f), effect, 0);
         }
 
         public Rectangle getRectangle() // Gives the players rectangle
