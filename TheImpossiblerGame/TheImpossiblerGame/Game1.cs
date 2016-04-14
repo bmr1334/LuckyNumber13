@@ -47,12 +47,14 @@ namespace TheImpossiblerGame
             triSwitch, triSwitchFlip, //objects
             labBg1, labBg2, labBg3, labBg4,  //backgrounds
             subBg1, subBg2, subBg3, subBg4, subCol, //backgrounds
+            cityBgBack1, cityBgBack2, cityBgFront, //backgrounds
             menuText; //menu texture for return to main menu
 
         List<Texture2D> backgrounds;
+        List<Texture2D> parallax;
 
         //rectangle variables
-        Rectangle playRect, resumeRect, exitRect, menuRect, bg, bg2, bg3;
+        Rectangle playRect, resumeRect, exitRect, menuRect;
 
         //enum to switch game states  - Brandon Rodriguez, Parker Wilson
         enum GameState { titleMenu, mainMenu, pauseMenu, game, gameOver, credits };
@@ -85,13 +87,8 @@ namespace TheImpossiblerGame
             mapEditor.SetDimensions();
             p1 = new Player(200, 800, mapEditor.tileWidth, mapEditor.tileHeight);
             backgrounds = new List<Texture2D>();
+            parallax = new List<Texture2D>();
             this.IsMouseVisible = true;
-            //bg = new Rectangle(0, 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
-            //bg2 = new Rectangle(bg.X + mapEditor.ScreenWidth, 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
-            //bg3 = new Rectangle(bg.X + (mapEditor.ScreenWidth * 2), 0, mapEditor.ScreenWidth, mapEditor.ScreenHeight);
-            //bg = new Rectangle(0, 0, 1920, 1080);
-            //bg2 = new Rectangle(bg.X + 1920, 0, 1920, 1080);
-            //bg3 = new Rectangle(bg.X + (1920 * 2), 0, 1920, 1080);
             base.Initialize();
         }
 
@@ -109,7 +106,7 @@ namespace TheImpossiblerGame
             box = this.Content.Load<Texture2D>("SquareLab1");
             triangle = this.Content.Load<Texture2D>("TriangleLab1");
             flip = this.Content.Load<Texture2D>("TriangleLab1Flip");
-            player = this.Content.Load<Texture2D>("Player");
+            player = this.Content.Load<Texture2D>("SquareLab1");
 
             //general menu loads - Brandon Rodriguez, Parker Wilson
             menuText = Content.Load<Texture2D>("Menus\\MenuText");
@@ -159,6 +156,9 @@ namespace TheImpossiblerGame
             subBg3 = Content.Load<Texture2D>("Game Textures\\subBg3");
             subBg4 = Content.Load<Texture2D>("Game Textures\\subBg4");
             subCol = Content.Load<Texture2D>("Game Textures\\subCol");
+            cityBgBack1 = Content.Load<Texture2D>("Game Textures\\cityBgBack1");
+            cityBgBack2 = Content.Load<Texture2D>("Game Textures\\cityBgBack2");
+            cityBgFront = Content.Load<Texture2D>("Game Textures\\cityBgFront");
 
 
             //sets the textures to their respective values
@@ -175,16 +175,41 @@ namespace TheImpossiblerGame
             mapEditor.NextSwitchTriangleAltTexture = triSwitchFlip;
             mapEditor.BackgroundTexture = labBg1;
             mapEditor.NextBackgroundTexture = labBg2;
+            mapEditor.ParallaxTexture = cityBgBack1;
+            mapEditor.NextParallaxTexture = cityBgBack2;
 
             //add backgrounds to list for switching between them
             backgrounds.Add(labBg1);
             backgrounds.Add(labBg2);
             backgrounds.Add(labBg3);
             backgrounds.Add(labBg4);
+            backgrounds.Add(labBg2);
+            backgrounds.Add(labBg1);
+            backgrounds.Add(labBg4);
+            backgrounds.Add(labBg3);
+            backgrounds.Add(labBg1);
             backgrounds.Add(subBg1);
             backgrounds.Add(subBg2);
             backgrounds.Add(subBg3);
             backgrounds.Add(subBg4);
+            backgrounds.Add(subBg2);
+            backgrounds.Add(subBg1);
+            backgrounds.Add(subBg4);
+            backgrounds.Add(subBg3);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+
+            //add parallax backgrounds to list for switching between them
+            //parallax.Add(subCol);
+            parallax.Add(cityBgBack1);
+            parallax.Add(cityBgBack2);
+
         }
 
         /// <summary>
@@ -205,28 +230,32 @@ namespace TheImpossiblerGame
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.None))
                 Exit();
-
+            prevMstate = mstate;
+            mstate = Mouse.GetState();
             //switches between states - Brandon Rodriguez, Parker Wilson, Nicholas Cato
             switch (gamestate)
             {
+                
                 case GameState.titleMenu:
                     kstate = Keyboard.GetState();
                     if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)) gamestate = GameState.mainMenu;
+
                     break;
                 case GameState.mainMenu:
 
                     //if play game is clicked
-                    mstate = Mouse.GetState();
-                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > playRect.X && mstate.X < playRect.X + 500 && //width
-                        mstate.Y > playRect.Y && mstate.Y < playRect.Y + 100) //height
+                    //mstate = Mouse.GetState();
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > playRect.X && mstate.X < playRect.X + 500 && //width
+                        mstate.Y > playRect.Y && mstate.Y < playRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         score = 0;
                         gamestate = GameState.game;
+                        
                     }
 
                     //if exit game is clicked
-                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
-                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         Exit();
                     }
@@ -236,15 +265,27 @@ namespace TheImpossiblerGame
                     break;
                 case GameState.game:
                     mapEditor.ResetFiles();
+                    if (speed != mapEditor.ScrollingCounter)
+                    {
+                        speed = mapEditor.ScrollingCounter;
+                    }
+                    if (mapEditor.CanLoadInitialParallax == true)
+                    {
+                        mapEditor.GenerateParallaxOnScreen();
+                    }
+                    if (mapEditor.CanLoadNextParallax == true)
+                    {
+                        mapEditor.GenerateParallaxOffScreen();
+                        ChangeParallaxTexture();
+                    }
                     if (mapEditor.CanLoadInitialBackground == true)
                     {
                         mapEditor.GenerateBackgroundsOnScreen();
                     }
                     if (mapEditor.CanLoadNextBackground == true)
                     {
-                        ChangeBackgroundTexture();
+                         ChangeBackgroundTexture();
                         mapEditor.GenerateBackgroundsOffScreen();
-                        ChangeBackgroundTexture();
                     }
                     if (mapEditor.CanLoadInitial == true) //used to load the initial platforms when the game is started
                     {
@@ -258,7 +299,7 @@ namespace TheImpossiblerGame
                         mapEditor.ReadTextFile(); //calls method to read the file
                         mapEditor.GeneratePlatformsOffScreen();
                     }
-                    if (mapEditor.CanLoadNext == true)
+                    if (mapEditor.CanSwitch == true)
                     {
                         if (mapEditor.TextureCounter == 0)
                         {
@@ -368,7 +409,11 @@ namespace TheImpossiblerGame
                     Fall(g);
                     //p1.Move(kstate, mapEditor);
                     Scrolling(); //calls scrolling method to have infinite scrolling
-                    
+
+                    if (p1.y < 0 || p1.y > mapEditor.ScreenHeight)
+                    {
+                        gamestate = GameState.gameOver;
+                    }
 
                     //score increases here
                     score += gameTime.ElapsedGameTime.TotalSeconds * 2;
@@ -384,23 +429,24 @@ namespace TheImpossiblerGame
                     kstate = Keyboard.GetState();
 
                     //if return to menu is clicked
-                    mstate = Mouse.GetState();
-                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
-                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100) //height
+                   // mstate = Mouse.GetState();
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
+                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
+                        mapEditor.ResetGame();
                         g = 1;
                         p1.SetX(200);
                         p1.SetY(800);
                         ResetTileTexture();
+                        ResetParallaxTexture();
                         ResetBackgroundTexture();
-                        mapEditor.ResetGame();
                         gamestate = GameState.mainMenu;
-                        System.Threading.Thread.Sleep(200);
+                        //System.Threading.Thread.Sleep(500);
                     }
 
                     //if exit game is clicked
-                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
-                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         Exit();
                     }
@@ -413,34 +459,37 @@ namespace TheImpossiblerGame
                     if (kstate.IsKeyDown(Keys.Escape) && prevKstate.IsKeyUp(Keys.Escape)) gamestate = GameState.game;
 
                     //if resume game is clicked
-                    mstate = Mouse.GetState();
-                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > resumeRect.X && mstate.X < resumeRect.X + 500 && //width
-                        mstate.Y > resumeRect.Y && mstate.Y < resumeRect.Y + 100) //height
+                   // mstate = Mouse.GetState();
+                   // prevMstate = mstate;
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > resumeRect.X && mstate.X < resumeRect.X + 500 && //width
+                        mstate.Y > resumeRect.Y && mstate.Y < resumeRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         gamestate = GameState.game;
                     }
 
                     //if return to menu is clicked
-                    mstate = Mouse.GetState();
-                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
-                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100) //height
+                    //mstate = Mouse.GetState();
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
+                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
+                        mapEditor.ResetGame();
                         g = 1;
                         p1.SetX(200);
                         p1.SetY(800);
                         ResetTileTexture();
+                        ResetParallaxTexture();
                         ResetBackgroundTexture();
-                        mapEditor.ResetGame();
                         gamestate = GameState.mainMenu;
-                        System.Threading.Thread.Sleep(200);
+                        //System.Threading.Thread.Sleep(500);
                     }
 
                     //if exit game is clicked
-                    if (mstate.LeftButton == ButtonState.Pressed && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
-                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         Exit();
                     }
+                    //prevMstate = mstate;
                     break;
             }
 
@@ -461,11 +510,6 @@ namespace TheImpossiblerGame
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied); //need overrides for transparency to work properly
 
-            //Backgrounds drawn here
-            //spriteBatch.Draw(labBg1, bg, Color.White);
-            //spriteBatch.Draw(labBg1, bg, bg, Color.White, 0, new Vector2(0.0f, 0.0f), SpriteEffects.FlipHorizontally, 0);
-            //spriteBatch.Draw(labBg2, bg2, Color.White);
-            //spriteBatch.Draw(labBg3, bg3, Color.White);
             //game state switches - Brandon Rodriguez, Parker Wilson, Nicholas Cato
             switch (gamestate)
             {
@@ -514,7 +558,14 @@ namespace TheImpossiblerGame
 
                     break;
                 case GameState.gameOver:
+                    mapEditor.Draw(spriteBatch); //draws the objects in the text file
+                    //draws "Exit game" text
+                    spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 5, 500, 100), Color.White);
 
+                    //draws "Return to menu" text
+                    spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, 500, 100), Color.White);
                     break;
                 case GameState.pauseMenu:
                     mapEditor.Draw(spriteBatch); //draws the objects in the text file
@@ -567,9 +618,27 @@ namespace TheImpossiblerGame
             mapEditor.SpikeTexture = spikeLight;
         }
 
+        public void ResetParallaxTexture()
+        {
+            mapEditor.ParallaxTexture = cityBgBack1;
+            mapEditor.NextParallaxTexture = cityBgBack2;
+        }
+
         public void ResetBackgroundTexture()
         {
             mapEditor.BackgroundTexture = labBg1;
+            mapEditor.NextBackgroundTexture = labBg2;
+        }
+
+        public void ChangeParallaxTexture()
+        {
+            for (int i = 0; i < parallax.Count; i++)
+            {
+                if (i == mapEditor.ParallaxCounter)
+                {
+                    mapEditor.NextParallaxTexture = parallax[i];
+                }
+            }
         }
 
         public void ChangeBackgroundTexture()
@@ -590,6 +659,77 @@ namespace TheImpossiblerGame
                 p1.SetY(p1.y + speed); //makes player always fall down
 
                 //for loops calculate collision for the platforms on and off screen
+                if (mapEditor.SWITCH == false)
+                {
+                    for (int i = 0; i < mapEditor.SwitchCollisionRectanglealt.Count; i++)
+                    {
+                        if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.SwitchCollisionRectanglealt[i]) == true)
+                        {
+                            p1.SetY(mapEditor.SwitchCollisionRectanglealt[i].Y - mapEditor.tileHeight + 5000);
+                            break;
+                        }
+                    }
+                    for (int i = 0; i < mapEditor.NextSwitchCollisionRectanglealt.Count; i++)
+                    {
+                        if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.NextSwitchCollisionRectanglealt[i]) == true)
+                        {
+                            p1.SetY(mapEditor.NextSwitchCollisionRectanglealt[i].Y - mapEditor.tileHeight + 5000);
+                            break;
+                        }
+                    }
+                }
+                if (mapEditor.SWITCH == true)
+                {
+                    for (int i = 0; i < mapEditor.SwitchCollisionrectangle.Count; i++)
+                    {
+                        if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.SwitchCollisionrectangle[i]) == true)
+                        {
+                            p1.SetY(mapEditor.SwitchCollisionrectangle[i].Y - mapEditor.tileHeight + 5000);
+                            break;
+                        }
+                    }
+                    for (int i = 0; i < mapEditor.NextSwitchCollisionrectangle.Count; i++)
+                    {
+                        if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.NextSwitchCollisionrectangle[i]) == true)
+                        {
+                            p1.SetY(mapEditor.NextSwitchCollisionrectangle[i].Y - mapEditor.tileHeight + 5000);
+                            break;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < mapEditor.Collisionrectangle.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.Collisionrectangle[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Collisionrectangle[i].Y - mapEditor.tileHeight - 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextCollisionrectangle.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.NextCollisionrectangle[i]) == true)
+                    {
+                        p1.SetY(mapEditor.NextCollisionrectangle[i].Y - mapEditor.tileHeight - 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.spikes.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.spikes[i]) == true)
+                    {
+                        p1.SetY(mapEditor.spikes[i].Y - mapEditor.tileHeight - 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.Nextspikes.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.Nextspikes[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Nextspikes[i].Y - mapEditor.tileHeight - 5000);
+                        break;
+                    }
+                }
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.squares[i]) == true)
@@ -651,6 +791,76 @@ namespace TheImpossiblerGame
                 p1.SetY(p1.y - speed); //makes player fall up
 
                 //for loops calculate collision for the platforms on and off screen
+                if (mapEditor.SWITCH == false)
+                {
+                    for (int i = 0; i < mapEditor.SwitchCollisionRectanglealt.Count; i++)
+                    {
+                        if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.SwitchCollisionRectanglealt[i]) == true)
+                        {
+                            p1.SetY(mapEditor.SwitchCollisionRectanglealt[i].Y + mapEditor.tileHeight + 5000);
+                            break;
+                        }
+                    }
+                    for (int i = 0; i < mapEditor.NextSwitchCollisionRectanglealt.Count; i++)
+                    {
+                        if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextSwitchCollisionRectanglealt[i]) == true)
+                        {
+                            p1.SetY(mapEditor.NextSwitchCollisionRectanglealt[i].Y + mapEditor.tileHeight + 5000);
+                            break;
+                        }
+                    }
+                }
+                if (mapEditor.SWITCH == true)
+                {
+                    for (int i = 0; i < mapEditor.SwitchCollisionrectangle.Count; i++)
+                    {
+                        if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.SwitchCollisionrectangle[i]) == true)
+                        {
+                            p1.SetY(mapEditor.SwitchCollisionrectangle[i].Y + mapEditor.tileHeight + 5000);
+                            break;
+                        }
+                    }
+                    for (int i = 0; i < mapEditor.NextSwitchCollisionrectangle.Count; i++)
+                    {
+                        if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextSwitchCollisionrectangle[i]) == true)
+                        {
+                            p1.SetY(mapEditor.NextSwitchCollisionrectangle[i].Y + mapEditor.tileHeight + 5000);
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < mapEditor.Collisionrectangle.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Collisionrectangle[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Collisionrectangle[i].Y + mapEditor.tileHeight + 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextCollisionrectangle.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextCollisionrectangle[i]) == true)
+                    {
+                        p1.SetY(mapEditor.NextCollisionrectangle[i].Y + mapEditor.tileHeight + 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.spikes.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.spikes[i]) == true)
+                    {
+                        p1.SetY(mapEditor.spikes[i].Y + mapEditor.tileHeight + 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.Nextspikes.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Nextspikes[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Nextspikes[i].Y + mapEditor.tileHeight + 50000);
+                        break;
+                    }
+                }
                 for (int i = 0; i < mapEditor.squares.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.squares[i]) == true)
@@ -703,6 +913,7 @@ namespace TheImpossiblerGame
                         break;
                     }
                 }
+                
 
                 //p1.SetY(p1.y - 5);
             }
@@ -728,12 +939,32 @@ namespace TheImpossiblerGame
             {
                 mapEditor.CanLoadNext = false;
             }
+            if (mapEditor.CanSwitch == true)
+            {
+                mapEditor.CanSwitch = false;
+            }
+            if (mapEditor.CanLoadNextParallax == true)
+            {
+                mapEditor.CanLoadNextParallax = false;
+            }
             if (mapEditor.CanLoadNextBackground == true)
             {
                 mapEditor.CanLoadNextBackground = false;
-                //Rectangle same = mapEditor.NextBackgroundlist[0];
-                //same.X -= 8;
-                //mapEditor.NextBackgroundlist[0] = same;
+            }
+            if (mapEditor.ScrollingParallaxX <= -mapEditor.ScreenWidth + speed - 3)
+            {
+                if (mapEditor.ParallaxTexture != mapEditor.NextParallaxTexture)
+                {
+                    mapEditor.ParallaxTexture = mapEditor.NextParallaxTexture;
+                }
+                mapEditor.ScrollingParallaxX = 0;
+                mapEditor.CanLoadNextParallax = true;
+                mapEditor.ParallaxList.Clear();
+                for (int i = 0; i < mapEditor.NextParallaxlist.Count; i++)
+                {
+                    mapEditor.Parallaxlist.Add(mapEditor.NextParallaxlist[i]);
+                }
+                mapEditor.NextParallaxlist.Clear();
             }
             if (mapEditor.ScrollingBackgroundX <= -mapEditor.ScreenWidth + speed + speed / 2 - 3)
             {
@@ -774,6 +1005,9 @@ namespace TheImpossiblerGame
                 mapEditor.Switchtriangle.Clear();
                 mapEditor.SwitchTrianglealt.Clear();
                 mapEditor.Warningblock.Clear();
+                mapEditor.Collisionrectangle.Clear();
+                mapEditor.SwitchCollisionrectangle.Clear();
+                mapEditor.SwitchCollisionRectanglealt.Clear();
                 for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
                 {
                     mapEditor.squares.Add(mapEditor.Nextsquares[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
@@ -810,6 +1044,18 @@ namespace TheImpossiblerGame
                 {
                     mapEditor.Warningblock.Add(mapEditor.NextWarningblock[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
                 }
+                for (int i = 0; i < mapEditor.NextCollisionrectangle.Count; i++)
+                {
+                    mapEditor.Collisionrectangle.Add(mapEditor.NextCollisionrectangle[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.NextSwitchCollisionrectangle.Count; i++)
+                {
+                    mapEditor.SwitchCollisionrectangle.Add(mapEditor.NextSwitchCollisionrectangle[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
+                for (int i = 0; i < mapEditor.NextSwitchCollisionRectanglealt.Count; i++)
+                {
+                    mapEditor.SwitchCollisionRectanglealt.Add(mapEditor.NextSwitchCollisionRectanglealt[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
                 mapEditor.Nextsquares.Clear(); //clears the list that the platforms were moved from to create space for the next text file to add to this list
                 mapEditor.Nexttriangles.Clear();
                 mapEditor.NextUpsideDowntriangles.Clear();
@@ -819,15 +1065,14 @@ namespace TheImpossiblerGame
                 mapEditor.NextSwitchTrianglealt.Clear();
                 mapEditor.NextWarningblock.Clear();
                 mapEditor.NextSwitchBlockalt.Clear();
+                mapEditor.NextCollisionrectangle.Clear();
+                mapEditor.NextSwitchCollisionrectangle.Clear();
+                mapEditor.NextSwitchCollisionRectanglealt.Clear();
 
             }
             else //CODE BELOW ACTUALLY SCROLLS THE PLATFORMS
             {
-                //Background rectangle scrolling
-                //bg.X -= speed - 3;
-                //bg2.X -= speed - 3;
-                //bg3.X -= speed - 3;
-
+                mapEditor.ScrollingParallaxX -= speed - 5;
                 mapEditor.ScrollingBlockX -= speed; //scrolls by a factor of the speed
                 mapEditor.ScrollingBackgroundX -= speed - 3;
 
@@ -837,6 +1082,54 @@ namespace TheImpossiblerGame
                 // You have to make a new rectangle that has the same values, change the 
                 // value of the rectangle made, and put that rectangle in the list at the correspoing spot.
                 // Code below handles scrolling for all platforms on and off screen.
+                for (int i = 0; i < mapEditor.SwitchCollisionRectanglealt.Count; i++)
+                {
+                    Rectangle same = mapEditor.SwitchCollisionRectanglealt[i];
+                    same.X -= speed;
+                    mapEditor.SwitchCollisionRectanglealt[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextSwitchCollisionRectanglealt.Count; i++)
+                {
+                    Rectangle same = mapEditor.NextSwitchCollisionRectanglealt[i];
+                    same.X -= speed;
+                    mapEditor.NextSwitchCollisionRectanglealt[i] = same;
+                }
+                for (int i = 0; i < mapEditor.SwitchCollisionrectangle.Count; i++)
+                {
+                    Rectangle same = mapEditor.SwitchCollisionrectangle[i];
+                    same.X -= speed;
+                    mapEditor.SwitchCollisionrectangle[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextSwitchCollisionrectangle.Count; i++)
+                {
+                    Rectangle same = mapEditor.NextSwitchCollisionrectangle[i];
+                    same.X -= speed;
+                    mapEditor.NextSwitchCollisionrectangle[i] = same;
+                }
+                for (int i = 0; i < mapEditor.Collisionrectangle.Count; i++)
+                {
+                    Rectangle same = mapEditor.Collisionrectangle[i];
+                    same.X -= speed;
+                    mapEditor.Collisionrectangle[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextCollisionrectangle.Count; i++)
+                {
+                    Rectangle same = mapEditor.NextCollisionrectangle[i];
+                    same.X -= speed;
+                    mapEditor.NextCollisionrectangle[i] = same;
+                }
+                for (int i = 0; i < mapEditor.Parallaxlist.Count; i++)
+                {
+                    Rectangle same = mapEditor.Parallaxlist[i];
+                    same.X -= speed - 5;
+                    mapEditor.Parallaxlist[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextParallaxlist.Count; i++)
+                {
+                    Rectangle same = mapEditor.NextParallaxlist[i];
+                    same.X -= speed - 5;
+                    mapEditor.NextParallaxlist[i] = same;
+                }
                 for (int i = 0; i < mapEditor.Backgroundlist.Count; i++)
                 {
                     Rectangle same = mapEditor.Backgroundlist[i];

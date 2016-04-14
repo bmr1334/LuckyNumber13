@@ -12,6 +12,8 @@ namespace TheImpossiblerGame
     class MapEditor
     {
         //textures for the different objects
+        protected Texture2D Parallaxtexture;
+        protected Texture2D NextParallaxtexture;
         protected Texture2D Backgroundtexture;
         protected Texture2D NextBackgroundtexture;
         protected Texture2D Boxtexture;
@@ -34,6 +36,8 @@ namespace TheImpossiblerGame
         //Rectangles for backgrounds
         public List<Rectangle> ParallaxList;
         public List<Rectangle> NextParallaxList;
+        protected Rectangle Parallax;
+        public Rectangle ScrollingParallax;
         public List<Rectangle> BackgroundList;
         public List<Rectangle> NextBackgroundList;
         protected Rectangle Background;
@@ -41,8 +45,15 @@ namespace TheImpossiblerGame
 
         //Rectangles for collision
         protected Rectangle Platforms;
+        protected Rectangle Collision;
         public Rectangle ScrollingBlock;
         protected List<Rectangle> allPlatforms;
+        public List<Rectangle> SwitchCollisionRectangleAlt;
+        public List<Rectangle> NextSwitchCollisionRectangleAlt;
+        public List<Rectangle> SwitchCollisionRectangle;
+        public List<Rectangle> NextSwitchCollisionRectangle;
+        public List<Rectangle> CollisionRectangle;
+        public List<Rectangle> NextCollisionRectangle;
         public List<Rectangle> Squares;
         public List<Rectangle> NextSquares;
         public List<Rectangle> Triangles;
@@ -65,14 +76,21 @@ namespace TheImpossiblerGame
         StreamReader reader; //used to open the file for reading
         protected List<string> DataPoints; //used to store the text in the textfile into a list 
         int number = 0; //used to load another text file
-        int scrollingCounter = 0;
+        int scrollingCounter = 8;
+        int textureSwitch = 0;
         int textureCounter = 0;
+        int parallaxCounter = 0;
         int backgroundCounter = 0;
         bool Switch = false;
 
         //bool to handle loading files so they won't load forever
         bool canLoadinitial;
         bool canLoadnext;
+
+        bool canSwitch;
+
+        bool canLoadinitialParallax;
+        bool canLoadnextParallax;
 
         bool canLoadinitialBackground;
         bool canLoadnextBackground;
@@ -100,6 +118,8 @@ namespace TheImpossiblerGame
         public MapEditor()
         {
             //creates the rectangle lists to populate and established initial values
+            ParallaxList = new List<Rectangle>();
+            NextParallaxList = new List<Rectangle>();
             BackgroundList = new List<Rectangle>();
             NextBackgroundList = new List<Rectangle>();
             allPlatforms = new List<Rectangle>();
@@ -121,11 +141,22 @@ namespace TheImpossiblerGame
             NextSwitchTriangle = new List<Rectangle>();
             SwitchTriangleAlt = new List<Rectangle>();
             NextSwitchTriangleAlt = new List<Rectangle>();
+            CollisionRectangle = new List<Rectangle>();
+            NextCollisionRectangle = new List<Rectangle>();
+            SwitchCollisionRectangle = new List<Rectangle>();
+            NextSwitchCollisionRectangle = new List<Rectangle>();
+            SwitchCollisionRectangleAlt = new List<Rectangle>();
+            NextSwitchCollisionRectangleAlt = new List<Rectangle>();
+            Collision = new Rectangle();
             canLoadinitial = true;
             canLoadnext = true;
+            canSwitch = true;
+            canLoadinitialParallax = true;
+            canLoadnextParallax = true;
             canLoadinitialBackground = true;
             canLoadnextBackground = true;
             ScrollingBlock = new Rectangle(0, 0, 45, 40);
+            ScrollingParallax = new Rectangle(0, 0, 45, 40);
             ScrollingBackground = new Rectangle(0, 0, 45, 40); //(-10)
         }
 
@@ -312,6 +343,42 @@ namespace TheImpossiblerGame
             }
         }
 
+        public Texture2D ParallaxTexture
+        {
+            get { return Parallaxtexture; }
+            set
+            {
+                Parallaxtexture = value;
+            }
+        }
+
+        public Texture2D NextParallaxTexture
+        {
+            get { return NextParallaxtexture; }
+            set
+            {
+                NextParallaxtexture = value;
+            }
+        }
+
+        public List<Rectangle> Parallaxlist
+        {
+            get { return ParallaxList; }
+            set
+            {
+                ParallaxList = value;
+            }
+        }
+
+        public List<Rectangle> NextParallaxlist
+        {
+            get { return NextParallaxList; }
+            set
+            {
+                NextParallaxList = value;
+            }
+        }
+
         public List<Rectangle> Backgroundlist //property for list of platforms/squares
         {
             get { return BackgroundList; }
@@ -491,12 +558,75 @@ namespace TheImpossiblerGame
                 NextSwitchTriangleAlt = value;
             }
         }
+
+        public List<Rectangle> Collisionrectangle
+        {
+            get { return CollisionRectangle; }
+            set
+            {
+                CollisionRectangle = value;
+            }
+        }
+
+        public List<Rectangle> NextCollisionrectangle
+        {
+            get { return NextCollisionRectangle; }
+            set
+            {
+                NextCollisionRectangle = value;
+            }
+        }
+
+        public List<Rectangle> SwitchCollisionrectangle
+        {
+            get { return SwitchCollisionRectangle; }
+            set
+            {
+                SwitchCollisionRectangle = value;
+            }
+        }
+
+        public List<Rectangle> NextSwitchCollisionrectangle
+        {
+            get { return NextSwitchCollisionRectangle; }
+            set
+            {
+                NextSwitchCollisionRectangle = value;
+            }
+        }
+
+        public List<Rectangle> SwitchCollisionRectanglealt
+        {
+            get { return SwitchCollisionRectangleAlt; }
+            set
+            {
+                SwitchCollisionRectangleAlt = value;
+            }
+        }
+
+        public List<Rectangle> NextSwitchCollisionRectanglealt
+        {
+            get { return NextSwitchCollisionRectangleAlt; }
+            set
+            {
+                NextSwitchCollisionRectangleAlt = value;
+            }
+        }
         public int ScrollingBlockX //property for scrolling indicator block
         {
             get { return ScrollingBlock.X; }
             set
             {
                 ScrollingBlock.X = value;
+            }
+        }
+
+        public int ScrollingParallaxX
+        {
+            get { return ScrollingParallax.X; }
+            set
+            {
+                ScrollingParallax.X = value;
             }
         }
 
@@ -537,6 +667,11 @@ namespace TheImpossiblerGame
             get { return textureCounter; }
         }
 
+        public int ParallaxCounter
+        {
+            get { return parallaxCounter; }
+        }
+
         public int BackgroundCounter
         {
             get { return backgroundCounter; }
@@ -564,6 +699,33 @@ namespace TheImpossiblerGame
             set
             {
                 canLoadnext = value;
+            }
+        }
+
+        public bool CanSwitch
+        {
+            get { return canSwitch; }
+            set
+            {
+                canSwitch = value;
+            }
+        }
+
+        public bool CanLoadInitialParallax //property to change value of loading the initial file
+        {
+            get { return canLoadinitialParallax; }
+            set
+            {
+                canLoadinitialParallax = value;
+            }
+        }
+
+        public bool CanLoadNextParallax //property to change the value for loading the next file offscreen
+        {
+            get { return canLoadnextParallax; }
+            set
+            {
+                canLoadnextParallax = value;
             }
         }
 
@@ -625,46 +787,159 @@ namespace TheImpossiblerGame
 
         public void ResetGame()
         {
+            //textures for the different objects
+            Parallaxtexture = null;
+            NextParallaxtexture = null;
+            Backgroundtexture = null;
+            NextBackgroundtexture = null;
+            Boxtexture = null;
+            SwitchTriangletexture = null;
+            SwitchTriangleAlttexture = null;
+            SwitchBlocktexture = null;
+            WarningBlocktexture = null;
+            Triangletexture = null;
+            Spiketexture = null;
+            Flip = null;
+            NextBoxtexture = null;
+            NextSwitchTriangletexture = null;
+            NextSwitchTriangleAlttexture = null;
+            NextSwitchBlocktexture = null;
+            NextTriangletexture = null;
+            NextSpiketexture = null;
+            NextFlip = null;
+            Player = null;
+
+            //Rectangles for backgrounds
+            ParallaxList.Clear();
+            NextParallaxList.Clear();
+            ScrollingParallax.X = 0;
+            BackgroundList.Clear();
+            NextBackgroundList.Clear();
+            ScrollingBackground.X = 0;
+
+            //Rectangles for collision
+            ScrollingBlock.X = 0;
+            allPlatforms.Clear();
+            SwitchCollisionRectangleAlt.Clear();
+            NextSwitchCollisionRectangleAlt.Clear();
+            SwitchCollisionRectangle.Clear();
+            NextSwitchCollisionRectangle.Clear();
+            CollisionRectangle.Clear();
+            NextCollisionRectangle.Clear();
+            Squares.Clear();
+            NextSquares.Clear();
+            Triangles.Clear();
+            NextTriangles.Clear();
+            UpsideDownTriangles.Clear();
+            NextUpsideDownTriangles.Clear();
+            Spikes.Clear();
+            NextSpikes.Clear();
+            WarningBlock.Clear();
+            NextWarningBlock.Clear();
+            SwitchBlock.Clear();
+            NextSwitchBlock.Clear();
+            SwitchBlockAlt.Clear();
+            NextSwitchBlockAlt.Clear();
+            SwitchTriangle.Clear();
+            NextSwitchTriangle.Clear();
+            SwitchTriangleAlt.Clear();
+            NextSwitchTriangleAlt.Clear();
+
+            reader = null; //used to open the file for reading
+            //DataPoints.Clear(); //used to store the text in the textfile into a list 
+            number = 0; //used to load another text file
+            scrollingCounter = 8;
+            textureSwitch = 0;
+            textureCounter = 0;
+            parallaxCounter = 0;
+            backgroundCounter = 0;
+            Switch = false;
+
+            //bool to handle loading files so they won't load forever
+            canLoadinitial = true;
+            canLoadnext = true;
+
+            canSwitch = true;
+
+            canLoadinitialParallax = true;
+            canLoadnextParallax = true;
+
+            canLoadinitialBackground = true;
+            canLoadnextBackground = true;
+
+            //used to get the filename and store the text in a string to add it to the list
             ReadFile = null;
             TextFile = null;
             TextPath = null;
-            widthCounter = 0;
+
+            //used to keep track of the height and width of the screen objects are being mapped to
             heightCounter = 0;
-            ScrollingBlock.X = 0;
-            ScrollingBackground.X = 0;
-            number = 0;
-            scrollingCounter = 0;
-            textureCounter = 0;
-            backgroundCounter = 0;
-            Switch = false;
-            canLoadinitial = true;
-            canLoadinitialBackground = true;
-            DataPoints.Clear();
-            BackgroundList.Clear();
-            Squares.Clear(); //clear the list of platforms that are off screen to the left
-            Triangles.Clear();
-            UpsideDownTriangles.Clear();
-            Spikes.Clear();
-            SwitchBlock.Clear();
-            SwitchBlockAlt.Clear();
-            SwitchTriangle.Clear();
-            SwitchTriangleAlt.Clear();
-            WarningBlock.Clear();
-            NextBackgroundList.Clear();
-            NextSquares.Clear(); //clears the list that the platforms were moved from to create space for the next text file to add to this list
-            NextTriangles.Clear();
-            NextUpsideDownTriangles.Clear();
-            NextSpikes.Clear();
-            NextSwitchBlock.Clear();
-            NextSwitchTriangle.Clear();
-            NextSwitchTriangleAlt.Clear();
-            NextWarningBlock.Clear();
-            NextSwitchBlockAlt.Clear();
+            widthCounter = 0;
+
+
+
+            //ReadFile = null;
+            //TextFile = null;
+            //TextPath = null;
+            //widthCounter = 0;
+            //heightCounter = 0;
+            //ScrollingBlock.X = 0;
+            //ScrollingParallax.X = 0;
+            //ScrollingBackground.X = 0;
+            //number = 0;
+            //scrollingCounter = 8;
+            //textureSwitch = 0;
+            //textureCounter = 0;
+            //parallaxCounter = 0;
+            //backgroundCounter = 0;
+            //Switch = false;
+            //canLoadinitial = true;
+            //canLoadinitialParallax = true;
+            //canLoadinitialBackground = true;
+            //DataPoints.Clear();
+            //SwitchCollisionRectangleAlt.Clear();
+            //SwitchCollisionRectangle.Clear();
+            //CollisionRectangle.Clear();
+            //ParallaxList.Clear();
+            //BackgroundList.Clear();
+            //Squares.Clear(); //clear the list of platforms that are off screen to the left
+            //Triangles.Clear();
+            //UpsideDownTriangles.Clear();
+            //Spikes.Clear();
+            //SwitchBlock.Clear();
+            //SwitchBlockAlt.Clear();
+            //SwitchTriangle.Clear();
+            //SwitchTriangleAlt.Clear();
+            //WarningBlock.Clear();
+            //NextSwitchCollisionRectangleAlt.Clear();
+            //NextSwitchCollisionRectangle.Clear();
+            //NextCollisionRectangle.Clear();
+            //NextParallaxList.Clear();
+            //NextBackgroundList.Clear();
+            //NextSquares.Clear(); //clears the list that the platforms were moved from to create space for the next text file to add to this list
+            //NextTriangles.Clear();
+            //NextUpsideDownTriangles.Clear();
+            //NextSpikes.Clear();
+            //NextSwitchBlock.Clear();
+            //NextSwitchTriangle.Clear();
+            //NextSwitchTriangleAlt.Clear();
+            //NextWarningBlock.Clear();
+            //NextSwitchBlockAlt.Clear();
         }
 
         public int ResetFiles()
         {
-            if (backgroundCounter > 7) //has to be one less than the number of backgrounds
+            if (textureSwitch > 8)
+            {
+                textureSwitch = 0;
+                canSwitch = true;
+                textureCounter++;
+            }
+            if (parallaxCounter > 1)
+            {
+                parallaxCounter = 0;
+            }
+            if (backgroundCounter > 23) //has to be one less than the number of backgrounds
             {
                 backgroundCounter = 0;
             }
@@ -672,15 +947,22 @@ namespace TheImpossiblerGame
             {
                 textureCounter = 0;
             }
-            if (scrollingCounter > 2)
+            //if (scrollingCounter > 2)
+            //{
+            //    scrollingCounter = 0;
+            //}
+            if (number > 9) //has to be one less than the number of levels
             {
-                scrollingCounter = 0;
-            }
-            if (number > 5) //has to be one less than the number of levels
-            {
+                Switch = false;
                 number = 0;
-                scrollingCounter++;
-                textureCounter++;
+                if (scrollingCounter < 14)
+                {
+                    scrollingCounter += 2;
+                }
+                else if (scrollingCounter == 14)
+                {
+                    scrollingCounter++;
+                }
             }
             return scrollingCounter;
         }
@@ -731,12 +1013,28 @@ namespace TheImpossiblerGame
                 else if (DataPoints[i] == "2") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle(Platforms.X + TileWidth / 8, (Platforms.Y + TileHeight) - TileHeight / 3, TileWidth - TileWidth / 4, TileHeight / 3);
+                    CollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 6, (Platforms.Y + TileHeight) - ((TileHeight / 3) * 2), ((TileWidth / 2) - TileWidth / 6), TileHeight / 3);
+                    CollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 15, Platforms.Y + TileHeight / 11, ((TileWidth / 8)), TileHeight / 4);
+                    CollisionRectangle.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     Triangles.Add(Platforms);
                 }
                 else if (DataPoints[i] == "3") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle(Platforms.X + TileWidth / 8, Platforms.Y, TileWidth - TileWidth / 4, TileHeight / 3);
+                    CollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 6, (Platforms.Y + TileHeight) - ((TileHeight / 3) * 2), ((TileWidth / 2) - TileWidth / 6), TileHeight / 3);
+                    CollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 15, (Platforms.Y + TileHeight) - TileHeight / 3, ((TileWidth / 8)), TileHeight / 4);
+                    CollisionRectangle.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     UpsideDowntriangles.Add(Platforms);
                 }
@@ -767,18 +1065,35 @@ namespace TheImpossiblerGame
                 else if (DataPoints[i] == "8") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle(Platforms.X + TileWidth / 8, (Platforms.Y + TileHeight) - TileHeight / 3, TileWidth - TileWidth / 4, TileHeight / 3);
+                    SwitchCollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 6, (Platforms.Y + TileHeight) - ((TileHeight / 3) * 2), ((TileWidth / 2) - TileWidth / 6), TileHeight / 3);
+                    SwitchCollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 15, Platforms.Y + TileHeight / 11, ((TileWidth / 8)), TileHeight / 4);
+                    SwitchCollisionRectangle.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     SwitchTriangle.Add(Platforms);
                 }
                 else if (DataPoints[i] == "9") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle(widthCounter * TileWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle(Platforms.X + TileWidth / 8, Platforms.Y, TileWidth - TileWidth / 4, TileHeight / 3);
+                    SwitchCollisionRectangleAlt.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 6, (Platforms.Y + TileHeight) - ((TileHeight / 3) * 2), ((TileWidth / 2) - TileWidth / 6), TileHeight / 3);
+                    SwitchCollisionRectangleAlt.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 15, (Platforms.Y + TileHeight) - TileHeight / 3, ((TileWidth / 8)), TileHeight / 4);
+                    SwitchCollisionRectangleAlt.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     SwitchTriangleAlt.Add(Platforms);
                 }
             }
             DataPoints.Clear(); //clears the information read in the file to open space to write new information for another file
             canLoadnext = true; //set this value to true so we can load 2 files at once at the beginning
+            textureSwitch++;
         }
 
         public void GeneratePlatformsOffScreen() //handles all platform generation after the first text file is read
@@ -829,12 +1144,28 @@ namespace TheImpossiblerGame
                 else if (DataPoints[i] == "2") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle(Platforms.X + TileWidth / 8, (Platforms.Y + TileHeight) - TileHeight / 3, TileWidth - TileWidth / 4, TileHeight / 3);
+                    NextCollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 6, (Platforms.Y + TileHeight) - ((TileHeight / 3) * 2), ((TileWidth / 2) - TileWidth / 6), TileHeight / 3);
+                    NextCollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 15, Platforms.Y + TileHeight / 11, ((TileWidth / 8)), TileHeight / 4);
+                    NextCollisionRectangle.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     NextTriangles.Add(Platforms);
                 }
                 else if (DataPoints[i] == "3") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle(Platforms.X + TileWidth / 8, Platforms.Y, TileWidth - TileWidth / 4, TileHeight / 3);
+                    NextCollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 6, (Platforms.Y + TileHeight) - ((TileHeight / 3) * 2), ((TileWidth / 2) - TileWidth / 6), TileHeight / 3);
+                    NextCollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 15, (Platforms.Y + TileHeight) - TileHeight / 3, ((TileWidth / 8)), TileHeight / 4);
+                    NextCollisionRectangle.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     NextUpsideDownTriangles.Add(Platforms);
                 }
@@ -865,22 +1196,58 @@ namespace TheImpossiblerGame
                 else if (DataPoints[i] == "8") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle(Platforms.X + TileWidth / 8, (Platforms.Y + TileHeight) - TileHeight / 3, TileWidth - TileWidth / 4, TileHeight / 3);
+                    NextSwitchCollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 6, (Platforms.Y + TileHeight) - ((TileHeight / 3) * 2), ((TileWidth / 2) - TileWidth / 6), TileHeight / 3);
+                    NextSwitchCollisionRectangle.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 15, Platforms.Y + TileHeight / 11, ((TileWidth / 8)), TileHeight / 4);
+                    NextSwitchCollisionRectangle.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     NextSwitchTriangle.Add(Platforms);
                 }
                 else if (DataPoints[i] == "9") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle(Platforms.X + TileWidth / 8, Platforms.Y, TileWidth - TileWidth / 4, TileHeight / 3);
+                    NextSwitchCollisionRectangleAlt.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 6, (Platforms.Y + TileHeight) - ((TileHeight / 3) * 2), ((TileWidth / 2) - TileWidth / 6), TileHeight / 3);
+                    NextSwitchCollisionRectangleAlt.Add(Collision);
+                    Collision = new Rectangle(Platforms.Center.X - TileWidth / 15, (Platforms.Y + TileHeight) - TileHeight / 3, ((TileWidth / 8)), TileHeight / 4);
+                    NextSwitchCollisionRectangleAlt.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     NextSwitchTriangleAlt.Add(Platforms);
                 }
             }
             DataPoints.Clear(); //clear the data stored from the file after the platforms are generated to open space for a new file to be read
             canLoadnext = true; //set this value to true so we can load 2 files at once at the beginning
+            textureSwitch++;
+        }
+
+        public void GenerateParallaxOnScreen()
+        {
+            parallaxCounter++;
+            Parallax = new Rectangle(0, 0, screenWidth, screenHeight);
+            ParallaxList.Add(Parallax);
+            canLoadinitialParallax = false;
+            canLoadnextParallax = true;
+        }
+
+        public void GenerateParallaxOffScreen()
+        {
+            parallaxCounter++;
+            Parallax = new Rectangle(screenWidth, 0, screenWidth, screenHeight);
+            NextParallaxList.Add(Parallax);
+            canLoadnextParallax = true;
         }
 
         public void GenerateBackgroundsOnScreen()
         {
+            //textureSwitch++;
+            backgroundCounter++;
             Background = new Rectangle(0, 0, screenWidth, screenHeight);
             BackgroundList.Add(Background);
             canLoadinitialBackground = false;
@@ -889,6 +1256,7 @@ namespace TheImpossiblerGame
 
         public void GenerateBackgroundsOffScreen()
         {
+            //textureSwitch++;
             backgroundCounter++;
             Background = new Rectangle(screenWidth, 0, screenWidth, screenHeight);
             NextBackgroundList.Add(Background);
@@ -900,6 +1268,22 @@ namespace TheImpossiblerGame
 
         public virtual void Draw(SpriteBatch spriteBatch) //method to draw platforms/objects
         {
+            //for (int i = 0; i < CollisionRectangle.Count; i++)
+            //{
+            //    spriteBatch.Draw(SwitchBlockTexture, CollisionRectangle[i], Color.White);
+            //}
+            //for (int i = 0; i < NextCollisionRectangle.Count; i++)
+            //{
+            //    spriteBatch.Draw(SwitchBlockTexture, NextCollisionRectangle[i], Color.White);
+            //}
+            for (int i = 0; i < ParallaxList.Count; i++)
+            {
+                spriteBatch.Draw(Parallaxtexture, ParallaxList[i], Color.White);
+            }
+            for (int i = 0; i < NextParallaxList.Count; i++)
+            {
+                spriteBatch.Draw(NextParallaxtexture, NextParallaxList[i], Color.White);
+            }
             for (int i = 0; i < BackgroundList.Count; i++)
             {
                 spriteBatch.Draw(Backgroundtexture, BackgroundList[i], Color.White);
