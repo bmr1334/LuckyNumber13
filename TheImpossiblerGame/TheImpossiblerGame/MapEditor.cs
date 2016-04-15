@@ -157,7 +157,7 @@ namespace TheImpossiblerGame
             canLoadnextBackground = true;
             ScrollingBlock = new Rectangle(0, 0, 45, 40);
             ScrollingParallax = new Rectangle(0, 0, 45, 40);
-            ScrollingBackground = new Rectangle(0, 0, 45, 40); //(-10)
+            ScrollingBackground = new Rectangle(8 / 3, 0, 45, 40); //(-10)
         }
 
 
@@ -815,7 +815,7 @@ namespace TheImpossiblerGame
             ScrollingParallax.X = 0;
             BackgroundList.Clear();
             NextBackgroundList.Clear();
-            ScrollingBackground.X = 0;
+            ScrollingBackground.X = 8 / 3;
 
             //Rectangles for collision
             ScrollingBlock.X = 0;
@@ -875,61 +875,11 @@ namespace TheImpossiblerGame
             //used to keep track of the height and width of the screen objects are being mapped to
             heightCounter = 0;
             widthCounter = 0;
-
-
-
-            //ReadFile = null;
-            //TextFile = null;
-            //TextPath = null;
-            //widthCounter = 0;
-            //heightCounter = 0;
-            //ScrollingBlock.X = 0;
-            //ScrollingParallax.X = 0;
-            //ScrollingBackground.X = 0;
-            //number = 0;
-            //scrollingCounter = 8;
-            //textureSwitch = 0;
-            //textureCounter = 0;
-            //parallaxCounter = 0;
-            //backgroundCounter = 0;
-            //Switch = false;
-            //canLoadinitial = true;
-            //canLoadinitialParallax = true;
-            //canLoadinitialBackground = true;
-            //DataPoints.Clear();
-            //SwitchCollisionRectangleAlt.Clear();
-            //SwitchCollisionRectangle.Clear();
-            //CollisionRectangle.Clear();
-            //ParallaxList.Clear();
-            //BackgroundList.Clear();
-            //Squares.Clear(); //clear the list of platforms that are off screen to the left
-            //Triangles.Clear();
-            //UpsideDownTriangles.Clear();
-            //Spikes.Clear();
-            //SwitchBlock.Clear();
-            //SwitchBlockAlt.Clear();
-            //SwitchTriangle.Clear();
-            //SwitchTriangleAlt.Clear();
-            //WarningBlock.Clear();
-            //NextSwitchCollisionRectangleAlt.Clear();
-            //NextSwitchCollisionRectangle.Clear();
-            //NextCollisionRectangle.Clear();
-            //NextParallaxList.Clear();
-            //NextBackgroundList.Clear();
-            //NextSquares.Clear(); //clears the list that the platforms were moved from to create space for the next text file to add to this list
-            //NextTriangles.Clear();
-            //NextUpsideDownTriangles.Clear();
-            //NextSpikes.Clear();
-            //NextSwitchBlock.Clear();
-            //NextSwitchTriangle.Clear();
-            //NextSwitchTriangleAlt.Clear();
-            //NextWarningBlock.Clear();
-            //NextSwitchBlockAlt.Clear();
         }
 
         public int ResetFiles()
         {
-            if (textureSwitch > 8)
+            if (textureSwitch > 6)
             {
                 textureSwitch = 0;
                 canSwitch = true;
@@ -947,10 +897,6 @@ namespace TheImpossiblerGame
             {
                 textureCounter = 0;
             }
-            //if (scrollingCounter > 2)
-            //{
-            //    scrollingCounter = 0;
-            //}
             if (number > 9) //has to be one less than the number of levels
             {
                 Switch = false;
@@ -958,10 +904,6 @@ namespace TheImpossiblerGame
                 if (scrollingCounter < 14)
                 {
                     scrollingCounter += 2;
-                }
-                else if (scrollingCounter == 14)
-                {
-                    scrollingCounter++;
                 }
             }
             return scrollingCounter;
