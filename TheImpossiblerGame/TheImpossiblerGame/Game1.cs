@@ -48,7 +48,8 @@ namespace TheImpossiblerGame
             labBg1, labBg2, labBg3, labBg4,  //backgrounds
             subBg1, subBg2, subBg3, subBg4, subCol, //backgrounds
             cityBgBack1, cityBgBack2, cityBgFront, //backgrounds
-            menuText; //menu texture for return to main menu
+            menuText, //menu texture for return to main menu
+            menuTextScreen; //menu texture that is under text so it can be read easier
 
         List<Texture2D> backgrounds;
         List<Texture2D> parallax;
@@ -61,7 +62,6 @@ namespace TheImpossiblerGame
         GameState gamestate;
         KeyboardState kstate, prevKstate; //used in finite state machine
         MouseState mstate, prevMstate; //used in finite state machine
-
 
         public Game1()
         {
@@ -118,6 +118,7 @@ namespace TheImpossiblerGame
             resume = Content.Load<Texture2D>("Menus\\ResumeText");
             spaceBar = Content.Load<Texture2D>("Menus\\SpacebarText");
             font = Content.Load<SpriteFont>("Menus\\font");
+            menuTextScreen = Content.Load<Texture2D>("Menus\\menuTextScreen");
 
             //general game object loads - Brandon Rodriguez, Parker Wilson
             spikeDark = Content.Load<Texture2D>("Game Textures\\SpikeDark");
@@ -208,7 +209,6 @@ namespace TheImpossiblerGame
             //parallax.Add(subCol);
             parallax.Add(cityBgBack1);
             parallax.Add(cityBgBack2);
-
         }
 
         /// <summary>
@@ -508,6 +508,9 @@ namespace TheImpossiblerGame
                     //draws main logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
+
+                    //draws text screen overlay
+                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 675, 600, 140), Color.White);
 
                     //draws "Press spacebar" text
                     spriteBatch.Draw(spaceBar, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
