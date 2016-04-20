@@ -177,6 +177,9 @@
     <Content Include="Content\Menus\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Menus\MenuScreenshot.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Menus\MenuText.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -199,6 +202,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Menus\TallFilm_license %28license for menu font%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Menus\TitleBackground.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Player.png">

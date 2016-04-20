@@ -49,13 +49,14 @@ namespace TheImpossiblerGame
             subBg1, subBg2, subBg3, subBg4, subCol, //backgrounds
             cityBgBack1, cityBgBack2, cityBgFront, //backgrounds
             menuText, //menu texture for return to main menu
-            menuTextScreen; //menu texture that is under text so it can be read easier
+            menuTextScreen, //menu texture that is under text so it can be read easier
+            menuScreenshot, titleBackground;
 
         List<Texture2D> backgrounds;
         List<Texture2D> parallax;
 
         //rectangle variables
-        Rectangle playRect, resumeRect, exitRect, menuRect;
+        Rectangle playRect, resumeRect, exitRect, menuRect, title;
 
         //enum to switch game states  - Brandon Rodriguez, Parker Wilson
         enum GameState { titleMenu, mainMenu, pauseMenu, game, gameOver, credits };
@@ -85,9 +86,10 @@ namespace TheImpossiblerGame
             mapEditor = new MapEditor(); //creates a map editor object
             ChangeWindowsSize(); //changes the window size when game initially runs
             mapEditor.SetDimensions();
-            p1 = new Player(200, 800, mapEditor.tileWidth, mapEditor.tileHeight);
+            p1 = new Player(200, 935, mapEditor.tileWidth, mapEditor.tileHeight);
             backgrounds = new List<Texture2D>();
             parallax = new List<Texture2D>();
+            title = new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height);
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -106,7 +108,7 @@ namespace TheImpossiblerGame
             box = this.Content.Load<Texture2D>("SquareLab1");
             triangle = this.Content.Load<Texture2D>("TriangleLab1");
             flip = this.Content.Load<Texture2D>("TriangleLab1Flip");
-            player = this.Content.Load<Texture2D>("SquareLab1");
+            player = this.Content.Load<Texture2D>("Player");
 
             //general menu loads - Brandon Rodriguez, Parker Wilson
             menuText = Content.Load<Texture2D>("Menus\\MenuText");
@@ -119,6 +121,8 @@ namespace TheImpossiblerGame
             spaceBar = Content.Load<Texture2D>("Menus\\SpacebarText");
             font = Content.Load<SpriteFont>("Menus\\font");
             menuTextScreen = Content.Load<Texture2D>("Menus\\menuTextScreen");
+            menuScreenshot = Content.Load<Texture2D>("Menus\\MenuScreenshot");
+            titleBackground = Content.Load<Texture2D>("Menus\\TitleBackground");
 
             //general game object loads - Brandon Rodriguez, Parker Wilson
             spikeDark = Content.Load<Texture2D>("Game Textures\\SpikeDark");
@@ -237,7 +241,14 @@ namespace TheImpossiblerGame
                 
                 case GameState.titleMenu:
                     kstate = Keyboard.GetState();
-                    if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)) gamestate = GameState.mainMenu;
+                    if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)){
+                        //if(title.Bottom > 0)
+                        //{
+                        //    title.Y-= gameTime.ElapsedGameTime.Milliseconds;  
+                        //}
+
+                        gamestate = GameState.mainMenu;
+                    }
 
                     break;
                 case GameState.mainMenu:
@@ -432,7 +443,7 @@ namespace TheImpossiblerGame
                         mapEditor.ResetGame();
                         g = 1;
                         p1.SetX(200);
-                        p1.SetY(800);
+                        p1.SetY(935);
                         ResetTileTexture();
                         ResetParallaxTexture();
                         ResetBackgroundTexture();
@@ -467,7 +478,7 @@ namespace TheImpossiblerGame
                         mapEditor.ResetGame();
                         g = 1;
                         p1.SetX(200);
-                        p1.SetY(800);
+                        p1.SetY(935);
                         ResetTileTexture();
                         ResetParallaxTexture();
                         ResetBackgroundTexture();
@@ -505,12 +516,15 @@ namespace TheImpossiblerGame
             {
                 case GameState.titleMenu:
 
+                    //draws splash screen
+                    spriteBatch.Draw(titleBackground, title, Color.White);
+
                     //draws main logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
 
                     //draws text screen overlay
-                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 675, 600, 140), Color.White);
+                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 665, 585, 150), Color.White);
 
                     //draws "Press spacebar" text
                     spriteBatch.Draw(spaceBar, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
@@ -518,9 +532,16 @@ namespace TheImpossiblerGame
 
                     break;
                 case GameState.mainMenu:
+
+                    //draws fake background
+                    spriteBatch.Draw(menuScreenshot, new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height), Color.White);
+
                     //draws main logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
+
+                    //draws text screen overlay
+                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 650, 585, 300), Color.White);
 
                     //draws "Play game" text
                     spriteBatch.Draw(play, playRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
@@ -536,7 +557,9 @@ namespace TheImpossiblerGame
                     break;
                 case GameState.game:
 
-                    mapEditor.Draw(spriteBatch); //draws the objects in the text file
+                    //draws the objects in the text file
+                    mapEditor.Draw(spriteBatch);
+
                     if(g == 1)
                     {
                         p1.Draw(spriteBatch, player, SpriteEffects.None);
@@ -547,12 +570,18 @@ namespace TheImpossiblerGame
                     }
 
                     //draws score
-                    spriteBatch.DrawString(font, "Speed: " + mapEditor.Number, new Vector2(5, -10), Color.Black);
-                   // spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(5, -10), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                    //spriteBatch.DrawString(font, "Speed: " + mapEditor.Number, new Vector2(5, -10), Color.Black);
+                    spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(5, -10), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
 
                     break;
                 case GameState.gameOver:
-                    mapEditor.Draw(spriteBatch); //draws the objects in the text file
+
+                    //draws the objects in the text file
+                    mapEditor.Draw(spriteBatch);
+
+                    //draws text screen overlay
+                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 490, 585, 410), Color.White);
+
                     //draws "Exit game" text
                     spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 5, 500, 100), Color.White);
@@ -560,12 +589,19 @@ namespace TheImpossiblerGame
                     //draws "Return to menu" text
                     spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, 500, 100), Color.White);
+
                     break;
                 case GameState.pauseMenu:
-                    mapEditor.Draw(spriteBatch); //draws the objects in the text file
+
+                    //draws the objects in the text file
+                    mapEditor.Draw(spriteBatch);
+
                     //draws pause logo
                     spriteBatch.Draw(pause, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 7,
                         GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 700, 300), Color.White);
+
+                    //draws text screen overlay
+                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 490, 585, 410), Color.White);
 
                     //draws "Resume game" text
                     spriteBatch.Draw(resume, resumeRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
@@ -587,6 +623,7 @@ namespace TheImpossiblerGame
                     {
                         p1.Draw(spriteBatch, player, SpriteEffects.FlipVertically);
                     }
+
                     break;
             }
 
