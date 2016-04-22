@@ -48,6 +48,8 @@ namespace TheImpossiblerGame
         protected Rectangle Collision;
         public Rectangle ScrollingBlock;
         protected List<Rectangle> allPlatforms;
+        public List<Rectangle> SidewaysCollision;
+        public List<Rectangle> NextSidewaysCollision;
         public List<Rectangle> SwitchCollisionRectangleAlt;
         public List<Rectangle> NextSwitchCollisionRectangleAlt;
         public List<Rectangle> SwitchCollisionRectangle;
@@ -75,6 +77,10 @@ namespace TheImpossiblerGame
 
         StreamReader reader; //used to open the file for reading
         protected List<string> DataPoints; //used to store the text in the textfile into a list 
+        int highscore;
+        int displayHighscore;
+        int score;
+        int displayScore;
         int number = 0; //used to load another text file
         int scrollingCounter = 8;
         int textureSwitch = 0;
@@ -88,6 +94,10 @@ namespace TheImpossiblerGame
         bool canLoadnext;
 
         bool canSwitch;
+
+        bool canSave;
+        bool canRead;
+        bool canReadhighScore;
 
         bool canLoadinitialParallax;
         bool canLoadnextParallax;
@@ -147,6 +157,8 @@ namespace TheImpossiblerGame
             NextSwitchCollisionRectangle = new List<Rectangle>();
             SwitchCollisionRectangleAlt = new List<Rectangle>();
             NextSwitchCollisionRectangleAlt = new List<Rectangle>();
+            SidewaysCollision = new List<Rectangle>();
+            NextSidewaysCollision = new List<Rectangle>();
             Collision = new Rectangle();
             canLoadinitial = true;
             canLoadnext = true;
@@ -155,6 +167,9 @@ namespace TheImpossiblerGame
             canLoadnextParallax = true;
             canLoadinitialBackground = true;
             canLoadnextBackground = true;
+            canSave = true;
+            canRead = true;
+            canReadhighScore = true;
             ScrollingBlock = new Rectangle(0, 0, 45, 40);
             ScrollingParallax = new Rectangle(0, 0, 45, 40);
             ScrollingBackground = new Rectangle(8 / 3, 0, 45, 40); //(-10)
@@ -612,6 +627,24 @@ namespace TheImpossiblerGame
                 NextSwitchCollisionRectangleAlt = value;
             }
         }
+
+        public List<Rectangle> Sidewayscollision
+        {
+            get { return SidewaysCollision; }
+            set
+            {
+                SidewaysCollision = value;
+            }
+        }
+
+        public List<Rectangle> NextSidewayscollision
+        {
+            get { return NextSidewaysCollision; }
+            set
+            {
+                NextSidewaysCollision = value;
+            }
+        }
         public int ScrollingBlockX //property for scrolling indicator block
         {
             get { return ScrollingBlock.X; }
@@ -657,6 +690,42 @@ namespace TheImpossiblerGame
             }
         }
 
+        public int Score
+        {
+            get { return score; }
+            set
+            {
+                score = value;
+            }
+        }
+
+        public int DisplayScore
+        {
+            get { return displayScore; }
+            set
+            {
+                displayScore = value;
+            }
+        }
+
+        public int HighScore
+        {
+            get { return highscore; }
+            set
+            {
+                highscore = value;
+            }
+        }
+
+        public int DisplayHighScore
+        {
+            get { return displayHighscore; }
+            set
+            {
+                displayHighscore = value;
+            }
+        }
+
         public int ScrollingCounter
         {
             get { return scrollingCounter; }
@@ -675,6 +744,10 @@ namespace TheImpossiblerGame
         public int BackgroundCounter
         {
             get { return backgroundCounter; }
+            set
+            {
+                backgroundCounter = value;
+            }
         }
 
 
@@ -785,6 +858,83 @@ namespace TheImpossiblerGame
             canLoadnext = false;
         }
 
+        public void SaveScore()
+        {
+            if (canSave == true)
+            {
+                Stream write = File.OpenWrite("score.dat");
+                BinaryWriter writer = new BinaryWriter(write);
+                writer.Write(score);
+                writer.Close();
+            }
+            canSave = false;
+        }
+
+        public void ReadScore()
+        {
+            if (canRead == true)
+            {
+                Stream read = File.OpenRead("score.dat");
+                BinaryReader reader = new BinaryReader(read);
+                displayScore = reader.ReadInt32();
+                reader.Close();
+            }
+            canRead = false;
+        }
+
+        public void SaveHighScore()
+        {
+            GetHighScore();
+            if (highscore < score)
+            {
+                highscore = score;
+                canSave = true;
+            }
+            if (canSave == true)
+            {
+                Stream write = File.OpenWrite("highscore.dat");
+                BinaryWriter writer = new BinaryWriter(write);
+                writer.Write(highscore);
+                writer.Close();
+            }
+            canSave = false;
+        }
+
+        public void ReadHighScore()
+        {
+            if (canReadhighScore == true)
+            {
+                Stream read = File.OpenRead("highscore.dat");
+                BinaryReader reader = new BinaryReader(read);
+                displayHighscore = reader.ReadInt32();
+                reader.Close();
+            }
+            canReadhighScore = false;
+        }
+
+        public void GetHighScore()
+        {
+            string[] files = Directory.GetFiles(".");
+            foreach (string s in files)
+            {
+                if (s.Contains("highscore.dat"))
+                {
+                    Stream read = File.OpenRead("highscore.dat");
+                    BinaryReader reader = new BinaryReader(read);
+                    highscore = reader.ReadInt32();
+                    reader.Close();
+                }
+            }
+        }
+
+        public void ResetHighScore()
+        {
+            Stream write = File.OpenWrite("highscore.dat");
+            BinaryWriter writer = new BinaryWriter(write);
+            writer.Write(0);
+            writer.Close();
+        }
+
         public void ResetGame()
         {
             //textures for the different objects
@@ -820,6 +970,8 @@ namespace TheImpossiblerGame
             //Rectangles for collision
             ScrollingBlock.X = 0;
             allPlatforms.Clear();
+            SidewaysCollision.Clear();
+            NextSidewaysCollision.Clear();
             SwitchCollisionRectangleAlt.Clear();
             NextSwitchCollisionRectangleAlt.Clear();
             SwitchCollisionRectangle.Clear();
@@ -861,6 +1013,10 @@ namespace TheImpossiblerGame
 
             canSwitch = true;
 
+            canSave = true;
+            canRead = true;
+            canReadhighScore = true;
+
             canLoadinitialParallax = true;
             canLoadnextParallax = true;
 
@@ -879,11 +1035,25 @@ namespace TheImpossiblerGame
 
         public int ResetFiles()
         {
-            if (textureSwitch > 6)
+            if (number == 3 || number == 5 || number == 7 || number == 9 || number == 11 || number == 13)
+            {
+                if (textureSwitch == 0)
+                {
+                    canSwitch = true;
+                    textureSwitch++;
+                    textureCounter++;
+                }
+                //if (NextBackgroundList.Count == 0)
+                //{
+                //    if (Backgroundtexture != NextBackgroundtexture)
+                //    {
+                //        Backgroundtexture = NextBackgroundtexture;
+                //    }
+                //}
+            }
+            else
             {
                 textureSwitch = 0;
-                canSwitch = true;
-                textureCounter++;
             }
             if (parallaxCounter > 1)
             {
@@ -897,8 +1067,16 @@ namespace TheImpossiblerGame
             {
                 textureCounter = 0;
             }
-            if (number > 9) //has to be one less than the number of levels
+            if (number > 11)
             {
+                backgroundCounter = 0;
+            }
+            if (number > 13) //has to be one less than the number of levels
+            {
+                canSwitch = true;
+                textureCounter = 0;
+                textureSwitch = 0;
+                //backgroundCounter = 0;
                 Switch = false;
                 number = 0;
                 if (scrollingCounter < 14)
@@ -1035,7 +1213,7 @@ namespace TheImpossiblerGame
             }
             DataPoints.Clear(); //clears the information read in the file to open space to write new information for another file
             canLoadnext = true; //set this value to true so we can load 2 files at once at the beginning
-            textureSwitch++;
+            //textureSwitch++;
         }
 
         public void GeneratePlatformsOffScreen() //handles all platform generation after the first text file is read
@@ -1079,6 +1257,10 @@ namespace TheImpossiblerGame
                     else //used to draw the blocks throughout the map
                     {
                         Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                        Collision = new Rectangle((widthCounter * TileWidth) + screenWidth - 1, heightCounter * TileHeight + tileHeight / 4, 1, TileHeight - TileHeight / 2);
+                        NextSidewaysCollision.Add(Collision);
+
                         //allPlatforms.Add(Platforms);
                         NextSquares.Add(Platforms);
                     }
@@ -1120,18 +1302,30 @@ namespace TheImpossiblerGame
                 else if (DataPoints[i] == "5") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle((widthCounter * TileWidth) + screenWidth - 1, heightCounter * TileHeight + tileHeight / 4, 1, TileHeight - TileHeight / 2);
+                    NextSidewaysCollision.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     NextWarningBlock.Add(Platforms);
                 }
                 else if (DataPoints[i] == "6") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle((widthCounter * TileWidth) + screenWidth - 1, heightCounter * TileHeight + tileHeight / 4, 1, TileHeight - TileHeight / 2);
+                    NextSidewaysCollision.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     NextSwitchBlock.Add(Platforms);
                 }
                 else if (DataPoints[i] == "7") //if a 2 is found then load a triangle
                 {
                     Platforms = new Rectangle((widthCounter * TileWidth) + screenWidth, heightCounter * TileHeight, TileWidth, TileHeight);
+
+                    Collision = new Rectangle((widthCounter * TileWidth) + screenWidth - 1, heightCounter * TileHeight + tileHeight / 4, 1, TileHeight - TileHeight / 2);
+                    NextSidewaysCollision.Add(Collision);
+
                     //allPlatforms.Add(Platforms);
                     NextSwitchBlockAlt.Add(Platforms);
                 }
@@ -1166,7 +1360,7 @@ namespace TheImpossiblerGame
             }
             DataPoints.Clear(); //clear the data stored from the file after the platforms are generated to open space for a new file to be read
             canLoadnext = true; //set this value to true so we can load 2 files at once at the beginning
-            textureSwitch++;
+            //textureSwitch++;
         }
 
         public void GenerateParallaxOnScreen()
@@ -1395,7 +1589,14 @@ namespace TheImpossiblerGame
                     }
                 }
             }
+            //for (int i = 0; i < SidewaysCollision.Count; i++)
+            //{
+            //    spriteBatch.Draw(Parallaxtexture, SidewaysCollision[i], Color.White);
+            //}
+            //for (int i = 0; i < NextSidewaysCollision.Count; i++)
+            //{
+            //    spriteBatch.Draw(NextParallaxtexture, NextSidewaysCollision[i], Color.White);
+            //}
         }
     }
 }
-

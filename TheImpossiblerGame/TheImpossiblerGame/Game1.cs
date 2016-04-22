@@ -51,13 +51,13 @@ namespace TheImpossiblerGame
             cityBgBack1, cityBgBack2, cityBgFront, //backgrounds
             menuText, //menu texture for return to main menu
             menuTextScreen, //menu texture that is under text so it can be read easier
-            menuScreenshot, titleBackground;
+            menuScreenshot, titleBackground, gameOverLogo, newGame;
 
         List<Texture2D> backgrounds;
         List<Texture2D> parallax;
 
         //rectangle variables
-        Rectangle playRect, resumeRect, exitRect, menuRect, title;
+        Rectangle playRect, resumeRect, exitRect, menuRect, title, newGameRect;
 
         //enum to switch game states  - Brandon Rodriguez, Parker Wilson
         enum GameState { titleMenu, mainMenu, pauseMenu, game, gameOver, credits, garageDoor };
@@ -124,6 +124,8 @@ namespace TheImpossiblerGame
             menuTextScreen = Content.Load<Texture2D>("Menus\\menuTextScreen");
             menuScreenshot = Content.Load<Texture2D>("Menus\\MenuScreenshot");
             titleBackground = Content.Load<Texture2D>("Menus\\TitleBackground");
+            gameOverLogo = Content.Load<Texture2D>("Menus\\GameOver");
+            newGame = Content.Load<Texture2D>("Menus\\NewGameText");
 
             //general game object loads - Brandon Rodriguez, Parker Wilson
             spikeDark = Content.Load<Texture2D>("Game Textures\\SpikeDark");
@@ -192,7 +194,7 @@ namespace TheImpossiblerGame
             backgrounds.Add(labBg2);
             backgrounds.Add(labBg1);
             backgrounds.Add(labBg4);
-            backgrounds.Add(labBg3);           
+            backgrounds.Add(labBg3);
             backgrounds.Add(subBg1);
             backgrounds.Add(subBg2);
             backgrounds.Add(subBg3);
@@ -240,7 +242,6 @@ namespace TheImpossiblerGame
             //switches between states - Brandon Rodriguez, Parker Wilson, Nicholas Cato
             switch (gamestate)
             {
-                
                 case GameState.titleMenu:
                     kstate = Keyboard.GetState();
                     if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)){
@@ -252,7 +253,7 @@ namespace TheImpossiblerGame
                 case GameState.garageDoor:
                     if (title.Bottom > 0)
                     {
-                        title.Y -= 15;
+                        title.Y -= (GraphicsDevice.DisplayMode.Height / 216) * 3;
                     }
                     else
                     {
@@ -264,8 +265,8 @@ namespace TheImpossiblerGame
                 case GameState.mainMenu:
 
                     //if play game is clicked
-                    if (mstate.LeftButton == ButtonState.Released && mstate.X > playRect.X && mstate.X < playRect.X + 500 && //width
-                        mstate.Y > playRect.Y && mstate.Y < playRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > playRect.X && mstate.X < playRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
+                        mstate.Y > playRect.Y && mstate.Y < playRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         score = 0;
                         gamestate = GameState.game;
@@ -273,8 +274,8 @@ namespace TheImpossiblerGame
                     }
 
                     //if exit game is clicked
-                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
-                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         Exit();
                     }
@@ -284,10 +285,10 @@ namespace TheImpossiblerGame
                     break;
                 case GameState.game:
                     mapEditor.ResetFiles();
-                    //if (speed != mapEditor.ScrollingCounter)
-                    //{
-                    //    speed = mapEditor.ScrollingCounter;
-                    //}
+                    if (speed != mapEditor.ScrollingCounter)
+                    {
+                        speed = mapEditor.ScrollingCounter;
+                    }
                     if (mapEditor.CanLoadInitialParallax == true)
                     {
                         mapEditor.GenerateParallaxOnScreen();
@@ -434,33 +435,45 @@ namespace TheImpossiblerGame
                     }
 
                     //score increases here
+                    //score += 1;
                     score += gameTime.ElapsedGameTime.TotalSeconds * 2;
 
                     //pause if escape is pressed
                     if (kstate.IsKeyDown(Keys.Escape) && prevKstate.IsKeyUp(Keys.Escape)) gamestate = GameState.pauseMenu;
 
-                    //game over if player x position decreses, ie collides with something
-                    if (p1.x < 200) gamestate = GameState.gameOver;
-
                     break;
                 case GameState.gameOver:
                     kstate = Keyboard.GetState();
 
-                    //Score saved into a binary file that is created here
-                    Stream outStream = File.OpenWrite("scores.dat");
-                    BinaryWriter bin = new BinaryWriter(outStream);
-                    bin.Write(score);
-                    bin.Close();
-                    outStream.Close();
+                    mapEditor.Score = (int)score;
+                    mapEditor.SaveScore();
+                    mapEditor.ReadScore();
+                    mapEditor.SaveHighScore();
+                    mapEditor.ReadHighScore();
 
-                    //if return to menu is clicked
-                    if (mstate.LeftButton == ButtonState.Released && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
-                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
+                    //if new game is clicked
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > newGameRect.X && mstate.X < newGameRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
+                        mstate.Y > newGameRect.Y && mstate.Y < newGameRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         mapEditor.ResetGame();
                         g = 1;
-                        p1.SetX(200);
-                        p1.SetY(935);
+                        p1.SetX(2 * (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135));
+                        p1.SetY((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 9 + (GraphicsDevice.DisplayMode.Height / 216) * 7);
+                        ResetTileTexture();
+                        ResetParallaxTexture();
+                        ResetBackgroundTexture();
+                        score = 0;
+                        gamestate = GameState.game;
+                    }
+
+                    //if return to menu is clicked
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > menuRect.X && mstate.X < menuRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
+                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
+                    {
+                        mapEditor.ResetGame();
+                        g = 1;
+                        p1.SetX(2 * (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135));
+                        p1.SetY((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 9 + (GraphicsDevice.DisplayMode.Height / 216) * 7);
                         ResetTileTexture();
                         ResetParallaxTexture();
                         ResetBackgroundTexture();
@@ -468,8 +481,8 @@ namespace TheImpossiblerGame
                     }
 
                     //if exit game is clicked
-                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
-                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         Exit();
                     }
@@ -482,20 +495,20 @@ namespace TheImpossiblerGame
                     if (kstate.IsKeyDown(Keys.Escape) && prevKstate.IsKeyUp(Keys.Escape)) gamestate = GameState.game;
 
                     //if resume game is clicked
-                    if (mstate.LeftButton == ButtonState.Released && mstate.X > resumeRect.X && mstate.X < resumeRect.X + 500 && //width
-                        mstate.Y > resumeRect.Y && mstate.Y < resumeRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > resumeRect.X && mstate.X < resumeRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
+                        mstate.Y > resumeRect.Y && mstate.Y < resumeRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         gamestate = GameState.game;
                     }
 
                     //if return to menu is clicked
-                    if (mstate.LeftButton == ButtonState.Released && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
-                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > menuRect.X && mstate.X < menuRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
+                        mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         mapEditor.ResetGame();
                         g = 1;
-                        p1.SetX(200);
-                        p1.SetY(935);
+                        p1.SetX(2 * (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135));
+                        p1.SetY((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 9 + (GraphicsDevice.DisplayMode.Height / 216) * 7);
                         ResetTileTexture();
                         ResetParallaxTexture();
                         ResetBackgroundTexture();
@@ -503,8 +516,8 @@ namespace TheImpossiblerGame
                     }
 
                     //if exit game is clicked
-                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + 500 && //width
-                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
+                    if (mstate.LeftButton == ButtonState.Released && mstate.X > exitRect.X && mstate.X < exitRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
+                        mstate.Y > exitRect.Y && mstate.Y < exitRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
                         Exit();
                     }
@@ -538,14 +551,19 @@ namespace TheImpossiblerGame
 
                     //draws main logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
-                        GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, GraphicsDevice.DisplayMode.Width - (GraphicsDevice.DisplayMode.Width / 3) - (GraphicsDevice.DisplayMode.Width / 24),
+                        GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96), Color.White);
 
                     //draws text screen overlay
-                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 665, 585, 150), Color.White);
+                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Width - (GraphicsDevice.DisplayMode.Width / 3) - (GraphicsDevice.DisplayMode.Width / 24)) / 2,
+                        GraphicsDevice.DisplayMode.Height - GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 9 + GraphicsDevice.DisplayMode.Height / 216,
+                        GraphicsDevice.DisplayMode.Height - GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 24,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) + (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) / 2), Color.White);
 
                     //draws "Press spacebar" text
                     spriteBatch.Draw(spaceBar, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, 500, 100), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                        GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     break;
 
@@ -555,22 +573,28 @@ namespace TheImpossiblerGame
                     spriteBatch.Draw(menuScreenshot, new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height), Color.White);
 
                     //draws text screen overlay
-                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 650, 585, 300), Color.White);
+                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 6,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 6 + (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) / 2,
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 24,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 3), Color.White);
 
                     //draws "Play game" text
                     spriteBatch.Draw(play, playRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, 500, 100), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                        GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     //draws "Exit game" text
                     spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 4, 500, 100), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 4, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                        GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     //draws splash screen
                     spriteBatch.Draw(titleBackground, title, Color.White);
 
                     //draws main logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
-                        GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, GraphicsDevice.DisplayMode.Width - (GraphicsDevice.DisplayMode.Width / 3) - (GraphicsDevice.DisplayMode.Width / 24),
+                        GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96), Color.White);
 
                     break;
 
@@ -581,18 +605,24 @@ namespace TheImpossiblerGame
 
                     //draws main logo
                     spriteBatch.Draw(logo, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 25,
-                        GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 1200, 500), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, GraphicsDevice.DisplayMode.Width - (GraphicsDevice.DisplayMode.Width / 3) - (GraphicsDevice.DisplayMode.Width / 24),
+                        GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96), Color.White);
 
                     //draws text screen overlay
-                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 650, 585, 300), Color.White);
+                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 6,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 6 + (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) / 2,
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 24,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 3), Color.White);
 
                     //draws "Play game" text
                     spriteBatch.Draw(play, playRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, 500, 100), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                        GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     //draws "Exit game" text
                     spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 4, 500, 100), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 4, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                        GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     break;
                 case GameState.credits:
@@ -614,31 +644,46 @@ namespace TheImpossiblerGame
 
                     //draws score
                     //spriteBatch.DrawString(font, "Speed: " + mapEditor.Number, new Vector2(5, -10), Color.Black);
-                    spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(5, -10), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                    spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(GraphicsDevice.DisplayMode.Height / 216,
+                        (GraphicsDevice.DisplayMode.Height / 216) * -2), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
 
                     break;
                 case GameState.gameOver:
-
-                    //Reads in the score stored in scores.dat
-                    Stream inStream = File.OpenRead("scores.dat");
-                    BinaryReader scoreList = new BinaryReader(inStream);
-                    spriteBatch.DrawString(font, string.Format("Final score: {0:0}", score), new Vector2(5, 100), Color.Black);
-                    spriteBatch.DrawString(font, string.Format("High Scores: {0:0}", scoreList.ReadInt32() + "\n"), new Vector2(5, 150), Color.Black);
-                    scoreList.Close();
 
                     //draws the objects in the text file
                     mapEditor.Draw(spriteBatch);
 
                     //draws text screen overlay
-                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 490, 585, 410), Color.White);
+                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 6 + (GraphicsDevice.DisplayMode.Height / 10 -
+                        GraphicsDevice.DisplayMode.Height / 135) / 2, GraphicsDevice.DisplayMode.Height / 2 - GraphicsDevice.DisplayMode.Height / 6,
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 24, (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 4 +
+                        GraphicsDevice.DisplayMode.Height / 8), Color.White);
+
+                    //draws score
+                    spriteBatch.DrawString(font, string.Format("S   c   o   r   e      :      " + mapEditor.DisplayScore +
+                        "                         H   i   g   h     S   c   o   r   e      :      " +
+                        mapEditor.DisplayHighScore), new Vector2(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
+                        GraphicsDevice.DisplayMode.Height / 3 + GraphicsDevice.DisplayMode.Height / 25), Color.White);
+
+                    //draws "New Game" text
+                    spriteBatch.Draw(newGame, newGameRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
+                       GraphicsDevice.DisplayMode.Height / 2, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                       GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     //draws "Exit game" text
-                    spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 5, 500, 100), Color.White);
+                    spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
+                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 5, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                       GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     //draws "Return to menu" text
-                    spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, 500, 100), Color.White);
+                    spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
+                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                       GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
+
+                    //draws "Game Over" text
+                    spriteBatch.Draw(gameOverLogo, new Rectangle(GraphicsDevice.DisplayMode.Width / 4 - (GraphicsDevice.DisplayMode.Height / 216) * 3,
+                        GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135, (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 10,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 2 + (GraphicsDevice.DisplayMode.Height / 216) * 15), Color.White);
 
                     break;
                 case GameState.pauseMenu:
@@ -648,22 +693,29 @@ namespace TheImpossiblerGame
 
                     //draws pause logo
                     spriteBatch.Draw(pause, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 7,
-                        GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, 700, 300), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 4 - GraphicsDevice.DisplayMode.Height / 6, (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 7,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 3), Color.White);
 
                     //draws text screen overlay
-                    spriteBatch.Draw(menuTextScreen, new Rectangle(600, 490, 585, 410), Color.White);
+                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 6 + (GraphicsDevice.DisplayMode.Height / 10 -
+                        GraphicsDevice.DisplayMode.Height / 135) / 2, GraphicsDevice.DisplayMode.Height / 2 - GraphicsDevice.DisplayMode.Height / 24 - GraphicsDevice.DisplayMode.Height / 216,
+                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 24, (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 4 +
+                        (GraphicsDevice.DisplayMode.Height / 216) * 2), Color.White);
 
                     //draws "Resume game" text
-                    spriteBatch.Draw(resume, resumeRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                       GraphicsDevice.DisplayMode.Height / 2, 500, 100), Color.White);
+                    spriteBatch.Draw(resume, resumeRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
+                       GraphicsDevice.DisplayMode.Height / 2, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                       GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     //draws "Exit game" text
-                    spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 5, 500, 100), Color.White);
+                    spriteBatch.Draw(exit, exitRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
+                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 5, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                       GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     //draws "Return to menu" text
-                    spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
-                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, 500, 100), Color.White);
+                    spriteBatch.Draw(menuText, menuRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
+                       GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 10, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                       GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
 
                     if (g == 1)
                     {
@@ -726,8 +778,22 @@ namespace TheImpossiblerGame
         {
             for (int i = 0; i < backgrounds.Count; i++)
             {
+                //if (mapEditor.Number == 0)
+                //{
+                //    mapEditor.BackgroundCounter = 0;
+                //}
+                if (mapEditor.Number == 4)
+                {
+
+                    mapEditor.BackgroundCounter = 8;
+                }
+                if (mapEditor.Number == 8)
+                {
+                    mapEditor.BackgroundCounter = 16;
+                }
                 if (i == mapEditor.BackgroundCounter)
                 {
+
                     mapEditor.NextBackgroundTexture = backgrounds[i];
                 }
             }
@@ -827,6 +893,22 @@ namespace TheImpossiblerGame
                         break;
                     }
                 }
+                for (int i = 0; i < mapEditor.Sidewayscollision.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y, p1.w, p1.h), mapEditor.Sidewayscollision[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Sidewayscollision[i].Y - mapEditor.tileHeight - 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextSidewayscollision.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y, p1.w, p1.h), mapEditor.NextSidewayscollision[i]) == true)
+                    {
+                        p1.SetY(mapEditor.NextSidewayscollision[i].Y - mapEditor.tileHeight - 5000);
+                        break;
+                    }
+                }
                 for (int i = 0; i < mapEditor.Switchblock.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.Switchblock[i]) == true)
@@ -860,6 +942,24 @@ namespace TheImpossiblerGame
                     {
                         mapEditor.SWITCH = false;
                         p1.SetY(mapEditor.NextSwitchBlockalt[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.Warningblock.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.Warningblock[i]) == true)
+                    {
+                        mapEditor.SWITCH = true;
+                        p1.SetY(mapEditor.Warningblock[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextWarningblock.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.NextWarningblock[i]) == true)
+                    {
+                        mapEditor.SWITCH = true;
+                        p1.SetY(mapEditor.NextWarningblock[i].Y - mapEditor.tileHeight);
                         break;
                     }
                 }
@@ -936,7 +1036,7 @@ namespace TheImpossiblerGame
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Nextspikes[i]) == true)
                     {
-                        p1.SetY(mapEditor.Nextspikes[i].Y + mapEditor.tileHeight + 50000);
+                        p1.SetY(mapEditor.Nextspikes[i].Y + mapEditor.tileHeight + 5000);
                         break;
                     }
                 }
@@ -953,6 +1053,22 @@ namespace TheImpossiblerGame
                     if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
                     {
                         p1.SetY(mapEditor.Nextsquares[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.Sidewayscollision.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y, p1.w, p1.h), mapEditor.Sidewayscollision[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Sidewayscollision[i].Y + mapEditor.tileHeight + 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextSidewayscollision.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y, p1.w, p1.h), mapEditor.NextSidewayscollision[i]) == true)
+                    {
+                        p1.SetY(mapEditor.NextSidewayscollision[i].Y + mapEditor.tileHeight + 5000);
                         break;
                     }
                 }
@@ -989,6 +1105,24 @@ namespace TheImpossiblerGame
                     {
                         mapEditor.SWITCH = false;
                         p1.SetY(mapEditor.NextSwitchBlockalt[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.Warningblock.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Warningblock[i]) == true)
+                    {
+                        mapEditor.SWITCH = true;
+                        p1.SetY(mapEditor.Warningblock[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.NextWarningblock.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextWarningblock[i]) == true)
+                    {
+                        mapEditor.SWITCH = true;
+                        p1.SetY(mapEditor.NextWarningblock[i].Y + mapEditor.tileHeight);
                         break;
                     }
                 }
@@ -1084,6 +1218,7 @@ namespace TheImpossiblerGame
                 mapEditor.Collisionrectangle.Clear();
                 mapEditor.SwitchCollisionrectangle.Clear();
                 mapEditor.SwitchCollisionRectanglealt.Clear();
+                mapEditor.Sidewayscollision.Clear();
                 for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
                 {
                     mapEditor.squares.Add(mapEditor.Nextsquares[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
@@ -1132,6 +1267,10 @@ namespace TheImpossiblerGame
                 {
                     mapEditor.SwitchCollisionRectanglealt.Add(mapEditor.NextSwitchCollisionRectanglealt[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
                 }
+                for (int i = 0; i < mapEditor.NextSidewayscollision.Count; i++)
+                {
+                    mapEditor.Sidewayscollision.Add(mapEditor.NextSidewayscollision[i]); //adds the platforms that are currently visible to the cleared list(moves one list to another list)
+                }
                 mapEditor.Nextsquares.Clear(); //clears the list that the platforms were moved from to create space for the next text file to add to this list
                 mapEditor.Nexttriangles.Clear();
                 mapEditor.NextUpsideDowntriangles.Clear();
@@ -1144,6 +1283,7 @@ namespace TheImpossiblerGame
                 mapEditor.NextCollisionrectangle.Clear();
                 mapEditor.NextSwitchCollisionrectangle.Clear();
                 mapEditor.NextSwitchCollisionRectanglealt.Clear();
+                mapEditor.NextSidewayscollision.Clear();
 
             }
             else //CODE BELOW ACTUALLY SCROLLS THE PLATFORMS
@@ -1158,6 +1298,18 @@ namespace TheImpossiblerGame
                 // You have to make a new rectangle that has the same values, change the 
                 // value of the rectangle made, and put that rectangle in the list at the correspoing spot.
                 // Code below handles scrolling for all platforms on and off screen.
+                for (int i = 0; i < mapEditor.Sidewayscollision.Count; i++)
+                {
+                    Rectangle same = mapEditor.Sidewayscollision[i];
+                    same.X -= speed;
+                    mapEditor.Sidewayscollision[i] = same;
+                }
+                for (int i = 0; i < mapEditor.NextSidewayscollision.Count; i++)
+                {
+                    Rectangle same = mapEditor.NextSidewayscollision[i];
+                    same.X -= speed;
+                    mapEditor.NextSidewayscollision[i] = same;
+                }
                 for (int i = 0; i < mapEditor.SwitchCollisionRectanglealt.Count; i++)
                 {
                     Rectangle same = mapEditor.SwitchCollisionRectanglealt[i];
