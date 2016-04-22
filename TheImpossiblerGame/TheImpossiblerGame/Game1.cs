@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 //Brandon Rodriguez - worked with Parker to load in textures, create a finite state machine and add in a score counter
 //Parker Wilson - drew up concept art, loaded in textures with Brandon, started to work out game logic, created finite state machine
@@ -445,6 +446,13 @@ namespace TheImpossiblerGame
                 case GameState.gameOver:
                     kstate = Keyboard.GetState();
 
+                    //Score saved into a binary file that is created here
+                    Stream outStream = File.OpenWrite("scores.dat");
+                    BinaryWriter bin = new BinaryWriter(outStream);
+                    bin.Write(score);
+                    bin.Close();
+                    outStream.Close();
+
                     //if return to menu is clicked
                     if (mstate.LeftButton == ButtonState.Released && mstate.X > menuRect.X && mstate.X < menuRect.X + 500 && //width
                         mstate.Y > menuRect.Y && mstate.Y < menuRect.Y + 100 && prevMstate.LeftButton == ButtonState.Pressed) //height
@@ -610,6 +618,13 @@ namespace TheImpossiblerGame
 
                     break;
                 case GameState.gameOver:
+
+                    //Reads in the score stored in scores.dat
+                    Stream inStream = File.OpenRead("scores.dat");
+                    BinaryReader scoreList = new BinaryReader(inStream);
+                    spriteBatch.DrawString(font, string.Format("Final score: {0:0}", score), new Vector2(5, 100), Color.Black);
+                    spriteBatch.DrawString(font, string.Format("High Scores: {0:0}", scoreList.ReadInt32() + "\n"), new Vector2(5, 150), Color.Black);
+                    scoreList.Close();
 
                     //draws the objects in the text file
                     mapEditor.Draw(spriteBatch);
