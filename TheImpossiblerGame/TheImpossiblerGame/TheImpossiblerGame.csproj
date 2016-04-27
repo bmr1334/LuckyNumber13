@@ -177,6 +177,9 @@
     <Content Include="Content\Menus\GameOver.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Menus\garageAudio.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Menus\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

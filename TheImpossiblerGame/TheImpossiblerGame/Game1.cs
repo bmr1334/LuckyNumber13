@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Microsoft.Xna.Framework.Audio;
 
 //Brandon Rodriguez - worked with Parker to load in textures, create a finite state machine and add in a score counter
 //Parker Wilson - drew up concept art, loaded in textures with Brandon, started to work out game logic, created finite state machine
@@ -33,7 +34,7 @@ namespace TheImpossiblerGame
         int g;
 
         //variable for speed of movement/scrolling
-        int speed = 8;
+        int speed;
 
         //score counter variables - Brandon Rodriguez, Parker Wilson
         SpriteFont font;
@@ -55,6 +56,9 @@ namespace TheImpossiblerGame
 
         List<Texture2D> backgrounds;
         List<Texture2D> parallax;
+
+        //audio variables
+        SoundEffect garageAudio;
 
         //rectangle variables
         Rectangle playRect, resumeRect, exitRect, menuRect, title, newGameRect;
@@ -92,6 +96,7 @@ namespace TheImpossiblerGame
             parallax = new List<Texture2D>();
             title = new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height);
             this.IsMouseVisible = true;
+            speed = GraphicsDevice.DisplayMode.Width / 240;
             base.Initialize();
         }
 
@@ -126,6 +131,9 @@ namespace TheImpossiblerGame
             titleBackground = Content.Load<Texture2D>("Menus\\TitleBackground");
             gameOverLogo = Content.Load<Texture2D>("Menus\\GameOver");
             newGame = Content.Load<Texture2D>("Menus\\NewGameText");
+
+            //load audio
+            garageAudio = Content.Load<SoundEffect>("Menus\\garageAudio");
 
             //general game object loads - Brandon Rodriguez, Parker Wilson
             spikeDark = Content.Load<Texture2D>("Game Textures\\SpikeDark");
@@ -245,6 +253,7 @@ namespace TheImpossiblerGame
                 case GameState.titleMenu:
                     kstate = Keyboard.GetState();
                     if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)){
+                        garageAudio.Play();
                         gamestate = GameState.garageDoor;
                     }
 
@@ -645,7 +654,7 @@ namespace TheImpossiblerGame
                     //draws score
                     //spriteBatch.DrawString(font, "Speed: " + mapEditor.Number, new Vector2(5, -10), Color.Black);
                     spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(GraphicsDevice.DisplayMode.Height / 216,
-                        (GraphicsDevice.DisplayMode.Height / 216) * -2), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                        (GraphicsDevice.DisplayMode.Height / 216) * -2), Color.Black, 0, new Vector2(0, 0), (float)GraphicsDevice.DisplayMode.Height / 1080, SpriteEffects.None, 0);
 
                     break;
                 case GameState.gameOver:
@@ -663,7 +672,7 @@ namespace TheImpossiblerGame
                     spriteBatch.DrawString(font, string.Format("S   c   o   r   e      :      " + mapEditor.DisplayScore +
                         "                         H   i   g   h     S   c   o   r   e      :      " +
                         mapEditor.DisplayHighScore), new Vector2(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
-                        GraphicsDevice.DisplayMode.Height / 3 + GraphicsDevice.DisplayMode.Height / 25), Color.White);
+                        GraphicsDevice.DisplayMode.Height / 3 + GraphicsDevice.DisplayMode.Height / 25), Color.White, 0, new Vector2(0,0), (float)GraphicsDevice.DisplayMode.Height / 1080, SpriteEffects.None, 0);
 
                     //draws "New Game" text
                     spriteBatch.Draw(newGame, newGameRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,
