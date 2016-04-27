@@ -77,31 +77,42 @@ namespace TheImpossiblerGame
 
         StreamReader reader; //used to open the file for reading
         protected List<string> DataPoints; //used to store the text in the textfile into a list 
+
+        //ints to save the score
         int highscore;
         int displayHighscore;
         int score;
         int displayScore;
+
         int number = 0; //used to load another text file
-        int scrollingCounter = 8;
+
+        //counters use to switch textures and increase scrolling speed
+        int scrollingCounter;
         int textureSwitch = 0;
         int textureCounter = 0;
         int parallaxCounter = 0;
         int backgroundCounter = 0;
+
+        //bool used for the switch blocks
         bool Switch = false;
 
         //bool to handle loading files so they won't load forever
         bool canLoadinitial;
         bool canLoadnext;
 
+        //bool to handle switching textures
         bool canSwitch;
 
+        //bool to handle reading and saving the scores
         bool canSave;
         bool canRead;
         bool canReadhighScore;
 
+        //bool to handle loading parallax backgrounds
         bool canLoadinitialParallax;
         bool canLoadnextParallax;
 
+        //bool to handle loading backgrounds
         bool canLoadinitialBackground;
         bool canLoadnextBackground;
 
@@ -121,8 +132,6 @@ namespace TheImpossiblerGame
         //keeps track of the screen dimensions
         int screenHeight;
         int screenWidth;
-
-        //previous dimensions(height = 600, width = 900)
 
 
         public MapEditor()
@@ -172,7 +181,7 @@ namespace TheImpossiblerGame
             canReadhighScore = true;
             ScrollingBlock = new Rectangle(0, 0, 45, 40);
             ScrollingParallax = new Rectangle(0, 0, 45, 40);
-            ScrollingBackground = new Rectangle(8 / 3, 0, 45, 40); //(-10)
+            //ScrollingBackground = new Rectangle(8 / 3, 0, 45, 40); //(-10) moved to the screen dimension method to maintain consistency across screens
         }
 
 
@@ -268,7 +277,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D SpikeTexture //property for player texture
+        public Texture2D SpikeTexture //property for spike texture
         {
             get { return Spiketexture; }
             set
@@ -277,7 +286,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D NextSpikeTexture //property for player texture
+        public Texture2D NextSpikeTexture //property for spike texture
         {
             get { return NextSpiketexture; }
             set
@@ -286,7 +295,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D WarningBlockTexture //property for player texture
+        public Texture2D WarningBlockTexture //property for warning block texture
         {
             get { return WarningBlocktexture; }
             set
@@ -295,7 +304,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D SwitchBlockTexture //property for player texture
+        public Texture2D SwitchBlockTexture //property for switch block texture
         {
             get { return SwitchBlocktexture; }
             set
@@ -304,7 +313,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D SwitchTriangleTexture //property for player texture
+        public Texture2D SwitchTriangleTexture //property for switch triangle texture
         {
             get { return SwitchTriangletexture; }
             set
@@ -313,7 +322,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D NextSwitchTriangleTexture //property for player texture
+        public Texture2D NextSwitchTriangleTexture //property for switch triangle texture
         {
             get { return NextSwitchTriangletexture; }
             set
@@ -322,7 +331,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D SwitchTriangleAltTexture //property for player texture
+        public Texture2D SwitchTriangleAltTexture //property for switch triangle texture
         {
             get { return SwitchTriangleAlttexture; }
             set
@@ -331,7 +340,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D NextSwitchTriangleAltTexture //property for player texture
+        public Texture2D NextSwitchTriangleAltTexture //property for switch triangle texture
         {
             get { return NextSwitchTriangleAlttexture; }
             set
@@ -340,7 +349,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D BackgroundTexture //property for player texture
+        public Texture2D BackgroundTexture //property for background texture
         {
             get { return Backgroundtexture; }
             set
@@ -349,7 +358,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D NextBackgroundTexture //property for player texture
+        public Texture2D NextBackgroundTexture //property for background texture
         {
             get { return NextBackgroundtexture; }
             set
@@ -358,7 +367,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D ParallaxTexture
+        public Texture2D ParallaxTexture //property for parallax texture
         {
             get { return Parallaxtexture; }
             set
@@ -367,7 +376,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public Texture2D NextParallaxTexture
+        public Texture2D NextParallaxTexture //property for parallax texture
         {
             get { return NextParallaxtexture; }
             set
@@ -376,7 +385,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Parallaxlist
+        public List<Rectangle> Parallaxlist //property for parallax list
         {
             get { return ParallaxList; }
             set
@@ -385,7 +394,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextParallaxlist
+        public List<Rectangle> NextParallaxlist //property for parallax list
         {
             get { return NextParallaxList; }
             set
@@ -394,7 +403,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Backgroundlist //property for list of platforms/squares
+        public List<Rectangle> Backgroundlist //property for list of backgrounds
         {
             get { return BackgroundList; }
             set
@@ -403,7 +412,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextBackgroundlist //property for list of platforms/squares
+        public List<Rectangle> NextBackgroundlist //property for list of backgrounds
         {
             get { return NextBackgroundList; }
             set
@@ -430,7 +439,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> triangles
+        public List<Rectangle> triangles //property for obstacles
         {
             get { return Triangles; }
             set
@@ -439,7 +448,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Nexttriangles
+        public List<Rectangle> Nexttriangles //property for obstacles
         {
             get { return NextTriangles; }
             set
@@ -448,7 +457,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> spikes
+        public List<Rectangle> spikes //property for spikes
         {
             get { return Spikes; }
             set
@@ -457,7 +466,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Nextspikes
+        public List<Rectangle> Nextspikes //property for spikes
         {
             get { return NextSpikes; }
             set
@@ -466,7 +475,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> UpsideDowntriangles
+        public List<Rectangle> UpsideDowntriangles //property for obstacles
         {
             get { return UpsideDownTriangles; }
             set
@@ -475,7 +484,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextUpsideDowntriangles
+        public List<Rectangle> NextUpsideDowntriangles //property for obstacles
         {
             get { return NextUpsideDownTriangles; }
             set
@@ -484,7 +493,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Warningblock
+        public List<Rectangle> Warningblock //property for warning blocks
         {
             get { return WarningBlock; }
             set
@@ -493,7 +502,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextWarningblock
+        public List<Rectangle> NextWarningblock //property for warning blocks
         {
             get { return NextWarningBlock; }
             set
@@ -502,7 +511,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Switchblock
+        public List<Rectangle> Switchblock //property for switch blocks
         {
             get { return SwitchBlock; }
             set
@@ -511,7 +520,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextSwitchblock
+        public List<Rectangle> NextSwitchblock //property for switch blocks
         {
             get { return NextSwitchBlock; }
             set
@@ -520,7 +529,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> SwitchBlockalt
+        public List<Rectangle> SwitchBlockalt //property for switch blocks
         {
             get { return SwitchBlockAlt; }
             set
@@ -529,7 +538,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextSwitchBlockalt
+        public List<Rectangle> NextSwitchBlockalt //property for switch blocks
         {
             get { return NextSwitchBlockAlt; }
             set
@@ -538,7 +547,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Switchtriangle
+        public List<Rectangle> Switchtriangle //property for switch triangles
         {
             get { return SwitchTriangle; }
             set
@@ -547,7 +556,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextSwitchtriangle
+        public List<Rectangle> NextSwitchtriangle //property for switch triangles
         {
             get { return NextSwitchTriangle; }
             set
@@ -556,7 +565,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> SwitchTrianglealt
+        public List<Rectangle> SwitchTrianglealt //property for switch triangles
         {
             get { return SwitchTriangleAlt; }
             set
@@ -565,7 +574,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextSwitchTrianglealt
+        public List<Rectangle> NextSwitchTrianglealt //property for switch triangles
         {
             get { return NextSwitchTriangleAlt; }
             set
@@ -574,7 +583,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Collisionrectangle
+        public List<Rectangle> Collisionrectangle //property for triangle collision
         {
             get { return CollisionRectangle; }
             set
@@ -583,7 +592,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextCollisionrectangle
+        public List<Rectangle> NextCollisionrectangle //property for triangle collision
         {
             get { return NextCollisionRectangle; }
             set
@@ -592,7 +601,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> SwitchCollisionrectangle
+        public List<Rectangle> SwitchCollisionrectangle //property for triangle collision
         {
             get { return SwitchCollisionRectangle; }
             set
@@ -601,7 +610,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextSwitchCollisionrectangle
+        public List<Rectangle> NextSwitchCollisionrectangle //property for triangle collision
         {
             get { return NextSwitchCollisionRectangle; }
             set
@@ -610,7 +619,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> SwitchCollisionRectanglealt
+        public List<Rectangle> SwitchCollisionRectanglealt //property for triangle collision
         {
             get { return SwitchCollisionRectangleAlt; }
             set
@@ -619,7 +628,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextSwitchCollisionRectanglealt
+        public List<Rectangle> NextSwitchCollisionRectanglealt //property for triangle collision
         {
             get { return NextSwitchCollisionRectangleAlt; }
             set
@@ -628,7 +637,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> Sidewayscollision
+        public List<Rectangle> Sidewayscollision //property for sideways collision
         {
             get { return SidewaysCollision; }
             set
@@ -637,7 +646,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public List<Rectangle> NextSidewayscollision
+        public List<Rectangle> NextSidewayscollision //property for sideways collision
         {
             get { return NextSidewaysCollision; }
             set
@@ -654,7 +663,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public int ScrollingParallaxX
+        public int ScrollingParallaxX //property for scrolling parallax
         {
             get { return ScrollingParallax.X; }
             set
@@ -681,7 +690,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public bool SWITCH
+        public bool SWITCH //property for switch boolean for switch blocks
         {
             get { return Switch; }
             set
@@ -690,7 +699,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public int Score
+        public int Score //property for saving the score
         {
             get { return score; }
             set
@@ -699,7 +708,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public int DisplayScore
+        public int DisplayScore //property for displaying the score
         {
             get { return displayScore; }
             set
@@ -708,7 +717,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public int HighScore
+        public int HighScore //property for saving high score
         {
             get { return highscore; }
             set
@@ -717,7 +726,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public int DisplayHighScore
+        public int DisplayHighScore //property for displaying high score
         {
             get { return displayHighscore; }
             set
@@ -726,22 +735,22 @@ namespace TheImpossiblerGame
             }
         }
 
-        public int ScrollingCounter
+        public int ScrollingCounter //property to increase scrolling speed
         {
             get { return scrollingCounter; }
         }
 
-        public int TextureCounter
+        public int TextureCounter //property for switching block textures
         {
             get { return textureCounter; }
         }
 
-        public int ParallaxCounter
+        public int ParallaxCounter //property for switching parallax textures
         {
             get { return parallaxCounter; }
         }
 
-        public int BackgroundCounter
+        public int BackgroundCounter //property for switching background textures
         {
             get { return backgroundCounter; }
             set
@@ -753,8 +762,10 @@ namespace TheImpossiblerGame
 
         public void SetDimensions() //method to set the tiles according to the screen dimensions
         {
-            TileHeight = screenHeight / 15; //equals 40
-            TileWidth = screenWidth / 20; //equals 45
+            TileHeight = screenHeight / 15;
+            TileWidth = screenWidth / 20;
+            scrollingCounter = screenWidth / 240; // = 8
+            ScrollingBackground = new Rectangle(screenWidth / 960, 0, 45, 40); //x = 2
         }
 
         public bool CanLoadInitial //property to change value of loading the initial file
@@ -775,7 +786,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public bool CanSwitch
+        public bool CanSwitch //property to switch textures
         {
             get { return canSwitch; }
             set
@@ -784,7 +795,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public bool CanLoadInitialParallax //property to change value of loading the initial file
+        public bool CanLoadInitialParallax //property to load parallax
         {
             get { return canLoadinitialParallax; }
             set
@@ -793,7 +804,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public bool CanLoadNextParallax //property to change the value for loading the next file offscreen
+        public bool CanLoadNextParallax //property to load parallax off screen
         {
             get { return canLoadnextParallax; }
             set
@@ -802,7 +813,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public bool CanLoadInitialBackground //property to change value of loading the initial file
+        public bool CanLoadInitialBackground //property to load background
         {
             get { return canLoadinitialBackground; }
             set
@@ -811,7 +822,7 @@ namespace TheImpossiblerGame
             }
         }
 
-        public bool CanLoadNextBackground //property to change the value for loading the next file offscreen
+        public bool CanLoadNextBackground //property to load background off screen
         {
             get { return canLoadnextBackground; }
             set
@@ -858,10 +869,11 @@ namespace TheImpossiblerGame
             canLoadnext = false;
         }
 
-        public void SaveScore()
+        public void SaveScore() //method to save the score
         {
-            if (canSave == true)
+            if (canSave == true) //if statement to prevent constant saving in the update method
             {
+                //open a binary writer and write down the score
                 Stream write = File.OpenWrite("score.dat");
                 BinaryWriter writer = new BinaryWriter(write);
                 writer.Write(score);
@@ -870,10 +882,11 @@ namespace TheImpossiblerGame
             canSave = false;
         }
 
-        public void ReadScore()
+        public void ReadScore() //method to read in the score
         {
-            if (canRead == true)
+            if (canRead == true) //if statement to prevent constant reading in the update method
             {
+                //open a binary reader and read in the score
                 Stream read = File.OpenRead("score.dat");
                 BinaryReader reader = new BinaryReader(read);
                 displayScore = reader.ReadInt32();
@@ -882,16 +895,17 @@ namespace TheImpossiblerGame
             canRead = false;
         }
 
-        public void SaveHighScore()
+        public void SaveHighScore() //method to save the high score
         {
-            GetHighScore();
-            if (highscore < score)
+            GetHighScore(); //gets the highscore to save the highscore even when exiting the game
+            if (highscore < score) //changes highscore to new highscore
             {
                 highscore = score;
-                canSave = true;
+                canSave = true; //sets can save to true to allow the new highscore to write to the binary file
             }
             if (canSave == true)
             {
+                //write the new highscore to the binary file
                 Stream write = File.OpenWrite("highscore.dat");
                 BinaryWriter writer = new BinaryWriter(write);
                 writer.Write(highscore);
@@ -900,10 +914,11 @@ namespace TheImpossiblerGame
             canSave = false;
         }
 
-        public void ReadHighScore()
+        public void ReadHighScore() //method to read in the highscore
         {
-            if (canReadhighScore == true)
+            if (canReadhighScore == true) //if statement to prevent constant reading in the update method
             {
+                //use binary reader to read in the highscore
                 Stream read = File.OpenRead("highscore.dat");
                 BinaryReader reader = new BinaryReader(read);
                 displayHighscore = reader.ReadInt32();
@@ -912,8 +927,9 @@ namespace TheImpossiblerGame
             canReadhighScore = false;
         }
 
-        public void GetHighScore()
+        public void GetHighScore() //method to find the highscore
         {
+            //searches through the files to get what the high score is before checking to see if the new score is higher than the current highscore
             string[] files = Directory.GetFiles(".");
             foreach (string s in files)
             {
@@ -927,17 +943,18 @@ namespace TheImpossiblerGame
             }
         }
 
-        public void ResetHighScore()
+        public void ResetHighScore() //method to reset the highscore
         {
+            //forcibly make the highscore 0
             Stream write = File.OpenWrite("highscore.dat");
             BinaryWriter writer = new BinaryWriter(write);
             writer.Write(0);
             writer.Close();
         }
 
-        public void ResetGame()
+        public void ResetGame() //method to reset the game when the player has lost, by resetting all the values back to their defaults
         {
-            //textures for the different objects
+            //reset all textures
             Parallaxtexture = null;
             NextParallaxtexture = null;
             Backgroundtexture = null;
@@ -959,15 +976,15 @@ namespace TheImpossiblerGame
             NextFlip = null;
             Player = null;
 
-            //Rectangles for backgrounds
+            //reset all backgrounds
             ParallaxList.Clear();
             NextParallaxList.Clear();
             ScrollingParallax.X = 0;
             BackgroundList.Clear();
             NextBackgroundList.Clear();
-            ScrollingBackground.X = 8 / 3;
+            ScrollingBackground.X = screenWidth / 960;
 
-            //Rectangles for collision
+            //reset all rectangle lists for collision
             ScrollingBlock.X = 0;
             allPlatforms.Clear();
             SidewaysCollision.Clear();
@@ -997,17 +1014,18 @@ namespace TheImpossiblerGame
             SwitchTriangleAlt.Clear();
             NextSwitchTriangleAlt.Clear();
 
-            reader = null; //used to open the file for reading
-            //DataPoints.Clear(); //used to store the text in the textfile into a list 
-            number = 0; //used to load another text file
-            scrollingCounter = 8;
+            //reset all counters
+            reader = null;
+            //DataPoints.Clear(); 
+            number = 0;
+            scrollingCounter = screenWidth / 240;
             textureSwitch = 0;
             textureCounter = 0;
             parallaxCounter = 0;
             backgroundCounter = 0;
             Switch = false;
 
-            //bool to handle loading files so they won't load forever
+            //reset all booleans
             canLoadinitial = true;
             canLoadnext = true;
 
@@ -1023,65 +1041,59 @@ namespace TheImpossiblerGame
             canLoadinitialBackground = true;
             canLoadnextBackground = true;
 
-            //used to get the filename and store the text in a string to add it to the list
+            //reset all file names
             ReadFile = null;
             TextFile = null;
             TextPath = null;
 
-            //used to keep track of the height and width of the screen objects are being mapped to
+            //reset counters when loading in the file
             heightCounter = 0;
             widthCounter = 0;
         }
 
-        public int ResetFiles()
+        public int ResetFiles() //method to get the scrolling to repeat
         {
-            if (number == 3 || number == 5 || number == 7 || number == 9 || number == 11 || number == 13)
+            if (number == 3 || number == 5 || number == 7 || number == 9 || number == 11 || number == 13) //if a certain level is loaded
             {
-                if (textureSwitch == 0)
+                if (textureSwitch == 0) //then change its texture
                 {
                     canSwitch = true;
                     textureSwitch++;
                     textureCounter++;
                 }
-                //if (NextBackgroundList.Count == 0)
-                //{
-                //    if (Backgroundtexture != NextBackgroundtexture)
-                //    {
-                //        Backgroundtexture = NextBackgroundtexture;
-                //    }
-                //}
             }
             else
             {
-                textureSwitch = 0;
+                textureSwitch = 0; //reset texture switch to 0 to allow for the texture to be changed on other levels
             }
-            if (parallaxCounter > 1)
+            if (parallaxCounter > 1) //has to be one less than the number of parallax elements(resets parallax elements)
             {
                 parallaxCounter = 0;
             }
-            if (backgroundCounter > 23) //has to be one less than the number of backgrounds
+            if (backgroundCounter > 23) //has to be one less than the number of backgrounds(resets backgrounds)
             {
                 backgroundCounter = 0;
             }
-            if (textureCounter > 5)
+            if (textureCounter > 5) //resets texture being displayed for the blocks
             {
                 textureCounter = 0;
             }
-            if (number > 11)
+            if (number > 11) //resets the background when the levels are finished loading
             {
                 backgroundCounter = 0;
             }
-            if (number > 13) //has to be one less than the number of levels
+            if (number > 10) //has to be one less than the number of levels(resets the levels)
             {
+                //reset the texture values upon going over the next iteration of the game
                 canSwitch = true;
                 textureCounter = 0;
                 textureSwitch = 0;
                 //backgroundCounter = 0;
                 Switch = false;
                 number = 0;
-                if (scrollingCounter < 14)
+                if (scrollingCounter < ((screenWidth/ 384) * 3) - 1) //increases the scrolling speed
                 {
-                    scrollingCounter += 2;
+                    scrollingCounter += screenWidth / 960;
                 }
             }
             return scrollingCounter;
@@ -1363,35 +1375,39 @@ namespace TheImpossiblerGame
             //textureSwitch++;
         }
 
-        public void GenerateParallaxOnScreen()
+        public void GenerateParallaxOnScreen() //method to load parallax elements on screen
         {
+            //create a parallax element the size of the screen and add it to the list to allow it to scroll
             parallaxCounter++;
             Parallax = new Rectangle(0, 0, screenWidth, screenHeight);
             ParallaxList.Add(Parallax);
-            canLoadinitialParallax = false;
-            canLoadnextParallax = true;
+            canLoadinitialParallax = false; //disbaled to not load anything on screen again
+            canLoadnextParallax = true; //enabled to allow the next parallax elements to load offscreen
         }
 
-        public void GenerateParallaxOffScreen()
+        public void GenerateParallaxOffScreen() //method to load parallax elements off screen
         {
+            //create a parallax element the size of the screen and move it a screen's width over to the right and add it to the list to scroll
             parallaxCounter++;
             Parallax = new Rectangle(screenWidth, 0, screenWidth, screenHeight);
             NextParallaxList.Add(Parallax);
             canLoadnextParallax = true;
         }
 
-        public void GenerateBackgroundsOnScreen()
+        public void GenerateBackgroundsOnScreen() //method to generat backgrounds on screen
         {
+            //create a background the size of the screen and add it to the list to scroll
             //textureSwitch++;
             backgroundCounter++;
             Background = new Rectangle(0, 0, screenWidth, screenHeight);
             BackgroundList.Add(Background);
-            canLoadinitialBackground = false;
-            canLoadnextBackground = true;
+            canLoadinitialBackground = false; //disabled to not load another background directly on screen afain
+            canLoadnextBackground = true; //enabled to allow the next background to load off screen
         }
 
-        public void GenerateBackgroundsOffScreen()
+        public void GenerateBackgroundsOffScreen() //method to generate backgrounds off screen
         {
+            //create a background the size of the screen and move it a screen's width to the right and add it to the list to scroll
             //textureSwitch++;
             backgroundCounter++;
             Background = new Rectangle(screenWidth, 0, screenWidth, screenHeight);
@@ -1600,3 +1616,4 @@ namespace TheImpossiblerGame
         }
     }
 }
+

@@ -96,7 +96,8 @@ namespace TheImpossiblerGame
             parallax = new List<Texture2D>();
             title = new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height);
             this.IsMouseVisible = true;
-            speed = GraphicsDevice.DisplayMode.Width / 240;
+            speed = mapEditor.ScreenWidth / 240;
+            //speed = GraphicsDevice.DisplayMode.Width / 240;
             base.Initialize();
         }
 
@@ -251,6 +252,7 @@ namespace TheImpossiblerGame
             switch (gamestate)
             {
                 case GameState.titleMenu:
+                    gamestate = GameState.game;
                     kstate = Keyboard.GetState();
                     if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)){
                         garageAudio.Play();
@@ -958,7 +960,6 @@ namespace TheImpossiblerGame
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.Warningblock[i]) == true)
                     {
-                        mapEditor.SWITCH = true;
                         p1.SetY(mapEditor.Warningblock[i].Y - mapEditor.tileHeight);
                         break;
                     }
@@ -967,7 +968,6 @@ namespace TheImpossiblerGame
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.NextWarningblock[i]) == true)
                     {
-                        mapEditor.SWITCH = true;
                         p1.SetY(mapEditor.NextWarningblock[i].Y - mapEditor.tileHeight);
                         break;
                     }
@@ -1121,7 +1121,6 @@ namespace TheImpossiblerGame
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Warningblock[i]) == true)
                     {
-                        mapEditor.SWITCH = true;
                         p1.SetY(mapEditor.Warningblock[i].Y + mapEditor.tileHeight);
                         break;
                     }
@@ -1130,7 +1129,6 @@ namespace TheImpossiblerGame
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.NextWarningblock[i]) == true)
                     {
-                        mapEditor.SWITCH = true;
                         p1.SetY(mapEditor.NextWarningblock[i].Y + mapEditor.tileHeight);
                         break;
                     }
@@ -1170,13 +1168,13 @@ namespace TheImpossiblerGame
             {
                 mapEditor.CanLoadNextBackground = false;
             }
-            if (mapEditor.ScrollingParallaxX <= -mapEditor.ScreenWidth + speed - 3)
+            if (mapEditor.ScrollingParallaxX <= -mapEditor.ScreenWidth + speed - mapEditor.ScreenWidth / 640)
             {
                 if (mapEditor.ParallaxTexture != mapEditor.NextParallaxTexture)
                 {
                     mapEditor.ParallaxTexture = mapEditor.NextParallaxTexture;
                 }
-                mapEditor.ScrollingParallaxX = speed / 4;
+                mapEditor.ScrollingParallaxX = speed / (mapEditor.ScreenWidth / 480); //(map.screenwidth / 480 = 4)
                 mapEditor.CanLoadNextParallax = true;
                 mapEditor.ParallaxList.Clear();
                 for (int i = 0; i < mapEditor.NextParallaxlist.Count; i++)
@@ -1191,7 +1189,7 @@ namespace TheImpossiblerGame
                 {
                     mapEditor.BackgroundTexture = mapEditor.NextBackgroundTexture;
                 }
-                mapEditor.ScrollingBackgroundX = speed / 3;
+                mapEditor.ScrollingBackgroundX = speed / (mapEditor.ScreenWidth / 640);
                 mapEditor.CanLoadNextBackground = true;
                 mapEditor.Backgroundlist.Clear();
                 for (int i = 0; i < mapEditor.NextBackgroundlist.Count; i++)
@@ -1200,7 +1198,7 @@ namespace TheImpossiblerGame
                 }
                 mapEditor.NextBackgroundlist.Clear();
             }
-            if (mapEditor.ScrollingBlockX <= -mapEditor.ScreenWidth + speed - 3) //(+ 8)if our scrolling indicator has reached a screen's width then erase the platforms that are off screen to the left
+            if (mapEditor.ScrollingBlockX <= -mapEditor.ScreenWidth + speed - mapEditor.ScreenWidth / 640)//map.screenwidth / 640 = 3 //(+ 8)if our scrolling indicator has reached a screen's width then erase the platforms that are off screen to the left
             {
                 if (mapEditor.BoxTexture != mapEditor.NextBoxTexture && mapEditor.TriangleTexture != mapEditor.NextTriangleTexture && mapEditor.flip != mapEditor.Nextflip)
                 {
@@ -1297,9 +1295,9 @@ namespace TheImpossiblerGame
             }
             else //CODE BELOW ACTUALLY SCROLLS THE PLATFORMS
             {
-                mapEditor.ScrollingParallaxX -= speed - 4;
+                mapEditor.ScrollingParallaxX -= speed - mapEditor.ScreenWidth / 480; //(= 4)
                 mapEditor.ScrollingBlockX -= speed; //scrolls by a factor of the speed
-                mapEditor.ScrollingBackgroundX -= speed - 2;
+                mapEditor.ScrollingBackgroundX -= speed - mapEditor.ScreenWidth / 960; //(= 2)
 
                 //IMPORTANT: Code below creates a new rectangle that is the same value
                 // as the rectangle in the list so that we can alter the x or y values.
@@ -1358,25 +1356,25 @@ namespace TheImpossiblerGame
                 for (int i = 0; i < mapEditor.Parallaxlist.Count; i++)
                 {
                     Rectangle same = mapEditor.Parallaxlist[i];
-                    same.X -= speed - 4;
+                    same.X -= speed - mapEditor.ScreenWidth / 480;
                     mapEditor.Parallaxlist[i] = same;
                 }
                 for (int i = 0; i < mapEditor.NextParallaxlist.Count; i++)
                 {
                     Rectangle same = mapEditor.NextParallaxlist[i];
-                    same.X -= speed - 4;
+                    same.X -= speed - mapEditor.ScreenWidth / 480;
                     mapEditor.NextParallaxlist[i] = same;
                 }
                 for (int i = 0; i < mapEditor.Backgroundlist.Count; i++)
                 {
                     Rectangle same = mapEditor.Backgroundlist[i];
-                    same.X -= speed - 2;
+                    same.X -= speed - mapEditor.ScreenWidth / 960;
                     mapEditor.Backgroundlist[i] = same;
                 }
                 for (int i = 0; i < mapEditor.NextBackgroundlist.Count; i++)
                 {
                     Rectangle same = mapEditor.NextBackgroundlist[i];
-                    same.X -= speed - 2;
+                    same.X -= speed - mapEditor.ScreenWidth / 960;
                     mapEditor.NextBackgroundlist[i] = same;
                 }
                 for (int i = 0; i < mapEditor.squares.Count; i++)
