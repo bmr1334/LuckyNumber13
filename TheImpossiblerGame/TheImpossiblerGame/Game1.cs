@@ -30,6 +30,9 @@ namespace TheImpossiblerGame
         Box Box;
         Triangle Triangle;
 
+        //instructions variable
+        bool space;
+
         //variable for gravity
         int g;
 
@@ -103,6 +106,7 @@ namespace TheImpossiblerGame
             base.Initialize();
             jet = jetSound.CreateInstance();
             main = mainTheme.CreateInstance();
+            space = true;
         }
 
         /// <summary>
@@ -297,6 +301,7 @@ namespace TheImpossiblerGame
                     if (mstate.LeftButton == ButtonState.Released && mstate.X > playRect.X && mstate.X < playRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
                         mstate.Y > playRect.Y && mstate.Y < playRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
+                        space = true;
                         clickSound.Play();
                         score = 0;
                         gamestate = GameState.game;
@@ -334,6 +339,13 @@ namespace TheImpossiblerGame
 
                     break;
                 case GameState.game:
+                    kstate = Keyboard.GetState();
+
+                    //instructions
+                    if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space))
+                    {
+                        space = false;
+                    }
 
                     //plays jet sound
                     if (gamestate == GameState.game)
@@ -519,6 +531,7 @@ namespace TheImpossiblerGame
                     if (mstate.LeftButton == ButtonState.Released && mstate.X > newGameRect.X && mstate.X < newGameRect.X + GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96 && //width
                         mstate.Y > newGameRect.Y && mstate.Y < newGameRect.Y + GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135 && prevMstate.LeftButton == ButtonState.Pressed) //height
                     {
+                        space = true;
                         clickSound.Play();
                         mapEditor.ResetGame();
                         g = 1;
@@ -748,6 +761,20 @@ namespace TheImpossiblerGame
                     //spriteBatch.DrawString(font, "Speed: " + mapEditor.Number, new Vector2(5, -10), Color.Black);
                     spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(GraphicsDevice.DisplayMode.Height / 216,
                         (GraphicsDevice.DisplayMode.Height / 216) * -2), Color.Black, 0, new Vector2(0, 0), (float)GraphicsDevice.DisplayMode.Height / 1080, SpriteEffects.None, 0);
+
+                    if(space == true)
+                    {
+                        //draws text screen overlay
+                        spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Width - (GraphicsDevice.DisplayMode.Width / 3) - (GraphicsDevice.DisplayMode.Width / 24)) / 2,
+                            GraphicsDevice.DisplayMode.Height - GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 9 + GraphicsDevice.DisplayMode.Height / 216,
+                            GraphicsDevice.DisplayMode.Height - GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 24,
+                            (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) + (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) / 2), Color.White);
+
+                        //draws "Press spacebar" text
+                        spriteBatch.Draw(spaceBar, new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 12,
+                            GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 7, GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 96,
+                            GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135), Color.White);
+                    }
 
                     break;
                 case GameState.gameOver:
