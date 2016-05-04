@@ -91,7 +91,7 @@ namespace TheImpossiblerGame
         int textureSwitch = 0;
         int textureCounter = 0;
         int parallaxCounter = 0;
-        int backgroundCounter = 0;
+        int backgroundCounter = 1;
 
         //bool used for the switch blocks
         bool Switch = false;
@@ -764,7 +764,7 @@ namespace TheImpossiblerGame
         {
             TileHeight = screenHeight / 15;
             TileWidth = screenWidth / 20;
-            scrollingCounter = screenWidth / 240; // = 8
+            scrollingCounter = screenWidth / 192; // = 10
             ScrollingBackground = new Rectangle(screenWidth / 960, 0, 45, 40); //x = 2
         }
 
@@ -1018,11 +1018,11 @@ namespace TheImpossiblerGame
             reader = null;
             //DataPoints.Clear(); 
             number = 0;
-            scrollingCounter = screenWidth / 240;
+            scrollingCounter = screenWidth / 192;
             textureSwitch = 0;
             textureCounter = 0;
             parallaxCounter = 0;
-            backgroundCounter = 0;
+            backgroundCounter = 1;
             Switch = false;
 
             //reset all booleans
@@ -1053,7 +1053,11 @@ namespace TheImpossiblerGame
 
         public int ResetFiles() //method to get the scrolling to repeat
         {
-            if (number == 3 || number == 5 || number == 7 || number == 9 || number == 11 || number == 13) //if a certain level is loaded
+            if (number == 9 || number == 24 || number == 31 || number == 42)
+            {
+                Switch = false;
+            }
+            if (number == 9 || number == 16 || number == 24 || number == 31 || number == 39) //if a certain level is loaded
             {
                 if (textureSwitch == 0) //then change its texture
                 {
@@ -1070,28 +1074,29 @@ namespace TheImpossiblerGame
             {
                 parallaxCounter = 0;
             }
-            if (backgroundCounter > 23) //has to be one less than the number of backgrounds(resets backgrounds)
-            {
-                backgroundCounter = 0;
-            }
             if (textureCounter > 5) //resets texture being displayed for the blocks
             {
                 textureCounter = 0;
             }
-            if (number > 11) //resets the background when the levels are finished loading
+            if (number == 1)
             {
-                backgroundCounter = 0;
-            }
-            if (number > 10) //has to be one less than the number of levels(resets the levels)
-            {
-                //reset the texture values upon going over the next iteration of the game
                 canSwitch = true;
                 textureCounter = 0;
                 textureSwitch = 0;
-                //backgroundCounter = 0;
+            }
+            if (number > 49) //resets the background when the levels are finished loading
+            {
+                backgroundCounter = 0;
+            }
+            if (number > 49) //has to be one less than the number of levels(resets the levels)
+            {
+                //reset the texture values upon going over the next iteration of the game
+                //canSwitch = true;
+                //textureCounter = 0;
+                //textureSwitch = 0;
                 Switch = false;
                 number = 0;
-                if (scrollingCounter < ((screenWidth/ 384) * 3) - 1) //increases the scrolling speed
+                if (scrollingCounter < ((screenWidth / 384) * 3) - 1) //increases the scrolling speed
                 {
                     scrollingCounter += screenWidth / 960;
                 }
@@ -1225,7 +1230,6 @@ namespace TheImpossiblerGame
             }
             DataPoints.Clear(); //clears the information read in the file to open space to write new information for another file
             canLoadnext = true; //set this value to true so we can load 2 files at once at the beginning
-            //textureSwitch++;
         }
 
         public void GeneratePlatformsOffScreen() //handles all platform generation after the first text file is read
@@ -1372,7 +1376,6 @@ namespace TheImpossiblerGame
             }
             DataPoints.Clear(); //clear the data stored from the file after the platforms are generated to open space for a new file to be read
             canLoadnext = true; //set this value to true so we can load 2 files at once at the beginning
-            //textureSwitch++;
         }
 
         public void GenerateParallaxOnScreen() //method to load parallax elements on screen
@@ -1397,7 +1400,6 @@ namespace TheImpossiblerGame
         public void GenerateBackgroundsOnScreen() //method to generat backgrounds on screen
         {
             //create a background the size of the screen and add it to the list to scroll
-            //textureSwitch++;
             backgroundCounter++;
             Background = new Rectangle(0, 0, screenWidth, screenHeight);
             BackgroundList.Add(Background);
@@ -1408,7 +1410,6 @@ namespace TheImpossiblerGame
         public void GenerateBackgroundsOffScreen() //method to generate backgrounds off screen
         {
             //create a background the size of the screen and move it a screen's width to the right and add it to the list to scroll
-            //textureSwitch++;
             backgroundCounter++;
             Background = new Rectangle(screenWidth, 0, screenWidth, screenHeight);
             NextBackgroundList.Add(Background);
@@ -1616,4 +1617,5 @@ namespace TheImpossiblerGame
         }
     }
 }
+
 

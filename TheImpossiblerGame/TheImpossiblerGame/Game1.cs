@@ -50,8 +50,8 @@ namespace TheImpossiblerGame
             triCity1Flip, triCity2, triCity2Flip, triLab1, triLab1Flip, //objects
             triLab2, triLab2Flip, triSub1, triSub1Flip, triSub2, triSub2Flip, //objects
             triSwitch, triSwitchFlip, //objects
-            labBg1, labBg2, labBg3, labBg4,  //backgrounds
-            subBg1, subBg2, subBg3, subBg4, subCol, //backgrounds
+            labBg0, labBg1, labBg2, labBg3, labBg4,labBg5,  //backgrounds
+            subBg1, subBg2, subBg3, subBg4, subBg5, subCol, //backgrounds
             cityBgBack1, cityBgBack2, cityBgFront, //backgrounds
             menuText, //menu texture for return to main menu
             menuTextScreen, //menu texture that is under text so it can be read easier
@@ -101,8 +101,7 @@ namespace TheImpossiblerGame
             parallax = new List<Texture2D>();
             title = new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height);
             this.IsMouseVisible = true;
-            speed = mapEditor.ScreenWidth / 240;
-            //speed = GraphicsDevice.DisplayMode.Width / 240;
+            speed = mapEditor.ScreenWidth / 192;
             base.Initialize();
             jet = jetSound.CreateInstance();
             main = mainTheme.CreateInstance();
@@ -178,14 +177,17 @@ namespace TheImpossiblerGame
             triSwitchFlip = Content.Load<Texture2D>("Game Textures\\TriangleSwitchFlip");
 
             //Background loads
+            labBg0 = Content.Load<Texture2D>("Game Textures\\labBg0");
             labBg1 = Content.Load<Texture2D>("Game Textures\\labBg1");
             labBg2 = Content.Load<Texture2D>("Game Textures\\labBg2");
             labBg3 = Content.Load<Texture2D>("Game Textures\\labBg3");
             labBg4 = Content.Load<Texture2D>("Game Textures\\labBg4");
+            labBg5 = Content.Load<Texture2D>("Game Textures\\labBg5");
             subBg1 = Content.Load<Texture2D>("Game Textures\\subBg1");
             subBg2 = Content.Load<Texture2D>("Game Textures\\subBg2");
             subBg3 = Content.Load<Texture2D>("Game Textures\\subBg3");
             subBg4 = Content.Load<Texture2D>("Game Textures\\subBg4");
+            subBg5 = Content.Load<Texture2D>("Game Textures\\subBg5");
             subCol = Content.Load<Texture2D>("Game Textures\\subCol");
             cityBgBack1 = Content.Load<Texture2D>("Game Textures\\cityBgBack1");
             cityBgBack2 = Content.Load<Texture2D>("Game Textures\\cityBgBack2");
@@ -210,6 +212,7 @@ namespace TheImpossiblerGame
             mapEditor.NextParallaxTexture = cityBgBack2;
 
             //add backgrounds to list for switching between them
+            backgrounds.Add(labBg0);
             backgrounds.Add(labBg1);
             backgrounds.Add(labBg2);
             backgrounds.Add(labBg3);
@@ -218,7 +221,14 @@ namespace TheImpossiblerGame
             backgrounds.Add(labBg1);
             backgrounds.Add(labBg4);
             backgrounds.Add(labBg3);
-            backgrounds.Add(subBg1);
+            backgrounds.Add(labBg1);
+            backgrounds.Add(labBg4);
+            backgrounds.Add(labBg1);
+            backgrounds.Add(labBg2);
+            backgrounds.Add(labBg3);
+            backgrounds.Add(labBg4);
+            backgrounds.Add(labBg1);
+            backgrounds.Add(labBg5);
             backgrounds.Add(subBg2);
             backgrounds.Add(subBg3);
             backgrounds.Add(subBg4);
@@ -226,6 +236,24 @@ namespace TheImpossiblerGame
             backgrounds.Add(subBg1);
             backgrounds.Add(subBg4);
             backgrounds.Add(subBg3);
+            backgrounds.Add(subBg1);
+            backgrounds.Add(subBg2);
+            backgrounds.Add(subBg3);
+            backgrounds.Add(subBg4);
+            backgrounds.Add(subBg1);
+            backgrounds.Add(subBg2);
+            backgrounds.Add(subBg3);
+            backgrounds.Add(subBg1);
+            backgrounds.Add(subBg5);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
+            backgrounds.Add(cityBgFront);
             backgrounds.Add(cityBgFront);
             backgrounds.Add(cityBgFront);
             backgrounds.Add(cityBgFront);
@@ -267,7 +295,8 @@ namespace TheImpossiblerGame
             {
                 case GameState.titleMenu:
                     kstate = Keyboard.GetState();
-                    if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space)){
+                    if (kstate.IsKeyDown(Keys.Space) && prevKstate.IsKeyUp(Keys.Space))
+                    {
                         garageAudio.Play();
                         gamestate = GameState.garageDoor;
                     }
@@ -305,7 +334,7 @@ namespace TheImpossiblerGame
                         clickSound.Play();
                         score = 0;
                         gamestate = GameState.game;
-                        
+
                     }
 
                     //if credits is clicked
@@ -393,13 +422,9 @@ namespace TheImpossiblerGame
                     {
                         if (mapEditor.TextureCounter == 0)
                         {
-                            //mapEditor.BoxTexture = sqLab1;
                             mapEditor.NextBoxTexture = sqLab1;
-                            //mapEditor.flip = triLab1Flip;
                             mapEditor.Nextflip = triLab1Flip;
-                            //mapEditor.TriangleTexture = triLab1;
                             mapEditor.NextTriangleTexture = triLab1;
-                            //mapEditor.SpikeTexture = spikeLight;
                             mapEditor.NextSpikeTexture = spikeLight;
                             mapEditor.WarningBlockTexture = sqWarn;
                             mapEditor.SwitchBlockTexture = sqSwitchOn;
@@ -410,13 +435,9 @@ namespace TheImpossiblerGame
                         }
                         if (mapEditor.TextureCounter == 1)
                         {
-                            // mapEditor.BoxTexture = sqLab2;
                             mapEditor.NextBoxTexture = sqLab2;
-                            // mapEditor.flip = triLab2Flip;
                             mapEditor.Nextflip = triLab2Flip;
-                            // mapEditor.TriangleTexture = triLab2;
                             mapEditor.NextTriangleTexture = triLab2;
-                            // mapEditor.SpikeTexture = spikeLight;
                             mapEditor.NextSpikeTexture = spikeLight;
                             mapEditor.WarningBlockTexture = sqWarn;
                             mapEditor.SwitchBlockTexture = sqSwitchOn;
@@ -427,13 +448,9 @@ namespace TheImpossiblerGame
                         }
                         if (mapEditor.TextureCounter == 2)
                         {
-                            //mapEditor.BoxTexture = sqSub1;
                             mapEditor.NextBoxTexture = sqSub1;
-                            //mapEditor.flip = triSub1Flip;
                             mapEditor.Nextflip = triSub1Flip;
-                            //mapEditor.TriangleTexture = triSub1;
                             mapEditor.NextTriangleTexture = triSub1;
-                            //mapEditor.SpikeTexture = spikeDark;
                             mapEditor.NextSpikeTexture = spikeDark;
                             mapEditor.WarningBlockTexture = sqWarn;
                             mapEditor.SwitchBlockTexture = sqSwitchOn;
@@ -444,13 +461,9 @@ namespace TheImpossiblerGame
                         }
                         if (mapEditor.TextureCounter == 3)
                         {
-                            //mapEditor.BoxTexture = sqSub2;
                             mapEditor.NextBoxTexture = sqSub2;
-                            //mapEditor.flip = triSub2Flip;
                             mapEditor.Nextflip = triSub2Flip;
-                            //mapEditor.TriangleTexture = triSub2;
                             mapEditor.NextTriangleTexture = triSub2;
-                            //mapEditor.SpikeTexture = spikeDark;
                             mapEditor.NextSpikeTexture = spikeDark;
                             mapEditor.WarningBlockTexture = sqWarn;
                             mapEditor.SwitchBlockTexture = sqSwitchOn;
@@ -461,13 +474,9 @@ namespace TheImpossiblerGame
                         }
                         if (mapEditor.TextureCounter == 4)
                         {
-                            //mapEditor.BoxTexture = sqCity1;
                             mapEditor.NextBoxTexture = sqCity1;
-                            //mapEditor.flip = triCity1Flip;
                             mapEditor.Nextflip = triCity1Flip;
-                            //mapEditor.TriangleTexture = triCity1;
                             mapEditor.NextTriangleTexture = triCity1;
-                            //mapEditor.SpikeTexture = spikeLight;
                             mapEditor.NextSpikeTexture = spikeLight;
                             mapEditor.WarningBlockTexture = sqWarn;
                             mapEditor.SwitchBlockTexture = sqSwitchOn;
@@ -478,13 +487,9 @@ namespace TheImpossiblerGame
                         }
                         if (mapEditor.TextureCounter == 5)
                         {
-                            //mapEditor.BoxTexture = sqCity2;
                             mapEditor.NextBoxTexture = sqCity2;
-                            // mapEditor.flip = triCity2Flip;
                             mapEditor.Nextflip = triCity2Flip;
-                            //mapEditor.TriangleTexture = triCity2;
                             mapEditor.NextTriangleTexture = triCity2;
-                            //mapEditor.SpikeTexture = spikeLight;
                             mapEditor.NextSpikeTexture = spikeLight;
                             mapEditor.WarningBlockTexture = sqWarn;
                             mapEditor.SwitchBlockTexture = sqSwitchOn;
@@ -506,7 +511,6 @@ namespace TheImpossiblerGame
                     }
 
                     //score increases here
-                    //score += 1;
                     score += gameTime.ElapsedGameTime.TotalSeconds * 2;
 
                     //pause if escape is pressed
@@ -521,6 +525,7 @@ namespace TheImpossiblerGame
                     kstate = Keyboard.GetState();
                     jet.Stop();
 
+                    //saves the score
                     mapEditor.Score = (int)score;
                     mapEditor.SaveScore();
                     mapEditor.ReadScore();
@@ -570,6 +575,7 @@ namespace TheImpossiblerGame
                     break;
                 case GameState.pauseMenu:
                     kstate = Keyboard.GetState();
+
                     jet.Stop();
 
                     //unpause if escape is pressed
@@ -907,18 +913,13 @@ namespace TheImpossiblerGame
         {
             for (int i = 0; i < backgrounds.Count; i++)
             {
-                //if (mapEditor.Number == 0)
-                //{
-                //    mapEditor.BackgroundCounter = 0;
-                //}
-                if (mapEditor.Number == 4)
+                if (mapEditor.Number == 13)
                 {
-
-                    mapEditor.BackgroundCounter = 8;
+                    mapEditor.BackgroundCounter = 15;
                 }
-                if (mapEditor.Number == 8)
+                if (mapEditor.Number == 29)
                 {
-                    mapEditor.BackgroundCounter = 16;
+                    mapEditor.BackgroundCounter = 32;
                 }
                 if (i == mapEditor.BackgroundCounter)
                 {
@@ -1006,22 +1007,6 @@ namespace TheImpossiblerGame
                         break;
                     }
                 }
-                for (int i = 0; i < mapEditor.squares.Count; i++)
-                {
-                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.squares[i]) == true)
-                    {
-                        p1.SetY(mapEditor.squares[i].Y - mapEditor.tileHeight);
-                        break;
-                    }
-                }
-                for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
-                {
-                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
-                    {
-                        p1.SetY(mapEditor.Nextsquares[i].Y - mapEditor.tileHeight);
-                        break;
-                    }
-                }
                 for (int i = 0; i < mapEditor.Sidewayscollision.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y, p1.w, p1.h), mapEditor.Sidewayscollision[i]) == true)
@@ -1035,6 +1020,22 @@ namespace TheImpossiblerGame
                     if (p1.Collision(new Rectangle(p1.x, p1.y, p1.w, p1.h), mapEditor.NextSidewayscollision[i]) == true)
                     {
                         p1.SetY(mapEditor.NextSidewayscollision[i].Y - mapEditor.tileHeight - 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.squares.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.squares[i]) == true)
+                    {
+                        p1.SetY(mapEditor.squares[i].Y - mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y + speed, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Nextsquares[i].Y - mapEditor.tileHeight);
                         break;
                     }
                 }
@@ -1167,22 +1168,6 @@ namespace TheImpossiblerGame
                         break;
                     }
                 }
-                for (int i = 0; i < mapEditor.squares.Count; i++)
-                {
-                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.squares[i]) == true)
-                    {
-                        p1.SetY(mapEditor.squares[i].Y + mapEditor.tileHeight);
-                        break;
-                    }
-                }
-                for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
-                {
-                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
-                    {
-                        p1.SetY(mapEditor.Nextsquares[i].Y + mapEditor.tileHeight);
-                        break;
-                    }
-                }
                 for (int i = 0; i < mapEditor.Sidewayscollision.Count; i++)
                 {
                     if (p1.Collision(new Rectangle(p1.x, p1.y, p1.w, p1.h), mapEditor.Sidewayscollision[i]) == true)
@@ -1196,6 +1181,22 @@ namespace TheImpossiblerGame
                     if (p1.Collision(new Rectangle(p1.x, p1.y, p1.w, p1.h), mapEditor.NextSidewayscollision[i]) == true)
                     {
                         p1.SetY(mapEditor.NextSidewayscollision[i].Y + mapEditor.tileHeight + 5000);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.squares.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.squares[i]) == true)
+                    {
+                        p1.SetY(mapEditor.squares[i].Y + mapEditor.tileHeight);
+                        break;
+                    }
+                }
+                for (int i = 0; i < mapEditor.Nextsquares.Count; i++)
+                {
+                    if (p1.Collision(new Rectangle(p1.x, p1.y - speed, p1.w, p1.h), mapEditor.Nextsquares[i]) == true)
+                    {
+                        p1.SetY(mapEditor.Nextsquares[i].Y + mapEditor.tileHeight);
                         break;
                     }
                 }

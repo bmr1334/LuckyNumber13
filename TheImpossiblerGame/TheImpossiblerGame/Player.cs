@@ -45,13 +45,6 @@ namespace TheImpossiblerGame
             }
         }
 
-        /* Method isn't used yet, but may be needed in the future.
-        public void Update()
-        {
-
-        }
-        */
-
         public void SetX(int px) // Sets the player's X
         {
             x = px;
@@ -62,20 +55,6 @@ namespace TheImpossiblerGame
         {
             y = py;
             r = new Rectangle(x, y, w, h);
-        }
-
-        public void Move(KeyboardState ks, MapEditor mapEditor) // Moves the player, will not be in the final game.
-        {
-            if (ks.IsKeyDown(Keys.Left) == true || (ks.IsKeyDown(Keys.A) == true))
-            {
-                SetX(x - 3);
-            }
-
-
-            if (ks.IsKeyDown(Keys.Right) == true || (ks.IsKeyDown(Keys.D) == true))
-            {
-                SetX(x + 3);
-            }
         }
     }
 }
