@@ -96,7 +96,9 @@ namespace TheImpossiblerGame
             mapEditor = new MapEditor(); //creates a map editor object
             ChangeWindowsSize(); //changes the window size when game initially runs
             mapEditor.SetDimensions();
-            p1 = new Player(200, 935, mapEditor.tileWidth, mapEditor.tileHeight);
+            p1 = new Player((2 * (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135)),
+                ((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 9 +
+                (GraphicsDevice.DisplayMode.Height / 216) * 7), mapEditor.tileWidth, mapEditor.tileHeight);
             backgrounds = new List<Texture2D>();
             parallax = new List<Texture2D>();
             title = new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height);
@@ -764,7 +766,6 @@ namespace TheImpossiblerGame
                     }
 
                     //draws score
-                    //spriteBatch.DrawString(font, "Speed: " + mapEditor.Number, new Vector2(5, -10), Color.Black);
                     spriteBatch.DrawString(font, string.Format("Score--- {0:0}", score), new Vector2(GraphicsDevice.DisplayMode.Height / 216,
                         (GraphicsDevice.DisplayMode.Height / 216) * -2), Color.Black, 0, new Vector2(0, 0), (float)GraphicsDevice.DisplayMode.Height / 1080, SpriteEffects.None, 0);
 
@@ -789,10 +790,10 @@ namespace TheImpossiblerGame
                     mapEditor.Draw(spriteBatch);
 
                     //draws text screen overlay
-                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 6 + (GraphicsDevice.DisplayMode.Height / 10 -
-                        GraphicsDevice.DisplayMode.Height / 135) / 2, GraphicsDevice.DisplayMode.Height / 2 - GraphicsDevice.DisplayMode.Height / 6,
-                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 24, (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 4 +
-                        GraphicsDevice.DisplayMode.Height / 8), Color.White);
+                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 24) - GraphicsDevice.DisplayMode.Width / 27,
+                        GraphicsDevice.DisplayMode.Height / 2 - GraphicsDevice.DisplayMode.Height / 6,
+                        GraphicsDevice.DisplayMode.Width / 4 + ( 10 * GraphicsDevice.DisplayMode.Width / 192) + GraphicsDevice.DisplayMode.Width / 384,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 4 + GraphicsDevice.DisplayMode.Height / 8), Color.White);
 
                     //draws score
                     spriteBatch.DrawString(font, string.Format("S   c   o   r   e      :      " + mapEditor.DisplayScore +
@@ -832,10 +833,10 @@ namespace TheImpossiblerGame
                         (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 3), Color.White);
 
                     //draws text screen overlay
-                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 6 + (GraphicsDevice.DisplayMode.Height / 10 -
-                        GraphicsDevice.DisplayMode.Height / 135) / 2, GraphicsDevice.DisplayMode.Height / 2 - GraphicsDevice.DisplayMode.Height / 24 - GraphicsDevice.DisplayMode.Height / 216,
-                        GraphicsDevice.DisplayMode.Height / 2 + GraphicsDevice.DisplayMode.Height / 24, (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 4 +
-                        (GraphicsDevice.DisplayMode.Height / 216) * 2), Color.White);
+                    spriteBatch.Draw(menuTextScreen, new Rectangle((GraphicsDevice.DisplayMode.Width / 3 + GraphicsDevice.DisplayMode.Width / 24) - GraphicsDevice.DisplayMode.Width / 27,
+                        GraphicsDevice.DisplayMode.Height / 2 - GraphicsDevice.DisplayMode.Height / 20,
+                        GraphicsDevice.DisplayMode.Width / 4 + (10 * GraphicsDevice.DisplayMode.Width / 192) + GraphicsDevice.DisplayMode.Width / 384,
+                        (GraphicsDevice.DisplayMode.Height / 10 - GraphicsDevice.DisplayMode.Height / 135) * 4 + GraphicsDevice.DisplayMode.Height / 80), Color.White);
 
                     //draws "Resume game" text
                     spriteBatch.Draw(resume, resumeRect = new Rectangle(GraphicsDevice.DisplayMode.Width / 2 - GraphicsDevice.DisplayMode.Width / 4 + GraphicsDevice.DisplayMode.Width / 9,

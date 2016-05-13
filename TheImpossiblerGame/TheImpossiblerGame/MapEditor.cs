@@ -1421,14 +1421,6 @@ namespace TheImpossiblerGame
 
         public virtual void Draw(SpriteBatch spriteBatch) //method to draw platforms/objects
         {
-            //for (int i = 0; i < CollisionRectangle.Count; i++)
-            //{
-            //    spriteBatch.Draw(SwitchBlockTexture, CollisionRectangle[i], Color.White);
-            //}
-            //for (int i = 0; i < NextCollisionRectangle.Count; i++)
-            //{
-            //    spriteBatch.Draw(SwitchBlockTexture, NextCollisionRectangle[i], Color.White);
-            //}
             for (int i = 0; i < ParallaxList.Count; i++)
             {
                 spriteBatch.Draw(Parallaxtexture, ParallaxList[i], Color.White);
@@ -1606,14 +1598,6 @@ namespace TheImpossiblerGame
                     }
                 }
             }
-            //for (int i = 0; i < SidewaysCollision.Count; i++)
-            //{
-            //    spriteBatch.Draw(Parallaxtexture, SidewaysCollision[i], Color.White);
-            //}
-            //for (int i = 0; i < NextSidewaysCollision.Count; i++)
-            //{
-            //    spriteBatch.Draw(NextParallaxtexture, NextSidewaysCollision[i], Color.White);
-            //}
         }
     }
 }
